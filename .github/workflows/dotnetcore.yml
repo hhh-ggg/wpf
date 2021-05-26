@@ -13,5 +13,7 @@ jobs:
       with:
         nuget-version: '5.x'
       
-    - name: Build
+    - name: Build and Deploy
+      env:
+        ACCESS_TOKEN: ${{ secrets.WPFSECRET }}
       run: .\build.cmd -pack -ci -configuration Release -prepareMachine /p:Platform=x86

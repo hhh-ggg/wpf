@@ -19,4 +19,7 @@ jobs:
             
     - name: Upload nupkg
       uses: actions/upload-artifact@v2
+      with:
+        name: NuGet Package
+        path: artifacts/hjc.nupkg
 

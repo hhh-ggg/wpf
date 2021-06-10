@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Windows.Markup;
-
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("HikWpf")]
 [assembly:TypeForwardedTo(typeof(System.Windows.NameScope))]
 [assembly:TypeForwardedTo(typeof(System.Windows.Markup.ArrayExtension))]
 [assembly:TypeForwardedTo(typeof(System.Windows.Markup.IProvideValueTarget))]

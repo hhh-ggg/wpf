@@ -27,12 +27,12 @@ namespace MS.Internal.Ink
     /// In either case, the output collection of nodes is represented by a disposable
     /// iterator (i.e. good for a single enumeration only).
     /// </summary>
-    public class StrokeNodeIterator
+    internal class StrokeNodeIterator
     {
         /// <summary>
         /// Helper wrapper
         /// </summary>
-        public static StrokeNodeIterator GetIterator(Stroke stroke, DrawingAttributes drawingAttributes)
+        internal static StrokeNodeIterator GetIterator(Stroke stroke, DrawingAttributes drawingAttributes)
         {
             if (stroke == null)
             {
@@ -53,7 +53,7 @@ namespace MS.Internal.Ink
         /// If using the strokes drawing attributes, pass stroke.DrawingAttributes for the second
         /// argument.  If using an overridden DA, use that instance.
         /// </summary>
-        public static StrokeNodeIterator GetIterator(StylusPointCollection stylusPoints, DrawingAttributes drawingAttributes)
+        internal static StrokeNodeIterator GetIterator(StylusPointCollection stylusPoints, DrawingAttributes drawingAttributes)
         {
             if (stylusPoints == null)
             {
@@ -89,7 +89,7 @@ namespace MS.Internal.Ink
         /// from array(s) of points and a given stylus shape.
         /// </summary>
         /// <param name="nodeShape">a shape that defines the stroke contour</param>
-        public StrokeNodeIterator(StylusShape nodeShape) 
+        internal StrokeNodeIterator(StylusShape nodeShape) 
             : this( null,   //stylusPoints
                     StrokeNodeOperations.CreateInstance(nodeShape),
                     false)  //usePressure)
@@ -102,7 +102,7 @@ namespace MS.Internal.Ink
         /// called by the IncrementalRenderer
         /// </summary>
         /// <param name="drawingAttributes">drawing attributes</param>
-        public StrokeNodeIterator(DrawingAttributes drawingAttributes)
+        internal StrokeNodeIterator(DrawingAttributes drawingAttributes)
             : this( null,   //stylusPoints
                     StrokeNodeOperations.CreateInstance((drawingAttributes == null ? null : drawingAttributes.StylusShape)),
                     (drawingAttributes == null ? false : !drawingAttributes.IgnorePressure))  //usePressure
@@ -115,7 +115,7 @@ namespace MS.Internal.Ink
         /// <param name="stylusPoints"></param>
         /// <param name="operations"></param>
         /// <param name="usePressure"></param>
-        public StrokeNodeIterator(StylusPointCollection stylusPoints,
+        internal StrokeNodeIterator(StylusPointCollection stylusPoints,
                                     StrokeNodeOperations operations,
                                     bool usePressure)
         {
@@ -135,7 +135,7 @@ namespace MS.Internal.Ink
         /// </summary>
         /// <param name="stylusPoints">StylusPointCollection</param>
         /// <returns>yields StrokeNode objects one by one</returns>
-        public StrokeNodeIterator GetIteratorForNextSegment(StylusPointCollection stylusPoints)
+        internal StrokeNodeIterator GetIteratorForNextSegment(StylusPointCollection stylusPoints)
         {
             if (stylusPoints == null)
             {
@@ -167,7 +167,7 @@ namespace MS.Internal.Ink
         /// </summary>
         /// <param name="points">an array of points representing a stroke increment</param>
         /// <returns>yields StrokeNode objects one by one</returns>
-        public StrokeNodeIterator GetIteratorForNextSegment(Point[] points)
+        internal StrokeNodeIterator GetIteratorForNextSegment(Point[] points)
         {   
             if (points == null)
             {
@@ -188,7 +188,7 @@ namespace MS.Internal.Ink
         /// <summary>
         /// The count of strokenodes that can be iterated across
         /// </summary>
-        public int Count
+        internal int Count
         {
             get
             {
@@ -205,7 +205,7 @@ namespace MS.Internal.Ink
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public StrokeNode this[int index]
+        internal StrokeNode this[int index]
         {
             get
             {
@@ -218,7 +218,7 @@ namespace MS.Internal.Ink
         /// previousIndex can be -1 to signify it should be empty (first strokeNode)
         /// </summary>
         /// <returns></returns>
-        public StrokeNode this[int index, int previousIndex]
+        internal StrokeNode this[int index, int previousIndex]
         {
             get
             {

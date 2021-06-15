@@ -37,7 +37,7 @@ namespace System.Windows.Input.StylusPlugIns
     {
         /////////////////////////////////////////////////////////////////////
 
-        private class StrokeInfo
+        public class StrokeInfo
         {
             int _stylusId;
             int _startTime;
@@ -188,7 +188,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
 }
 
-        private class DynamicRendererHostVisual : HostVisual
+        public class DynamicRendererHostVisual : HostVisual
         {
             internal bool InUse
             {

@@ -15,7 +15,7 @@ jobs:
       
     - name: Build
     
-      run: .\build.cmd -pack -ci -configuration Release -prepareMachine /p:Platform=x86
+      run: .\build.cmd -pack -ci -configuration Release -prepareMachine /p:Platform=x86 /p:BaselineAllAPICompatError=true
             
     - name: Upload nupkg
       uses: actions/upload-artifact@v2

@@ -35,6 +35,8 @@ namespace System.Windows.Input.StylusPlugIns
     /// </summary>
     public class DynamicRenderer : StylusPlugIn
     {
+        internal int iTestByhjc = 1;
+        public bool iTestPbByhjc = true;
         /////////////////////////////////////////////////////////////////////
 
         private class StrokeInfo

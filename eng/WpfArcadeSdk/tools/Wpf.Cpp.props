@@ -77,14 +77,14 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <LinkIncremental>true</LinkIncremental>
     <LinkIncremental Condition="'$(ManagedCxx)'=='true'">false</LinkIncremental>
-    <LinkTimeCodeGeneration/>
+    <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
     <LinkIncremental>false</LinkIncremental>
-    <LinkTimeCodeGeneration/>
+    <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(ManagedCxx)'=='true'">

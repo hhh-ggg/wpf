@@ -248,7 +248,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <param name="stylusPoints"></param>
         public virtual void Reset(StylusDevice stylusDevice, StylusPointCollection stylusPoints)
         {
-            System.Diagnostics.Debug.WriteLine("Reset");
+            Trace.WriteLine("Reset");
             // NOTE: stylusDevice == null means the mouse device.
 
             // Nothing to do if root visual not queried or not hookup up to element yet.
@@ -316,7 +316,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnAdded()
         {
-            System.Diagnostics.Debug.WriteLine("OnAdded");
+            Trace.WriteLine("OnAdded");
             // Grab the dispatcher we're hookup up to.
             _applicationDispatcher = Element.Dispatcher;
             
@@ -334,7 +334,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnRemoved()
         {
-            System.Diagnostics.Debug.WriteLine("OnRemoved");
+            Trace.WriteLine("OnRemoved");
             // Make sure we destroy any real time visuals and thread when removed.
             DestroyRealTimeVisuals();
             _applicationDispatcher = null; // removed from tree.
@@ -346,7 +346,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnIsActiveForInputChanged()
         {
-            System.Diagnostics.Debug.WriteLine("OnIsActiveForInputChanged");
+            Trace.WriteLine("OnIsActiveForInputChanged");
             // We only want to keep our real time inking thread references around only
             // when we need them.  If not enabled for input then we don't need them.
             if (IsActiveForInput)
@@ -366,7 +366,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusEnter(RawStylusInput rawStylusInput, bool confirmed)
         {
-            System.Diagnostics.Debug.WriteLine("OnStylusEnter");
+            Trace.WriteLine("OnStylusEnter");
             HandleStylusEnterLeave(rawStylusInput, true, confirmed);
         }
 
@@ -376,13 +376,13 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusLeave(RawStylusInput rawStylusInput, bool confirmed)
         {
-            System.Diagnostics.Debug.WriteLine("OnStylusLeave");
+            Trace.WriteLine("OnStylusLeave");
             HandleStylusEnterLeave(rawStylusInput, false, confirmed);
         }
 
         private void HandleStylusEnterLeave(RawStylusInput rawStylusInput, bool isEnter, bool isConfirmed)
         {
-            System.Diagnostics.Debug.WriteLine("HandleStylusEnterLeave");
+            Trace.WriteLine("HandleStylusEnterLeave");
             // See if we need to abort a stroke due to entering or leaving within a stroke.
             if (isConfirmed)
             {
@@ -409,7 +409,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnEnabledChanged()
         {
-            System.Diagnostics.Debug.WriteLine("OnEnabledChanged");
+            Trace.WriteLine("OnEnabledChanged");
             // If going disabled cancel all real time strokes.  We won't be getting any more
             // events.
             if (!Enabled)
@@ -424,7 +424,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
-            System.Diagnostics.Debug.WriteLine("OnStylusDown");
+            Trace.WriteLine("OnStylusDown");
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {
@@ -456,7 +456,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusMove(RawStylusInput rawStylusInput)
         {
-            System.Diagnostics.Debug.WriteLine("OnStylusMove");
+            Trace.WriteLine("OnStylusMove");
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {
@@ -483,7 +483,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            System.Diagnostics.Debug.WriteLine("OnStylusUp");
+            Trace.WriteLine("OnStylusUp");
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {
@@ -504,7 +504,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         private bool IsStylusUp(int stylusId)
         {
-            System.Diagnostics.Debug.WriteLine("IsStylusUp");
+            Trace.WriteLine("IsStylusUp");
             TabletDeviceCollection tabletDevices = Tablet.TabletDevices;
             for (int i=0; i<tabletDevices.Count; i++)
             {
@@ -526,7 +526,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         private void OnRenderComplete()
         {
-            System.Diagnostics.Debug.WriteLine("OnRenderComplete");
+            Trace.WriteLine("OnRenderComplete");
             StrokeInfo si = _renderCompleteStrokeInfo;
             Debug.Assert(si!=null);  // should never get here unless we are transitioning a stroke.
             
@@ -548,7 +548,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         void RemoveDynamicRendererVisualAndNotifyWhenDone(StrokeInfo si)
         {
-            System.Diagnostics.Debug.WriteLine("RemoveDynamicRendererVisualAndNotifyWhenDone");
+            Trace.WriteLine("RemoveDynamicRendererVisualAndNotifyWhenDone");
             if (si != null)
             {
                 DynamicRendererThreadManager renderingThread = _renderingThread; // Keep it alive
@@ -599,7 +599,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         private void NotifyAppOfDRThreadRenderComplete(StrokeInfo si)
         {
-            System.Diagnostics.Debug.WriteLine("NotifyAppOfDRThreadRenderComplete");
+            Trace.WriteLine("NotifyAppOfDRThreadRenderComplete");
             Dispatcher dispatcher = _applicationDispatcher;
             if (dispatcher != null)
             {
@@ -635,7 +635,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         private void OnDRThreadRenderComplete(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("OnDRThreadRenderComplete");
+            Trace.WriteLine("OnDRThreadRenderComplete");
             DynamicRendererThreadManager drThread = _renderingThread;
             Dispatcher drDispatcher = null;
                        
@@ -688,7 +688,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDownProcessed(object callbackData, bool targetVerified)
         {
-            System.Diagnostics.Debug.WriteLine("OnStylusDownProcessed");
+            Trace.WriteLine("OnStylusDownProcessed");
             StrokeInfo si = callbackData as StrokeInfo;
 
             if (si == null)
@@ -707,7 +707,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUpProcessed(object callbackData, bool targetVerified)
         {
-            System.Diagnostics.Debug.WriteLine("OnStylusUpProcessed");
+            Trace.WriteLine("OnStylusUpProcessed");
             StrokeInfo si = callbackData as StrokeInfo;
 
             if (si == null)
@@ -719,7 +719,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         private void OnInternalRenderComplete(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("OnInternalRenderComplete");
+            Trace.WriteLine("OnInternalRenderComplete");
             // First unhook event handler
             MediaContext.From(_applicationDispatcher).RenderComplete -= _onRenderComplete;
             _waitingForRenderComplete = false;
@@ -739,7 +739,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         private void NotifyOnNextRenderComplete()
         {
-            System.Diagnostics.Debug.WriteLine("NotifyOnNextRenderComplete");
+            Trace.WriteLine("NotifyOnNextRenderComplete");
             // Nothing to do if not hooked up to plugin collection.
             if (_applicationDispatcher == null)
                 return;
@@ -769,7 +769,7 @@ namespace System.Windows.Input.StylusPlugIns
                                         Geometry geometry, 
                                         Brush fillBrush)
         {
-            System.Diagnostics.Debug.WriteLine("OnDraw");
+            Trace.WriteLine("OnDraw");
             if (drawingContext == null)
             {
                 throw new ArgumentNullException("drawingContext");
@@ -783,7 +783,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected virtual void OnDrawingAttributesReplaced()
         {
-            System.Diagnostics.Debug.WriteLine("OnDrawingAttributesReplaced");
+            Trace.WriteLine("OnDrawingAttributesReplaced");
         }
         
         /////////////////////////////////////////////////////////////////////
@@ -793,7 +793,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected Dispatcher GetDispatcher()
         {
-            System.Diagnostics.Debug.WriteLine("GetDispatcher");
+            Trace.WriteLine("GetDispatcher");
             return _renderingThread != null ? _renderingThread.ThreadDispatcher : null;
         }
 
@@ -801,7 +801,7 @@ namespace System.Windows.Input.StylusPlugIns
         
         void RenderPackets(StylusPointCollection stylusPoints,  StrokeInfo si)
         {
-            System.Diagnostics.Debug.WriteLine("RenderPackets");
+            Trace.WriteLine("RenderPackets");
             // If no points or not hooked up to element then do nothing.
             if (stylusPoints.Count == 0 || _applicationDispatcher == null)
                 return;
@@ -927,7 +927,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         void AbortAllStrokes()
         {
-            System.Diagnostics.Debug.WriteLine("AbortAllStrokes");
+            Trace.WriteLine("AbortAllStrokes");
             lock (__siLock)
             {
                 while (_strokeInfoList.Count > 0)
@@ -961,7 +961,7 @@ namespace System.Windows.Input.StylusPlugIns
         //
         void TransitionStrokeVisuals(StrokeInfo si, bool abortStroke)
         {
-            System.Diagnostics.Debug.WriteLine("TransitionStrokeVisuals");
+            Trace.WriteLine("TransitionStrokeVisuals");
             // Make sure we don't get any more input for this stroke.
             RemoveStrokeInfo(si);
             
@@ -1018,7 +1018,7 @@ namespace System.Windows.Input.StylusPlugIns
         // Figures out the correct DynamicRenderHostVisual to use.
         private DynamicRendererHostVisual GetCurrentHostVisual()
         {
-            System.Diagnostics.Debug.WriteLine("GetCurrentHostVisual");
+            Trace.WriteLine("GetCurrentHostVisual");
             // Find which of the two host visuals to use as current.
             if (_currentHostVisual == null)
             {
@@ -1054,7 +1054,7 @@ namespace System.Windows.Input.StylusPlugIns
         // Removes ref from DynamicRendererHostVisual.
         void TransitionComplete(StrokeInfo si)
         {
-            System.Diagnostics.Debug.WriteLine("TransitionComplete");
+            Trace.WriteLine("TransitionComplete");
             // make sure lock does not cause reentrancy on application thread!
             using (_applicationDispatcher.DisableProcessing())
             {
@@ -1067,7 +1067,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         void RemoveStrokeInfo(StrokeInfo si)
         {
-            System.Diagnostics.Debug.WriteLine("RemoveStrokeInfo");
+            Trace.WriteLine("RemoveStrokeInfo");
             lock (__siLock)
             {
                 _strokeInfoList.Remove(si);
@@ -1076,7 +1076,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         StrokeInfo FindStrokeInfo(int timestamp)
         {
-            System.Diagnostics.Debug.WriteLine("FindStrokeInfo");
+            Trace.WriteLine("FindStrokeInfo");
             lock (__siLock)
             {
                 for (int i=0; i < _strokeInfoList.Count; i++)
@@ -1118,7 +1118,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         private void CreateInkingVisuals()
         {
-            System.Diagnostics.Debug.WriteLine("CreateInkingVisuals");
+            Trace.WriteLine("CreateInkingVisuals");
             if (_mainContainerVisual == null)
             {
                 _mainContainerVisual = new ContainerVisual();
@@ -1188,7 +1188,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         private void DestroyRealTimeVisuals()
         {
-            System.Diagnostics.Debug.WriteLine("DestroyRealTimeVisuals");
+            Trace.WriteLine("DestroyRealTimeVisuals");
             // Only need to handle if already created visuals.
             if (_mainContainerVisual != null && _rawInkHostVisual1 != null)
             {

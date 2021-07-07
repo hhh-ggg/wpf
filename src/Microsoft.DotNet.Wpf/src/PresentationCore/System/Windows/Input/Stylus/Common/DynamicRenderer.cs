@@ -280,15 +280,16 @@ namespace System.Windows.Input.StylusPlugIns
                     StrokeInfo si = new StrokeInfo(DrawingAttributes, 
                                                    (stylusDevice != null) ? stylusDevice.Id : 0, 
                                                    Environment.TickCount, GetCurrentHostVisual());
-                    if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
+                    int deviceId = (stylusDevice != null) ? stylusDevice.Id : 0;
+                    if (_multiStrokeInfoDic.ContainsKey(deviceId))
                     {
-                        _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Add(si);
+                        _multiStrokeInfoDic[deviceId].Add(si);
                     }
                     else
                     {
                         List<StrokeInfo> strokeInfoList = new List<StrokeInfo>();
                         strokeInfoList.Add(si);
-                        _multiStrokeInfoDic.Add(rawStylusInput.StylusDeviceId, strokeInfoList);
+                        _multiStrokeInfoDic.Add(deviceId, strokeInfoList);
                     }
                     si.IsReset = true;
 
@@ -949,11 +950,11 @@ namespace System.Windows.Input.StylusPlugIns
             Trace.WriteLine("AbortAllStrokes");
             lock (__siLock)
             {
-                foreach (var strokeInfoList in _multiStrokeInfoDic)
+                foreach (var strokeListItem in _multiStrokeInfoDic)
                 {
-                    while (strokeInfoList.Count > 0)
+                    while (strokeListItem.Value.Count > 0)
                     {
-                        TransitionStrokeVisuals(strokeInfoList[0], true);
+                        TransitionStrokeVisuals(strokeListItem.Value[0], true);
                     }
                 }
 
@@ -1093,9 +1094,9 @@ namespace System.Windows.Input.StylusPlugIns
             Trace.WriteLine("RemoveStrokeInfo");
             lock (__siLock)
             {
-                if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
+                if (_multiStrokeInfoDic.ContainsKey(si.StylusId))
                 {
-                    _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Remove(si);
+                    _multiStrokeInfoDic[si.StylusId].Remove(si);
                 }
             }
         }

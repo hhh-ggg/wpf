@@ -280,7 +280,16 @@ namespace System.Windows.Input.StylusPlugIns
                     StrokeInfo si = new StrokeInfo(DrawingAttributes, 
                                                    (stylusDevice != null) ? stylusDevice.Id : 0, 
                                                    Environment.TickCount, GetCurrentHostVisual());
-                    _strokeInfoList.Add(si);
+                    if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
+                    {
+                        _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Add(si);
+                    }
+                    else
+                    {
+                        List<StrokeInfo> strokeInfoList = new List<StrokeInfo>();
+                        strokeInfoList.Add(si);
+                        _multiStrokeInfoDic.Add(rawStylusInput.StylusDeviceId, strokeInfoList);
+                    }
                     si.IsReset = true;
 
                     if (stylusPoints != null)
@@ -386,7 +395,7 @@ namespace System.Windows.Input.StylusPlugIns
             // See if we need to abort a stroke due to entering or leaving within a stroke.
             if (isConfirmed)
             {
-                StrokeInfo si = FindStrokeInfo(rawStylusInput.Timestamp);
+                StrokeInfo si = FindStrokeInfo(rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp);
 
                 if (si != null)
                 {
@@ -432,7 +441,7 @@ namespace System.Windows.Input.StylusPlugIns
                 
                 lock(__siLock)
                 {
-                    si = FindStrokeInfo(rawStylusInput.Timestamp);
+                    si = FindStrokeInfo(rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp);
 
                     // If we find we are already in the middle of stroke then bail out.
                     // Can only ink with one stylus at a time.
@@ -442,7 +451,17 @@ namespace System.Windows.Input.StylusPlugIns
                     }
 
                     si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
-                    _strokeInfoList.Add(si);
+                    if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
+                    {
+                        _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Add(si);
+                    }
+                    else
+                    {
+                        List<StrokeInfo> strokeInfoList = new List<StrokeInfo>();
+                        strokeInfoList.Add(si);
+                        _multiStrokeInfoDic.Add(rawStylusInput.StylusDeviceId, strokeInfoList);
+                    }
+
                 }
                 
                 rawStylusInput.NotifyWhenProcessed(si);
@@ -460,7 +479,7 @@ namespace System.Windows.Input.StylusPlugIns
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {
-                StrokeInfo si = FindStrokeInfo(rawStylusInput.Timestamp);
+                StrokeInfo si = FindStrokeInfo(rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp);
 
                 if (si != null && (si.StylusId == rawStylusInput.StylusDeviceId))
                 {
@@ -487,7 +506,7 @@ namespace System.Windows.Input.StylusPlugIns
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {
-                StrokeInfo si = FindStrokeInfo(rawStylusInput.Timestamp);
+                StrokeInfo si = FindStrokeInfo(rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp);
 
                 if (si != null && 
                     ((si.StylusId == rawStylusInput.StylusDeviceId) ||
@@ -930,10 +949,14 @@ namespace System.Windows.Input.StylusPlugIns
             Trace.WriteLine("AbortAllStrokes");
             lock (__siLock)
             {
-                while (_strokeInfoList.Count > 0)
+                foreach (var strokeInfoList in _multiStrokeInfoDic)
                 {
-                    TransitionStrokeVisuals(_strokeInfoList[0], true);
+                    while (strokeInfoList.Count > 0)
+                    {
+                        TransitionStrokeVisuals(strokeInfoList[0], true);
+                    }
                 }
+
             }
         }
 
@@ -1070,22 +1093,29 @@ namespace System.Windows.Input.StylusPlugIns
             Trace.WriteLine("RemoveStrokeInfo");
             lock (__siLock)
             {
-                _strokeInfoList.Remove(si);
+                if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
+                {
+                    _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Remove(si);
+                }
             }
         }
 
-        StrokeInfo FindStrokeInfo(int timestamp)
+        StrokeInfo FindStrokeInfo(int deviceId, int timestamp)
         {
             Trace.WriteLine("FindStrokeInfo");
             lock (__siLock)
             {
-                for (int i=0; i < _strokeInfoList.Count; i++)
+                if (_multiStrokeInfoDic.ContainsKey(deviceId))
                 {
-                    StrokeInfo siCur = _strokeInfoList[i];
-                    
-                    if (siCur.IsTimestampWithin(timestamp))
+                    List<StrokeInfo> strokeInfoList = _multiStrokeInfoDic[deviceId];
+                    for (int i = 0; i < strokeInfoList.Count; i++)
                     {
-                        return siCur;
+                        StrokeInfo siCur = strokeInfoList[i];
+
+                        if (siCur.IsTimestampWithin(timestamp))
+                        {
+                            return siCur;
+                        }
                     }
                 }
             }
@@ -1242,7 +1272,8 @@ namespace System.Windows.Input.StylusPlugIns
         private Dispatcher          _applicationDispatcher;
         private Geometry            _zeroSizedFrozenRect;
         private DrawingAttributes   _drawAttrsSource = new DrawingAttributes();
-        List<StrokeInfo>            _strokeInfoList = new List<StrokeInfo>();
+        //List<StrokeInfo>            _strokeInfoList = new List<StrokeInfo>();
+        Dictionary<int, List<StrokeInfo>> _multiStrokeInfoDic = new Dictionary<int, List<StrokeInfo>>();
 
         // Visuals layout:
         // 

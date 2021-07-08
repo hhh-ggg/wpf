@@ -1125,6 +1125,7 @@ namespace System.Windows.Controls
                 if ( this.ActiveEditingMode == InkCanvasEditingMode.Ink ||
                     this.ActiveEditingMode == InkCanvasEditingMode.InkAndGesture )
                 {
+                    e.Stroke.DrawingAttributes.Color = Colors.Blue;
                     //add the stroke to the StrokeCollection and raise this event
                     this.Strokes.Add(e.Stroke);
                     this.OnStrokeCollected(e);

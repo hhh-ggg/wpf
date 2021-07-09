@@ -694,6 +694,7 @@ namespace MS.Internal.Ink
         /// <param name="args"></param>
         internal void OnInkCanvasDeviceDown(object sender, InputEventArgs args)
         {
+            return;
             MouseButtonEventArgs mouseButtonEventArgs = args as MouseButtonEventArgs;
             bool resetDynamicRenderer = false;
             if ( mouseButtonEventArgs != null )
@@ -783,6 +784,7 @@ namespace MS.Internal.Ink
         private void OnInkCanvasDeviceMove<TEventArgs>(object sender, TEventArgs args)
             where TEventArgs : InputEventArgs
         {
+                return;
             // Make sure that the stylus is the one we captured previously.
             if ( IsInputDeviceCaptured(args.Device) )
             {

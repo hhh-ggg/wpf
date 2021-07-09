@@ -53,7 +53,7 @@ namespace System.Windows.Input.StylusPlugIns
             StrokeNodeIterator _strokeNodeIterator;
             double _opacity;
             DynamicRendererHostVisual _strokeHV;  // App thread rendering HostVisual
-            public StylusPointCollection _allPoints = new StylusPointCollection();
+            public StylusPointCollection _allPoints = null;
 
             public StrokeInfo(DrawingAttributes drawingAttributes, int stylusDeviceId, int startTimestamp, DynamicRendererHostVisual hostVisual)
             {
@@ -453,6 +453,7 @@ namespace System.Windows.Input.StylusPlugIns
                     }
 
                     si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
+                    si._allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
                     si._allPoints.Add(rawStylusInput.GetStylusPoints());
                     if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
                     {

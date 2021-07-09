@@ -695,7 +695,7 @@ namespace MS.Internal.Ink
         internal void OnInkCanvasDeviceDown(object sender, InputEventArgs args)
         {
             return;
-            MouseButtonEventArgs mouseButtonEventArgs = args as MouseButtonEventArgs;
+            /*MouseButtonEventArgs mouseButtonEventArgs = args as MouseButtonEventArgs;
             bool resetDynamicRenderer = false;
             if ( mouseButtonEventArgs != null )
             {
@@ -773,7 +773,7 @@ namespace MS.Internal.Ink
                         ReleaseCapture(IsInMidStroke);
                     }
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -786,7 +786,7 @@ namespace MS.Internal.Ink
         {
                 return;
             // Make sure that the stylus is the one we captured previously.
-            if ( IsInputDeviceCaptured(args.Device) )
+            /*if ( IsInputDeviceCaptured(args.Device) )
             {
                 IStylusEditing stylusEditingBehavior = ActiveEditingBehavior as IStylusEditing;
                 Debug.Assert(stylusEditingBehavior != null || ActiveEditingBehavior == null,
@@ -833,7 +833,7 @@ namespace MS.Internal.Ink
                         }
                     }
                 }
-            }
+            }*/
         }
 
         /// <summary>

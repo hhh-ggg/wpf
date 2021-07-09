@@ -23,7 +23,6 @@ using MS.Utility;
 using System.Windows.Ink;
 using MS.Internal.Ink;
 using System.Security;
-using System.Windows.Controls;
 
 using SR = MS.Internal.PresentationCore.SR;
 using SRID = MS.Internal.PresentationCore.SRID;
@@ -38,7 +37,6 @@ namespace System.Windows.Input.StylusPlugIns
     {
         internal int iTestByhjc = 1;
         public bool iTestPbByhjc = true;
-        public InkCanvas myInkCanvas = null;
         /////////////////////////////////////////////////////////////////////
 
         private class StrokeInfo
@@ -523,13 +521,12 @@ namespace System.Windows.Input.StylusPlugIns
                     si.SeenUp = true;
                     si.LastTime = rawStylusInput.Timestamp;
                     si._allPoints.Add(rawStylusInput.GetStylusPoints());
-                    if (null != _applicationDispatcher && null != myInkCanvas)
+                    if (null != _applicationDispatcher)
                     {
                         StylusPointCollection strokePoints = new StylusPointCollection(si._allPoints);
                         _applicationDispatcher.BeginInvoke(new Action(() =>
                         {
-                            Stroke addStroke = new Stroke(strokePoints);
-                            myInkCanvas.Strokes.Add(addStroke);
+                            stylusUpProcess(strokePoints);
                         }));
                     }
                     rawStylusInput.NotifyWhenProcessed(si);
@@ -819,6 +816,15 @@ namespace System.Windows.Input.StylusPlugIns
         protected virtual void OnDrawingAttributesReplaced()
         {
             //Trace.WriteLine("OnDrawingAttributesReplaced");
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// [TBS]
+        /// </summary>
+        protected virtual void stylusUpProcess(StylusPointCollection stylusPoints)
+        {
+
         }
 
         /////////////////////////////////////////////////////////////////////

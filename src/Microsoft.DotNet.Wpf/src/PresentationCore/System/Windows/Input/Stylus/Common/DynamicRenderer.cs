@@ -37,6 +37,7 @@ namespace System.Windows.Input.StylusPlugIns
     {
         internal int iTestByhjc = 1;
         public bool iTestPbByhjc = true;
+        public bool isOpenMuliti = false;
         /////////////////////////////////////////////////////////////////////
 
         private class StrokeInfo
@@ -452,19 +453,30 @@ namespace System.Windows.Input.StylusPlugIns
                         return;
                     }
 
-                    si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
-                    si._allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
-                    si._allPoints.Add(rawStylusInput.GetStylusPoints());
-                    if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
+                    if (isOpenMuliti)
                     {
-                        _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Add(si);
+                        si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
+                        si._allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
+                        si._allPoints.Add(rawStylusInput.GetStylusPoints());
+                        if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
+                        {
+                            _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Add(si);
+                        }
+                        else
+                        {
+                            List<StrokeInfo> strokeInfoList = new List<StrokeInfo>();
+                            strokeInfoList.Add(si);
+                            _multiStrokeInfoDic.Add(rawStylusInput.StylusDeviceId, strokeInfoList);
+                        }
                     }
                     else
                     {
-                        List<StrokeInfo> strokeInfoList = new List<StrokeInfo>();
-                        strokeInfoList.Add(si);
-                        _multiStrokeInfoDic.Add(rawStylusInput.StylusDeviceId, strokeInfoList);
+                        if(_multiStrokeInfoDic.Count >= 1)
+                        {
+                            return;
+                        }
                     }
+
 
                 }
 
@@ -1118,7 +1130,7 @@ namespace System.Windows.Input.StylusPlugIns
             {
                 if (_multiStrokeInfoDic.ContainsKey(si.StylusId))
                 {
-                    _multiStrokeInfoDic[si.StylusId].Remove(si);
+                    _multiStrokeInfoDic.Remove(si.StylusId);
                 }
             }
         }

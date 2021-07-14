@@ -38,6 +38,7 @@ namespace System.Windows.Input.StylusPlugIns
         internal int iTestByhjc = 1;
         public bool iTestPbByhjc = true;
         public bool isOpenMuliti = false;
+        public bool isNewSingle = true;
         /////////////////////////////////////////////////////////////////////
 
         private class StrokeInfo
@@ -453,7 +454,7 @@ namespace System.Windows.Input.StylusPlugIns
                         return;
                     }
 
-                    if (isOpenMuliti)
+                    if (isOpenMuliti || isNewSingle)
                     {
                         si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
                         si._allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
@@ -469,17 +470,10 @@ namespace System.Windows.Input.StylusPlugIns
                             _multiStrokeInfoDic.Add(rawStylusInput.StylusDeviceId, strokeInfoList);
                         }
                     }
-                    else
-                    {
-                        if(_multiStrokeInfoDic.Count >= 1)
-                        {
-                            return;
-                        }
-                    }
-
 
                 }
 
+                isNewSingle = false;
                 rawStylusInput.NotifyWhenProcessed(si);
                 RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
@@ -519,6 +513,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
+            isNewSingle = true;
             //Trace.WriteLine("OnStylusUp");
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)

@@ -989,7 +989,12 @@ namespace System.Windows.Input.StylusPlugIns
                 {
                     while (strokeListItem.Value.Count > 0)
                     {
-                        TransitionStrokeVisuals(strokeListItem.Value[0], true);
+                        StrokeInfo si = strokeListItem.Value[0];
+                        if (_multiStrokeInfoDic.ContainsKey(si.StylusId))
+                        {
+                            _multiStrokeInfoDic.Remove(si.StylusId);
+                        }
+                        TransitionStrokeVisualsEx(si, true);
                     }
                 }
 
@@ -1023,6 +1028,62 @@ namespace System.Windows.Input.StylusPlugIns
             //Trace.WriteLine("TransitionStrokeVisuals");
             // Make sure we don't get any more input for this stroke.
             RemoveStrokeInfo(si);
+
+            // remove si visuals and this si
+            if (si.StrokeCV != null)
+            {
+                if (_mainRawInkContainerVisual != null)
+                {
+                    _mainRawInkContainerVisual.Children.Remove(si.StrokeCV);
+                }
+                si.StrokeCV = null;
+            }
+
+            si.FillBrush = null;
+
+            // Nothing to do if we've destroyed our host visuals.
+            if (_rawInkHostVisual1 == null)
+                return;
+
+            bool doRenderComplete = false;
+
+            // See if we can do full transition (only when none in progress and not abort)
+            if (!abortStroke && _renderCompleteStrokeInfo == null)
+            {
+                // make sure lock does not cause reentrancy on application thread!
+                using (_applicationDispatcher.DisableProcessing())
+                {
+                    lock (__siLock)
+                    {
+                        // We can transition the host visual only if a single reference is on it.
+                        if (si.StrokeHV.HasSingleReference)
+                        {
+                            Debug.Assert(si.StrokeHV.Clip == null);
+                            si.StrokeHV.Clip = _zeroSizedFrozenRect;
+                            Debug.Assert(_renderCompleteStrokeInfo == null);
+                            _renderCompleteStrokeInfo = si;
+                            doRenderComplete = true;
+                        }
+                    }
+                }
+            }
+
+            if (doRenderComplete)
+            {
+                NotifyOnNextRenderComplete();
+            }
+            else
+            {
+                // Just wait to dynamic rendering thread is updated then we're done.
+                RemoveDynamicRendererVisualAndNotifyWhenDone(si);
+            }
+        }
+
+        void TransitionStrokeVisualsEX(StrokeInfo si, bool abortStroke)
+        {
+            //Trace.WriteLine("TransitionStrokeVisuals");
+            // Make sure we don't get any more input for this stroke.
+           
 
             // remove si visuals and this si
             if (si.StrokeCV != null)

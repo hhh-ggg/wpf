@@ -451,6 +451,7 @@ namespace System.Windows.Input.StylusPlugIns
                     // Can only ink with one stylus at a time.
                     if (si != null)
                     {
+                        isNewSingle = false;
                         return;
                     }
 
@@ -469,6 +470,11 @@ namespace System.Windows.Input.StylusPlugIns
                             strokeInfoList.Add(si);
                             _multiStrokeInfoDic.Add(rawStylusInput.StylusDeviceId, strokeInfoList);
                         }
+                    }
+                    else
+                    {
+                        isNewSingle = false;
+                        return;
                     }
 
                 }

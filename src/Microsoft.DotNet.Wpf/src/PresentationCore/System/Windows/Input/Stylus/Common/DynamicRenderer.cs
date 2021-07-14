@@ -997,7 +997,7 @@ namespace System.Windows.Input.StylusPlugIns
                 {
                     if(_multiStrokeInfoDic[strokeId].Count > 0)
                     {
-                        StrokeInfo si = _multiStrokeInfoDic[strokeId].Value[0];
+                        StrokeInfo si = _multiStrokeInfoDic[strokeId][0];
                         if (_multiStrokeInfoDic.ContainsKey(si.StylusId))
                         {
                             _multiStrokeInfoDic.Remove(si.StylusId);

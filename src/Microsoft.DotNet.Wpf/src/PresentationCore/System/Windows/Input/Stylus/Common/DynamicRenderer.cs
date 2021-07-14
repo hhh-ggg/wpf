@@ -985,17 +985,27 @@ namespace System.Windows.Input.StylusPlugIns
             //Trace.WriteLine("AbortAllStrokes");
             lock (__siLock)
             {
+                //获取所有的key
+                List<int> strokeInfosKeys = new List<int>();
                 foreach (var strokeListItem in _multiStrokeInfoDic)
                 {
-                    while (strokeListItem.Value.Count > 0)
+                    strokeInfosKeys.Add(strokeListItem.Key);
+
+                }
+
+                foreach (var strokeId in strokeInfosKeys)
+                {
+                    if(_multiStrokeInfoDic[strokeId].Count > 0)
                     {
                         StrokeInfo si = strokeListItem.Value[0];
                         if (_multiStrokeInfoDic.ContainsKey(si.StylusId))
                         {
                             _multiStrokeInfoDic.Remove(si.StylusId);
                         }
+
                         TransitionStrokeVisualsEX(si, true);
                     }
+=
                 }
 
             }

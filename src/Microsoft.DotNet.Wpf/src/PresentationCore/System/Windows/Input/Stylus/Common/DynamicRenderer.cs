@@ -1005,7 +1005,6 @@ namespace System.Windows.Input.StylusPlugIns
 
                         TransitionStrokeVisualsEX(si, true);
                     }
-=
                 }
 
             }

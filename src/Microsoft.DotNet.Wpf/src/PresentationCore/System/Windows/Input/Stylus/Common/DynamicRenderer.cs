@@ -994,7 +994,7 @@ namespace System.Windows.Input.StylusPlugIns
                         {
                             _multiStrokeInfoDic.Remove(si.StylusId);
                         }
-                        TransitionStrokeVisualsEx(si, true);
+                        TransitionStrokeVisualsEX(si, true);
                     }
                 }
 

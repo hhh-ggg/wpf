@@ -621,7 +621,7 @@ namespace System.Windows.Input.StylusPlugIns
                             // Otherwise we'll do the work when the current stroke has been removed.
                             if (!_waitingForDRThreadRenderComplete)
                             {
-                                ((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
+                                //((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
                                 si.StrokeRTICV = null;
 
                                 // hook up render complete notification for one time then unhook.
@@ -760,7 +760,7 @@ namespace System.Windows.Input.StylusPlugIns
                 return;
 
             // clean up stroke visuals (and move to transitional VisualTarget as needed)
-            //TransitionStrokeVisuals(si, !targetVerified);
+            TransitionStrokeVisuals(si, !targetVerified);
         }
 
         private void OnInternalRenderComplete(object sender, EventArgs e)

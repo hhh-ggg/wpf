@@ -760,7 +760,7 @@ namespace System.Windows.Input.StylusPlugIns
                 return;
 
             // clean up stroke visuals (and move to transitional VisualTarget as needed)
-            TransitionStrokeVisuals(si, !targetVerified);
+            //TransitionStrokeVisuals(si, !targetVerified);
         }
 
         private void OnInternalRenderComplete(object sender, EventArgs e)
@@ -995,7 +995,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 foreach (var strokeId in strokeInfosKeys)
                 {
-                    if(_multiStrokeInfoDic[strokeId].Count > 0)
+                    if (_multiStrokeInfoDic[strokeId].Count > 0)
                     {
                         StrokeInfo si = _multiStrokeInfoDic[strokeId][0];
                         if (_multiStrokeInfoDic.ContainsKey(si.StylusId))
@@ -1092,7 +1092,7 @@ namespace System.Windows.Input.StylusPlugIns
         {
             //Trace.WriteLine("TransitionStrokeVisuals");
             // Make sure we don't get any more input for this stroke.
-           
+
 
             // remove si visuals and this si
             if (si.StrokeCV != null)

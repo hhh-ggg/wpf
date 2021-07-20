@@ -437,7 +437,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
-            if (1 == iTestPbByhjc)
+            if (1 == iTestByhjc)
             {
                 iTestPbByhjc = true;
             }
@@ -523,7 +523,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            if(1 == iTestPbByhjc)
+            if(1 == iTestByhjc)
             {
                 iTestPbByhjc = true;
             }

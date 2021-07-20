@@ -540,9 +540,9 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection strokePoints = new StylusPointCollection(si._allPoints);
                         _applicationDispatcher.BeginInvoke(new Action(() =>
                         {
-                            //TransitionStrokeVisuals(si, false);
+                            TransitionStrokeVisuals(si, false);
                             stylusUpProcess(strokePoints);
-                            removeSiInfo(si);
+                            //removeSiInfo(si);
                         }));
 
                     }

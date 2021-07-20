@@ -537,12 +537,16 @@ namespace System.Windows.Input.StylusPlugIns
                     si._allPoints.Add(rawStylusInput.GetStylusPoints());
                     if (null != _applicationDispatcher)
                     {
+                        ContainerVisual rootVisualTmp = ((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual);
+                        ContainerVisual strokeVisualTmp = si.StrokeRTICV;
+
                         StylusPointCollection strokePoints = new StylusPointCollection(si._allPoints);
                         _applicationDispatcher.BeginInvoke(new Action(() =>
                         {
                             //TransitionStrokeVisuals(si, false);
                             stylusUpProcess(strokePoints);
-                            ((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
+                            rootVisualTmp.Children.Remove(strokeVisualTmp);
+                            //((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
                         }));
                     }
                     rawStylusInput.NotifyWhenProcessed(si);

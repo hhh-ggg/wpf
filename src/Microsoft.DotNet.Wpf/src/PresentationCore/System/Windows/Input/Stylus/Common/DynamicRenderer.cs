@@ -35,7 +35,7 @@ namespace System.Windows.Input.StylusPlugIns
     /// </summary>
     public class DynamicRenderer : StylusPlugIn
     {
-        internal int iTestByhjc = 1;
+        public int iTestByhjc = 1;
         public bool iTestPbByhjc = true;
         public bool isOpenMuliti = false;
         public bool isNewSingle = true;

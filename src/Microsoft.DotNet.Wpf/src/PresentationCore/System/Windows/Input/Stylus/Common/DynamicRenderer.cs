@@ -540,7 +540,7 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection strokePoints = new StylusPointCollection(si._allPoints);
                         _applicationDispatcher.BeginInvoke(new Action(() =>
                         {
-                            TransitionStrokeVisuals(si, false);
+                            //TransitionStrokeVisuals(si, false);
                             stylusUpProcess(strokePoints);
                             //removeSiInfo(si);
                         }));
@@ -763,7 +763,7 @@ namespace System.Windows.Input.StylusPlugIns
                 return;
 
             // clean up stroke visuals (and move to transitional VisualTarget as needed)
-            //TransitionStrokeVisuals(si, !targetVerified);
+            TransitionStrokeVisuals(si, !targetVerified);
         }
 
         private void OnInternalRenderComplete(object sender, EventArgs e)

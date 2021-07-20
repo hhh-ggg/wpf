@@ -463,7 +463,12 @@ namespace System.Windows.Input.StylusPlugIns
                     {
                         si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
                         si._allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
-                        si._allPoints.Add(rawStylusInput.GetStylusPoints());
+                        StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count)
+                        {
+                            si._allPoints.Add(upCollectionPoints);
+                        }
+
                         if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
                         {
                             _multiStrokeInfoDic[rawStylusInput.StylusDeviceId].Add(si);
@@ -510,7 +515,12 @@ namespace System.Windows.Input.StylusPlugIns
                     if (si.IsTimestampAfter(rawStylusInput.Timestamp))
                     {
                         si.LastTime = rawStylusInput.Timestamp;
-                        si._allPoints.Add(rawStylusInput.GetStylusPoints());
+                        StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count)
+                        {
+                            si._allPoints.Add(upCollectionPoints);
+                        }
+                        
                         RenderPackets(rawStylusInput.GetStylusPoints(), si);
                     }
                 }
@@ -544,7 +554,11 @@ namespace System.Windows.Input.StylusPlugIns
                 {
                     si.SeenUp = true;
                     si.LastTime = rawStylusInput.Timestamp;
-                    si._allPoints.Add(rawStylusInput.GetStylusPoints());
+                    StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+                    if (null != upCollectionPoints && 0 != upCollectionPoints.Count)
+                    {
+                        si._allPoints.Add(upCollectionPoints);
+                    }
                     if (null != _applicationDispatcher)
                     {
                         StylusPointCollection strokePoints = new StylusPointCollection(si._allPoints);

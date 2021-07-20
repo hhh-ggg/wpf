@@ -542,6 +542,7 @@ namespace System.Windows.Input.StylusPlugIns
                         {
                             //TransitionStrokeVisuals(si, false);
                             stylusUpProcess(strokePoints);
+                            ((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
                         }));
                     }
                     rawStylusInput.NotifyWhenProcessed(si);

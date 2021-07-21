@@ -562,7 +562,7 @@ namespace System.Windows.Input.StylusPlugIns
                     if (null != _applicationDispatcher)
                     {
                         StylusPointCollection strokePoints = new StylusPointCollection(si._allPoints);
-                        _applicationDispatcher.BeginInvoke(new Action(() =>
+                        _applicationDispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                         {
                             //TransitionStrokeVisuals(si, false);
                             stylusUpProcess(strokePoints);

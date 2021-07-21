@@ -269,7 +269,7 @@ namespace System.Windows.Media
             _promoteRenderOpToRender = new DispatcherTimer(DispatcherPriority.Render);
             _promoteRenderOpToRender.Tick += new EventHandler(PromoteRenderOpToRender);
             _estimatedNextVSyncTimer = new DispatcherTimer(DispatcherPriority.Render);
-            _estimatedNextVSyncTimer.Tick += new EventHandler(EstimatedNextVSyncTimeExpired);
+            //_estimatedNextVSyncTimer.Tick += new EventHandler(EstimatedNextVSyncTimeExpired);
 
             _commitPendingAfterRender = false;
         }

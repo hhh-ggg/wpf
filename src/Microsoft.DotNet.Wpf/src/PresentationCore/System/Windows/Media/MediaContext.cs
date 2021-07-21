@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-﻿//
+//
 //
 // Description:
 //      The MediaContext class controls the media layer.
@@ -32,8 +32,8 @@ using MS.Win32;
 
 using Microsoft.Win32.SafeHandles;
 
-using SR=MS.Internal.PresentationCore.SR;
-using SRID=MS.Internal.PresentationCore.SRID;
+using SR = MS.Internal.PresentationCore.SR;
+using SRID = MS.Internal.PresentationCore.SRID;
 
 namespace System.Windows.Media
 {
@@ -118,7 +118,7 @@ namespace System.Windows.Media
             if ((number & 1) == 0)
                 return false;
 
-            int sqrt = (int) Math.Sqrt(number);
+            int sqrt = (int)Math.Sqrt(number);
 
             for (int i = 3; i <= sqrt; i += 2)
             {
@@ -366,7 +366,7 @@ namespace System.Windows.Media
         private object InvalidateRenderMode(object dontCare)
         {
             Debug.Assert(CheckAccess());
-            
+
             foreach (ICompositionTarget target in _registeredICompositionTargets.Keys)
             {
                 HwndTarget hwndTarget = target as HwndTarget;
@@ -447,12 +447,12 @@ namespace System.Windows.Media
 
             switch (failureCode)
             {
-            case HRESULT.E_OUTOFMEMORY:
-                throw new System.OutOfMemoryException();
-            case HRESULT.D3DERR_OUTOFVIDEOMEMORY:
-                throw new System.OutOfMemoryException(SR.Get(SRID.MediaContext_OutOfVideoMemory));
-            default:
-                throw new System.InvalidOperationException(SR.Get(SRID.MediaContext_RenderThreadError));
+                case HRESULT.E_OUTOFMEMORY:
+                    throw new System.OutOfMemoryException();
+                case HRESULT.D3DERR_OUTOFVIDEOMEMORY:
+                    throw new System.OutOfMemoryException(SR.Get(SRID.MediaContext_OutOfVideoMemory));
+                default:
+                    throw new System.InvalidOperationException(SR.Get(SRID.MediaContext_RenderThreadError));
             }
         }
 
@@ -518,7 +518,7 @@ namespace System.Windows.Media
             get;
             private set;
         }
-        
+
         /// <summary>
         /// Internal event which is raised when the Tier changes on this MediaContext.
         /// </summary>
@@ -808,9 +808,9 @@ namespace System.Windows.Media
                         }
                         break;
 
-                        // This return code represents that we've presented with
-                        // the DWM, so there is no tearing, we don't need to
-                        // override the refresh rate in this case.
+                    // This return code represents that we've presented with
+                    // the DWM, so there is no tearing, we don't need to
+                    // override the refresh rate in this case.
                     case MIL_PRESENTATION_RESULTS.MIL_PRESENTATION_DWM:
                         {
                             // In the DWM case these values are actually correct, so we update them here
@@ -867,9 +867,9 @@ namespace System.Windows.Media
                     CommitChannel();
 
                     Debug.Assert(InterlockIsWaiting,
-                        "We had something to commit, we should be waiting for that"+
+                        "We had something to commit, we should be waiting for that" +
                         "notification to come back");
-               }
+                }
 
                 ScheduleNextRenderOp(presentationDelay);
             }
@@ -1000,7 +1000,7 @@ namespace System.Windows.Media
                         {
                             CommittingBatch(Channel, new EventArgs());
                         }
-                        
+
                         Channel.SyncFlush();
                     }
                 }
@@ -1118,7 +1118,7 @@ namespace System.Windows.Media
                     // time.
                     //
 
-                    if (   _animationRenderRate != 0
+                    if (_animationRenderRate != 0
                         && _lastPresentationResults != MIL_PRESENTATION_RESULTS.MIL_PRESENTATION_VSYNC_UNSUPPORTED)
                     {
                         //
@@ -1359,7 +1359,7 @@ namespace System.Windows.Media
                     _needToCommitChannel = true;
                     CommitChannel();
                 }
-}
+            }
 
             Debug.Assert(_interlockState == InterlockState.Disabled,
                 "LeaveInterlockedPresentationMode should set the InterlockedState to Disabled");
@@ -1645,7 +1645,7 @@ namespace System.Windows.Media
 
             if (_loadedOrUnloadedPendingOperations != null)
             {
-                for (int i=0; i<_loadedOrUnloadedPendingOperations.Count; i++)
+                for (int i = 0; i < _loadedOrUnloadedPendingOperations.Count; i++)
                 {
                     LoadedOrUnloadedOperation operation = _loadedOrUnloadedPendingOperations[i];
                     if (operation == op)
@@ -1770,7 +1770,7 @@ namespace System.Windows.Media
             EventTrace.EasyTraceEvent(EventTrace.Keyword.KeywordGraphics | EventTrace.Keyword.KeywordPerf, EventTrace.Event.WClientAnimRenderHandlerEnd);
 
             return null;
-}
+        }
 
         /// <summary>
         /// This handles the _inputMarkerOp message.  We're using
@@ -1842,7 +1842,7 @@ namespace System.Windows.Media
 
                     // signal that the frame has been updated and we are ready to render.
                     // only fire on the first iteration
-                    if (Rendering != null && tickLoopCount==1)
+                    if (Rendering != null && tickLoopCount == 1)
                     {
                         // The RenderingEventArgs class stores the next estimated presentation time.
                         // Since the TimeManager has just ticked, LastTickTime is exactly this time.
@@ -2004,7 +2004,7 @@ namespace System.Windows.Media
                 _loadedOrUnloadedPendingOperations = null;
 
                 // Iterate and fire all the pending loaded operations
-                for (int i=0; i<count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     copyOfPendingCallbacks[i].DoWork();
                 }
@@ -2143,7 +2143,7 @@ namespace System.Windows.Media
         /// have layout properly updated but we'll only commit 1 render per
         /// frame to the composition.
         /// </remarks>
-        private void CommitChannel()
+        public void CommitChannel()
         {
             // if we get render messages posted while we are disconnected we don't have a channel.
             if (Channel != null)
@@ -2210,7 +2210,7 @@ namespace System.Windows.Media
 
                 // The payload data for this event is the render ID of the frame we're committing.
                 EventTrace.EasyTraceEvent(EventTrace.Keyword.KeywordGraphics | EventTrace.Keyword.KeywordPerf, EventTrace.Event.WClientUICommitChannel, _contextRenderID);
-}
+            }
 
             _needToCommitChannel = false;
         }
@@ -2228,7 +2228,7 @@ namespace System.Windows.Media
             {
                 DUCE.MILCMD_PARTITION_NOTIFYPRESENT data;
                 data.Type = MILCMD.MilCmdPartitionNotifyPresent;
-                data.FrameTime = (ulong) estimatedFrameTime;
+                data.FrameTime = (ulong)estimatedFrameTime;
 
                 channel.SendCommand(
                     (byte*)&data,
@@ -2268,7 +2268,7 @@ namespace System.Windows.Media
                             {
                                 CommittingBatch(Channel, new EventArgs());
                             }
-                            
+
                             Channel.WaitForNextMessage();
                             NotifyChannelMessage();
                         } while (_interlockState == InterlockState.WaitingForResponse);
@@ -2300,7 +2300,7 @@ namespace System.Windows.Media
                             // stop it now and go back to idle state
                             //
                             _estimatedNextVSyncTimer.Stop();
-                           _interlockState = InterlockState.Idle;
+                            _interlockState = InterlockState.Idle;
                         }
                     }
                 }
@@ -2311,7 +2311,7 @@ namespace System.Windows.Media
                     {
                         CommittingBatch(Channel, new EventArgs());
                     }
-                    
+
                     //
                     // Issue a sync flush, which will only return after
                     // the last frame is presented
@@ -2528,7 +2528,7 @@ namespace System.Windows.Media
 
         private void PromoteRenderOpToInput(object sender, EventArgs e)
         {
-            if(_currentRenderOp != null)
+            if (_currentRenderOp != null)
             {
                 _currentRenderOp.Priority = DispatcherPriority.Input;
             }
@@ -2538,7 +2538,7 @@ namespace System.Windows.Media
 
         private void PromoteRenderOpToRender(object sender, EventArgs e)
         {
-            if(_currentRenderOp != null)
+            if (_currentRenderOp != null)
             {
                 _currentRenderOp.Priority = DispatcherPriority.Render;
             }
@@ -2571,7 +2571,7 @@ namespace System.Windows.Media
             long currentTicks = CurrentTicks;
             DispatcherTimer timer = ((DispatcherTimer)sender);
             long earliestWakeupTicks = 0;
-            if(timer.Tag != null)
+            if (timer.Tag != null)
                 earliestWakeupTicks = (long)timer.Tag;
             if (earliestWakeupTicks > currentTicks)
             {
@@ -2805,7 +2805,7 @@ namespace System.Windows.Media
             /// composition thread and simply schedule our next one when we know
             /// that we have something to render
             /// </summary>
-            Disabled             = 0,
+            Disabled = 0,
 
             /// <summary>
             /// Interlock presentation mode has requested a roundtrip message to
@@ -2863,7 +2863,7 @@ namespace System.Windows.Media
         {
             get
             {
-                return (   _interlockState != InterlockState.Disabled
+                return (_interlockState != InterlockState.Disabled
                         && _interlockState != InterlockState.RequestedStart);
             }
         }
@@ -2942,4 +2942,4 @@ namespace System.Windows.Media
 
         #endregion Animation Smoothing
     }
- }
+}

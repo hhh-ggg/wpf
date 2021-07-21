@@ -565,6 +565,7 @@ namespace System.Windows.Input.StylusPlugIns
                             {
                                 //TransitionStrokeVisuals(si, false);
                                 stylusUpProcess(strokePoints);
+                                MediaContext.From(_applicationDispatcher).CommitChannel();
                                 //removeSiInfo(si);
                             }));
 

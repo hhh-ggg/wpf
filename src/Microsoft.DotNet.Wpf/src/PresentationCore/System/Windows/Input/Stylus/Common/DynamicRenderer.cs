@@ -566,7 +566,7 @@ namespace System.Windows.Input.StylusPlugIns
                                 //TransitionStrokeVisuals(si, false);
                                 stylusUpProcess(strokePoints);
                                 MediaContext.From(_applicationDispatcher).CommitChannel();
-                                //removeSiInfo(si);
+                                removeSiInfo(si);
                             }));
 
                         }
@@ -789,7 +789,7 @@ namespace System.Windows.Input.StylusPlugIns
                 return;
 
             // clean up stroke visuals (and move to transitional VisualTarget as needed)
-            TransitionStrokeVisuals(si, !targetVerified);
+           // TransitionStrokeVisuals(si, !targetVerified);
         }
 
         private void OnInternalRenderComplete(object sender, EventArgs e)
@@ -874,7 +874,11 @@ namespace System.Windows.Input.StylusPlugIns
         {
             this.GetDispatcher().BeginInvoke(new Action(() =>
             {
-                ((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
+                lock (__siLock)
+                {
+                    ((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
+                }
+                    
             }));
         }
 

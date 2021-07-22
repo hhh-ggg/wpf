@@ -39,6 +39,7 @@ namespace System.Windows.Input.StylusPlugIns
         public bool iTestPbByhjc = true;
         public bool isOpenMuliti = false;
         public bool isNewSingle = true;
+        public int iDownCount = 0;
         /////////////////////////////////////////////////////////////////////
 
         private class StrokeInfo
@@ -450,10 +451,10 @@ namespace System.Windows.Input.StylusPlugIns
                 lock (__siLock)
                 {
                     si = FindStrokeInfo(rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp);
-
+                    ++iDownCount;
                     // If we find we are already in the middle of stroke then bail out.
                     // Can only ink with one stylus at a time.
-                    if (si != null)
+                    if (si != null || iDownCount >= 20)
                     {
                         isNewSingle = false;
                         return;
@@ -537,8 +538,12 @@ namespace System.Windows.Input.StylusPlugIns
             {
                 iTestPbByhjc = true;
             }
-
-            isNewSingle = true;
+            --iDownCount;
+            if(0 == iDownCount)
+            {
+                isNewSingle = true;
+            } 
+            
             Trace.WriteLine("OnStylusUp" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             //Trace.WriteLine("OnStylusUp");
             // Only allow inking if someone has queried our RootVisual.

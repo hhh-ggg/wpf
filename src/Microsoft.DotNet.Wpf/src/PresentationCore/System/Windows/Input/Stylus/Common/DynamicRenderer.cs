@@ -298,7 +298,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                     if (stylusPoints != null)
                     {
-                        RenderPackets(stylusPoints, si); // do this inside of lock to make sure this renders first.
+                        //RenderPackets(stylusPoints, si); // do this inside of lock to make sure this renders first.
                     }
                 }
             }
@@ -490,7 +490,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 isNewSingle = false;
                 rawStylusInput.NotifyWhenProcessed(si);
-                RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
         }
 
@@ -520,8 +520,8 @@ namespace System.Windows.Input.StylusPlugIns
                         {
                             si._allPoints.Add(upCollectionPoints);
                         }
-                        
-                        RenderPackets(rawStylusInput.GetStylusPoints(), si);
+
+                        //RenderPackets(rawStylusInput.GetStylusPoints(), si);
                     }
                 }
             }
@@ -533,11 +533,11 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            if(1 == iTestByhjc)
+            if (1 == iTestByhjc)
             {
                 iTestPbByhjc = true;
             }
-            
+
             isNewSingle = true;
             Trace.WriteLine("OnStylusUp" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             //Trace.WriteLine("OnStylusUp");
@@ -566,7 +566,7 @@ namespace System.Windows.Input.StylusPlugIns
                                 //TransitionStrokeVisuals(si, false);
                                 stylusUpProcess(strokePoints);
                                 MediaContext.From(_applicationDispatcher).CommitChannel();
-                                removeSiInfo(si);
+                                //removeSiInfo(si);
                             }));
 
                         }
@@ -789,7 +789,7 @@ namespace System.Windows.Input.StylusPlugIns
                 return;
 
             // clean up stroke visuals (and move to transitional VisualTarget as needed)
-           // TransitionStrokeVisuals(si, !targetVerified);
+            // TransitionStrokeVisuals(si, !targetVerified);
         }
 
         private void OnInternalRenderComplete(object sender, EventArgs e)
@@ -878,7 +878,7 @@ namespace System.Windows.Input.StylusPlugIns
                 {
                     ((ContainerVisual)si.StrokeHV.VisualTarget.RootVisual).Children.Remove(si.StrokeRTICV);
                 }
-                    
+
             }));
         }
 

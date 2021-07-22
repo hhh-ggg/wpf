@@ -1732,7 +1732,7 @@ namespace System.Windows.Media
         /// and Resize().  This wraps RenderMessageHandlerCore and emits an ETW events
         /// to trace its execution.
         /// </summary>
-        private object RenderMessageHandler(
+        public object RenderMessageHandler(
               object resizedCompositionTarget /* can be null if we are not resizing*/
             )
         {

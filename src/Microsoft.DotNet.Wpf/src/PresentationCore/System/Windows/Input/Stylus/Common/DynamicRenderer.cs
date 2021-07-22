@@ -442,7 +442,7 @@ namespace System.Windows.Input.StylusPlugIns
             {
                 iTestPbByhjc = true;
             }
-            Trace.WriteLine("OnStylusDown" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
+            //Trace.WriteLine("OnStylusDown" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {
@@ -544,7 +544,7 @@ namespace System.Windows.Input.StylusPlugIns
                 isNewSingle = true;
             } 
             
-            Trace.WriteLine("OnStylusUp" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
+            //Trace.WriteLine("OnStylusUp" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             //Trace.WriteLine("OnStylusUp");
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)

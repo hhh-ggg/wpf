@@ -540,10 +540,12 @@ namespace System.Windows.Input.StylusPlugIns
                 iTestPbByhjc = true;
             }
             --iDownCount;
-            if(0 == iDownCount)
+            if(iDownCount <= 0)
             {
                 isNewSingle = true;
-            } 
+                iDownCount = 0;
+            }
+
             
             //Trace.WriteLine("OnStylusUp" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             //Trace.WriteLine("OnStylusUp");

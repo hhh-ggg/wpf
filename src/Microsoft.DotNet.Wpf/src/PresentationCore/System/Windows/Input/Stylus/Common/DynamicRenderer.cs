@@ -467,7 +467,7 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si._allPoints)
                         {
-                            //si._allPoints.Add(upCollectionPoints);
+                            si._allPoints.Add(upCollectionPoints);
                         }
 
                         if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
@@ -492,7 +492,7 @@ namespace System.Windows.Input.StylusPlugIns
                 isNewSingle = false;
                 rawStylusInput.NotifyWhenProcessed(si);
                 Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si._allPoints[0].X + "y:" + si._allPoints[0].Y);
-                //RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
         }
 

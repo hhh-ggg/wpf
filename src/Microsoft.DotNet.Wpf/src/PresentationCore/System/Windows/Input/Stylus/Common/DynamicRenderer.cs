@@ -502,7 +502,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusMove(RawStylusInput rawStylusInput)
         {
-            Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si._allPoints[0].X + "y:" + si._allPoints[0].Y);
+            
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {
@@ -510,6 +510,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 if (si != null && (si.StylusId == rawStylusInput.StylusDeviceId))
                 {
+                    Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si._allPoints[0].X + "y:" + si._allPoints[0].Y);
                     // We only render packets that are in the proper order due to
                     // how our incremental rendering uses the last point to continue
                     // the path geometry from.

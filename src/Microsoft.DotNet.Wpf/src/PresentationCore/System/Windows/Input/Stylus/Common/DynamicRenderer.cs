@@ -491,7 +491,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 isNewSingle = false;
                 rawStylusInput.NotifyWhenProcessed(si);
-                //Trace.WriteLine("down:" + "x:" + si._allPoints[0].X + "y:" + si._allPoints[0].Y);
+                Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si._allPoints[0].X + "y:" + si._allPoints[0].Y);
                 //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
         }
@@ -502,7 +502,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusMove(RawStylusInput rawStylusInput)
         {
-            //Trace.WriteLine("OnStylusMove");
+            Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si._allPoints[0].X + "y:" + si._allPoints[0].Y);
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
             {

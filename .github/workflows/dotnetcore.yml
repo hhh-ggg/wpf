@@ -11,7 +11,7 @@ jobs:
     - name: Install Nuget
       uses: nuget/setup-nuget@v1
       with:
-        nuget-version: '6.x'
+        nuget-version: '5.x'
         
     - name: Build
       run: .\build.cmd -pack -ci -configuration Release -prepareMachine /p:Platform=x86 /p:BaselineAllAPICompatError=true

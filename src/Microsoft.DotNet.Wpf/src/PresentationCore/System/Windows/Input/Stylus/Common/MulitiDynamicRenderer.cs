@@ -247,7 +247,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         /// <param name="stylusDevice"></param>
         /// <param name="stylusPoints"></param>
-        public virtual void Reset(StylusDevice stylusDevice, StylusPointCollection stylusPoints)
+        public new virtual void Reset(StylusDevice stylusDevice, StylusPointCollection stylusPoints)
         {
             //Trace.WriteLine("Reset");
             // NOTE: stylusDevice == null means the mouse device.
@@ -306,7 +306,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// [TBS] - On app Dispatcher
         /// </summary>
-        public Visual RootVisual
+        public new Visual RootVisual
         {
             get
             {
@@ -828,7 +828,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// [TBS]
         /// </summary>
-        protected virtual void OnDraw(DrawingContext drawingContext,
+        protected new virtual void OnDraw(DrawingContext drawingContext,
                                         StylusPointCollection stylusPoints,
                                         Geometry geometry,
                                         Brush fillBrush)
@@ -845,7 +845,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// [TBS]
         /// </summary>
-        protected virtual void OnDrawingAttributesReplaced()
+        protected new virtual void OnDrawingAttributesReplaced()
         {
             //Trace.WriteLine("OnDrawingAttributesReplaced");
         }
@@ -876,7 +876,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// Retrieves the Dispatcher for the thread used for rendering dynamic strokes
         /// when receiving data from the stylus input thread(s).
         /// </summary>
-        protected Dispatcher GetDispatcher()
+        protected new Dispatcher GetDispatcher()
         {
             //Trace.WriteLine("GetDispatcher");
             return _renderingThread != null ? _renderingThread.ThreadDispatcher : null;
@@ -1265,7 +1265,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// [TBS] - On UIContext
         /// </summary>
-        public DrawingAttributes DrawingAttributes
+        public new DrawingAttributes DrawingAttributes
         {
             get // called from two UIContexts
             {

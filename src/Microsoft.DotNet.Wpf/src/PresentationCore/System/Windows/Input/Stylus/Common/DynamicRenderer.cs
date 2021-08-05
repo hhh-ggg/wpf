@@ -572,7 +572,7 @@ namespace System.Windows.Input.StylusPlugIns
                             StylusPointCollection strokePoints = new StylusPointCollection(si._allPoints);
                             _applicationDispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                             {
-                                removeSiInfo(si);
+                                //removeSiInfo(si);
                                 stylusUpProcess(strokePoints);
                                 MediaContext.From(_applicationDispatcher).RenderMessageHandler(null);
                                 MediaContext.From(_applicationDispatcher).CommitChannel();

@@ -1732,7 +1732,7 @@ namespace System.Windows.Media
         /// and Resize().  This wraps RenderMessageHandlerCore and emits an ETW events
         /// to trace its execution.
         /// </summary>
-        private object RenderMessageHandler(
+        public object RenderMessageHandler(
               object resizedCompositionTarget /* can be null if we are not resizing*/
             )
         {
@@ -2143,7 +2143,7 @@ namespace System.Windows.Media
         /// have layout properly updated but we'll only commit 1 render per
         /// frame to the composition.
         /// </remarks>
-        private void CommitChannel()
+        public void CommitChannel()
         {
             // if we get render messages posted while we are disconnected we don't have a channel.
             if (Channel != null)

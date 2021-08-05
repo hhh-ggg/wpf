@@ -1126,8 +1126,11 @@ namespace System.Windows.Controls
                     this.ActiveEditingMode == InkCanvasEditingMode.InkAndGesture )
                 {
                     //add the stroke to the StrokeCollection and raise this event
-                    this.Strokes.Add(e.Stroke);
-                    this.OnStrokeCollected(e);
+                    if(!bOpenMuliti)
+                    {
+                        this.Strokes.Add(e.Stroke);
+                        this.OnStrokeCollected(e);
+                    }
                 }
             }
             finally
@@ -3171,6 +3174,7 @@ namespace System.Windows.Controls
         private const string KeyCtrlInsert = "Ctrl+Insert";
         private const string KeyShiftInsert = "Shift+Insert";
         private const string KeyShiftDelete = "Shift+Delete";
+        public bool bOpenMuliti = false;
 
         #endregion Private Members
     }

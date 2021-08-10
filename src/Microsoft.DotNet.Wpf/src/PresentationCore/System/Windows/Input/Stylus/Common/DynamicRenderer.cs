@@ -37,7 +37,7 @@ namespace System.Windows.Input.StylusPlugIns
     {
         /////////////////////////////////////////////////////////////////////
 
-        private class StrokeInfo
+        public class StrokeInfo
         {
             int _stylusId;
             int _startTime;
@@ -51,6 +51,7 @@ namespace System.Windows.Input.StylusPlugIns
             StrokeNodeIterator _strokeNodeIterator;
             double _opacity;
             DynamicRendererHostVisual   _strokeHV;  // App thread rendering HostVisual
+            public StylusPointCollection _allPoints = null;
 
             public StrokeInfo(DrawingAttributes drawingAttributes, int stylusDeviceId, int startTimestamp, DynamicRendererHostVisual hostVisual)
             {
@@ -188,7 +189,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
 }
 
-        private class DynamicRendererHostVisual : HostVisual
+        public class DynamicRendererHostVisual : HostVisual
         {
             internal bool InUse
             {
@@ -292,7 +293,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// [TBS] - On app Dispatcher
         /// </summary>
-        public Visual RootVisual
+        public virtual Visual RootVisual
         {
             get
             {
@@ -372,7 +373,7 @@ namespace System.Windows.Input.StylusPlugIns
             HandleStylusEnterLeave(rawStylusInput, false, confirmed);
         }
 
-        private void HandleStylusEnterLeave(RawStylusInput rawStylusInput, bool isEnter, bool isConfirmed)
+        public virtual void HandleStylusEnterLeave(RawStylusInput rawStylusInput, bool isEnter, bool isConfirmed)
         {
             // See if we need to abort a stroke due to entering or leaving within a stroke.
             if (isConfirmed)
@@ -489,7 +490,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
         }
 
-        private bool IsStylusUp(int stylusId)
+        public virtual bool IsStylusUp(int stylusId)
         {
             TabletDeviceCollection tabletDevices = Tablet.TabletDevices;
             for (int i=0; i<tabletDevices.Count; i++)
@@ -510,7 +511,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// [TBS]
         /// </summary>
-        private void OnRenderComplete()
+        public virtual void OnRenderComplete()
         {
             StrokeInfo si = _renderCompleteStrokeInfo;
             Debug.Assert(si!=null);  // should never get here unless we are transitioning a stroke.
@@ -531,7 +532,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
         }
 
-        void RemoveDynamicRendererVisualAndNotifyWhenDone(StrokeInfo si)
+        public virtual void RemoveDynamicRendererVisualAndNotifyWhenDone(StrokeInfo si)
         {
             if (si != null)
             {
@@ -581,7 +582,7 @@ namespace System.Windows.Input.StylusPlugIns
         }
 
 
-        private void NotifyAppOfDRThreadRenderComplete(StrokeInfo si)
+        public virtual void NotifyAppOfDRThreadRenderComplete(StrokeInfo si)
         {
             Dispatcher dispatcher = _applicationDispatcher;
             if (dispatcher != null)
@@ -616,7 +617,7 @@ namespace System.Windows.Input.StylusPlugIns
         }
 
 
-        private void OnDRThreadRenderComplete(object sender, EventArgs e)
+        public virtual void OnDRThreadRenderComplete(object sender, EventArgs e)
         {
             DynamicRendererThreadManager drThread = _renderingThread;
             Dispatcher drDispatcher = null;
@@ -697,7 +698,7 @@ namespace System.Windows.Input.StylusPlugIns
             TransitionStrokeVisuals(si, !targetVerified);
         }
 
-        private void OnInternalRenderComplete(object sender, EventArgs e)
+        public virtual void OnInternalRenderComplete(object sender, EventArgs e)
         {
             // First unhook event handler
             MediaContext.From(_applicationDispatcher).RenderComplete -= _onRenderComplete;
@@ -716,7 +717,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// [TBS]
         /// </summary>
-        private void NotifyOnNextRenderComplete()
+        public virtual void NotifyOnNextRenderComplete()
         {
             // Nothing to do if not hooked up to plugin collection.
             if (_applicationDispatcher == null)
@@ -767,14 +768,14 @@ namespace System.Windows.Input.StylusPlugIns
         /// Retrieves the Dispatcher for the thread used for rendering dynamic strokes
         /// when receiving data from the stylus input thread(s).
         /// </summary>
-        protected Dispatcher GetDispatcher()
+        protected virtual Dispatcher GetDispatcher()
         {
             return _renderingThread != null ? _renderingThread.ThreadDispatcher : null;
         }
 
         /////////////////////////////////////////////////////////////////////
-        
-        void RenderPackets(StylusPointCollection stylusPoints,  StrokeInfo si)
+
+        protected virtual void RenderPackets(StylusPointCollection stylusPoints,  StrokeInfo si)
         {
             // If no points or not hooked up to element then do nothing.
             if (stylusPoints.Count == 0 || _applicationDispatcher == null)
@@ -899,7 +900,7 @@ namespace System.Windows.Input.StylusPlugIns
 
         /////////////////////////////////////////////////////////////////////
 
-        void AbortAllStrokes()
+        protected virtual void AbortAllStrokes()
         {
             lock(__siLock)
             {
@@ -932,7 +933,7 @@ namespace System.Windows.Input.StylusPlugIns
         // then basically instead of starting with step 1 we jump to step 2 and when then on step 5
         // we mark the HostVisual free and we are done.
         //
-        void TransitionStrokeVisuals(StrokeInfo si, bool abortStroke)
+        protected virtual void TransitionStrokeVisuals(StrokeInfo si, bool abortStroke)
         {
             // Make sure we don't get any more input for this stroke.
             RemoveStrokeInfo(si);
@@ -988,7 +989,7 @@ namespace System.Windows.Input.StylusPlugIns
         }
 
         // Figures out the correct DynamicRenderHostVisual to use.
-        private DynamicRendererHostVisual GetCurrentHostVisual()
+        protected virtual DynamicRendererHostVisual GetCurrentHostVisual()
         {
             // Find which of the two host visuals to use as current.
             if (_currentHostVisual == null)
@@ -1023,7 +1024,7 @@ namespace System.Windows.Input.StylusPlugIns
 
 
         // Removes ref from DynamicRendererHostVisual.
-        void TransitionComplete(StrokeInfo si)
+        protected virtual void TransitionComplete(StrokeInfo si)
         {
             // make sure lock does not cause reentrancy on application thread!
             using(_applicationDispatcher.DisableProcessing())
@@ -1035,7 +1036,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
         }
 
-        void RemoveStrokeInfo(StrokeInfo si)
+        protected virtual void RemoveStrokeInfo(StrokeInfo si)
         {
             lock(__siLock)
             {
@@ -1043,7 +1044,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
         }
 
-        StrokeInfo FindStrokeInfo(int timestamp)
+        private StrokeInfo FindStrokeInfo(int timestamp)
         {
             lock(__siLock)
             {
@@ -1060,14 +1061,14 @@ namespace System.Windows.Input.StylusPlugIns
             
             return null;
         }
-    
+
         /////////////////////////////////////////////////////////////////////
 
         /////////////////////////////////////////////////////////////////////
         /// <summary>
         /// [TBS] - On UIContext
         /// </summary>
-        public DrawingAttributes DrawingAttributes
+        public virtual DrawingAttributes DrawingAttributes
         {
             get // called from two UIContexts
             {
@@ -1084,7 +1085,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
         }
 
-        private void CreateInkingVisuals()
+        public virtual void CreateInkingVisuals()
         {
             if (_mainContainerVisual == null)
             {
@@ -1102,12 +1103,12 @@ namespace System.Windows.Input.StylusPlugIns
                 }
             }
         }
-        
+
         /// <summary>
         /// Create the visual target
         /// This method is called from the application context
         /// </summary>
-        private void CreateRealTimeVisuals()
+        public virtual void CreateRealTimeVisuals()
         {
             // Only create if we have a root visual and have not already created them.
             if (_mainContainerVisual != null && _rawInkHostVisual1 == null)
@@ -1153,7 +1154,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// Unhoot the visual target.
         /// This method is called from the application Dispatcher
         /// </summary>
-        private void DestroyRealTimeVisuals()
+        public virtual void DestroyRealTimeVisuals()
         {
             // Only need to handle if already created visuals.
             if (_mainContainerVisual != null && _rawInkHostVisual1 != null)
@@ -1205,10 +1206,10 @@ namespace System.Windows.Input.StylusPlugIns
         }
 
         /////////////////////////////////////////////////////////////////////
-        private Dispatcher          _applicationDispatcher;
-        private Geometry            _zeroSizedFrozenRect;
-        private DrawingAttributes   _drawAttrsSource = new DrawingAttributes();
-        List<StrokeInfo>            _strokeInfoList = new List<StrokeInfo>();
+        public Dispatcher          _applicationDispatcher;
+        public Geometry            _zeroSizedFrozenRect;
+        public DrawingAttributes   _drawAttrsSource = new DrawingAttributes();
+        public List<StrokeInfo>            _strokeInfoList = new List<StrokeInfo>();
 
         // Visuals layout:
         // 
@@ -1224,25 +1225,25 @@ namespace System.Windows.Input.StylusPlugIns
         //                |
         //                +-- VisualTarget ([on RealTimeInkingDispatcher thread])
         // 
-        private ContainerVisual              _mainContainerVisual;
-        private ContainerVisual              _mainRawInkContainerVisual;
-        private DynamicRendererHostVisual    _rawInkHostVisual1;
-        private DynamicRendererHostVisual    _rawInkHostVisual2;
+        public ContainerVisual              _mainContainerVisual;
+        public ContainerVisual              _mainRawInkContainerVisual;
+        public DynamicRendererHostVisual    _rawInkHostVisual1;
+        public DynamicRendererHostVisual    _rawInkHostVisual2;
 
-        DynamicRendererHostVisual            _currentHostVisual; // Current HV.
+        public DynamicRendererHostVisual _currentHostVisual; // Current HV.
 
         // For OnRenderComplete support (for UI Thread)
-        EventHandler  _onRenderComplete;
-        bool          _waitingForRenderComplete;
-        object        __siLock = new object();
-        private StrokeInfo  _renderCompleteStrokeInfo;
+        public EventHandler _onRenderComplete;
+        public bool _waitingForRenderComplete;
+        public object __siLock = new object();
+        public StrokeInfo  _renderCompleteStrokeInfo;
 
         // On internal real time ink rendering thread.
-        private DynamicRendererThreadManager _renderingThread;
-        
+        public DynamicRendererThreadManager _renderingThread;
+
         // For OnRenderComplete support (for DynamicRenderer Thread)
-        EventHandler  _onDRThreadRenderComplete;
-        bool          _waitingForDRThreadRenderComplete;
-        Queue<StrokeInfo>    _renderCompleteDRThreadStrokeInfoList = new Queue<StrokeInfo>();
+        public EventHandler _onDRThreadRenderComplete;
+        public bool _waitingForDRThreadRenderComplete;
+        public Queue<StrokeInfo>    _renderCompleteDRThreadStrokeInfoList = new Queue<StrokeInfo>();
 }
 }

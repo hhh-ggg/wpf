@@ -243,10 +243,6 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
-            if (1 == iTestByhjc)
-            {
-                iTestPbByhjc = true;
-            }
             //Trace.WriteLine("OnStylusDown" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             // Only allow inking if someone has queried our RootVisual.
             if (_mainContainerVisual != null)
@@ -329,11 +325,6 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            if (1 == iTestByhjc)
-            {
-                iTestPbByhjc = true;
-            }
-
             
             //Trace.WriteLine("OnStylusUp" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             //Trace.WriteLine("OnStylusUp");

@@ -51,8 +51,8 @@ namespace System.Windows.Input.StylusPlugIns
             StrokeNodeIterator _strokeNodeIterator;
             double _opacity;
             DynamicRendererHostVisual   _strokeHV;  // App thread rendering HostVisual
-            public StylusPointCollection _allPoints = null;
-            
+            [assembly: CLSCompliant(false)] public StylusPointCollection _allPoints = null;
+
             public StrokeInfo(DrawingAttributes drawingAttributes, int stylusDeviceId, int startTimestamp, DynamicRendererHostVisual hostVisual)
             {
                 _stylusId = stylusDeviceId;
@@ -1206,10 +1206,10 @@ namespace System.Windows.Input.StylusPlugIns
         }
 
         /////////////////////////////////////////////////////////////////////
-        public Dispatcher          _applicationDispatcher;
-        public Geometry            _zeroSizedFrozenRect;
-        public DrawingAttributes   _drawAttrsSource = new DrawingAttributes();
-        public List<StrokeInfo>            _strokeInfoList = new List<StrokeInfo>();
+        [assembly: CLSCompliant(false)] public Dispatcher          _applicationDispatcher;
+        [assembly: CLSCompliant(false)] public Geometry            _zeroSizedFrozenRect;
+        [assembly: CLSCompliant(false)] public DrawingAttributes   _drawAttrsSource = new DrawingAttributes();
+        [assembly: CLSCompliant(false)] public List<StrokeInfo>            _strokeInfoList = new List<StrokeInfo>();
 
         // Visuals layout:
         // 
@@ -1225,25 +1225,25 @@ namespace System.Windows.Input.StylusPlugIns
         //                |
         //                +-- VisualTarget ([on RealTimeInkingDispatcher thread])
         // 
-        public ContainerVisual              _mainContainerVisual;
-        public ContainerVisual              _mainRawInkContainerVisual;
-        public DynamicRendererHostVisual    _rawInkHostVisual1;
-        public DynamicRendererHostVisual    _rawInkHostVisual2;
+        [assembly: CLSCompliant(false)] public ContainerVisual              _mainContainerVisual;
+        [assembly: CLSCompliant(false)] public ContainerVisual              _mainRawInkContainerVisual;
+        [assembly: CLSCompliant(false)] public DynamicRendererHostVisual    _rawInkHostVisual1;
+        [assembly: CLSCompliant(false)] public DynamicRendererHostVisual    _rawInkHostVisual2;
 
-        public DynamicRendererHostVisual _currentHostVisual; // Current HV.
+        [assembly: CLSCompliant(false)] public DynamicRendererHostVisual _currentHostVisual; // Current HV.
 
         // For OnRenderComplete support (for UI Thread)
-        public EventHandler _onRenderComplete;
-        public bool _waitingForRenderComplete;
-        public object __siLock = new object();
-        public StrokeInfo  _renderCompleteStrokeInfo;
+        [assembly: CLSCompliant(false)] public EventHandler _onRenderComplete;
+        [assembly: CLSCompliant(false)] public bool _waitingForRenderComplete;
+        [assembly: CLSCompliant(false)] public object __siLock = new object();
+        [assembly: CLSCompliant(false)] public StrokeInfo  _renderCompleteStrokeInfo;
 
         // On internal real time ink rendering thread.
         internal DynamicRendererThreadManager _renderingThread;
 
         // For OnRenderComplete support (for DynamicRenderer Thread)
-        public EventHandler _onDRThreadRenderComplete;
-        public bool _waitingForDRThreadRenderComplete;
-        public Queue<StrokeInfo>    _renderCompleteDRThreadStrokeInfoList = new Queue<StrokeInfo>();
+        [assembly: CLSCompliant(false)] public EventHandler _onDRThreadRenderComplete;
+        [assembly: CLSCompliant(false)] public bool _waitingForDRThreadRenderComplete;
+        [assembly: CLSCompliant(false)] public Queue<StrokeInfo>    _renderCompleteDRThreadStrokeInfoList = new Queue<StrokeInfo>();
 }
 }

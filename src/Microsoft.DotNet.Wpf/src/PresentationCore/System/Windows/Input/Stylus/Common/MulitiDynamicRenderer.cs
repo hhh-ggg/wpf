@@ -199,7 +199,7 @@ namespace System.Windows.Input.StylusPlugIns
             HandleStylusEnterLeave(rawStylusInput, false, confirmed);
         }
 
-        public override HandleStylusEnterLeave(RawStylusInput rawStylusInput, bool isEnter, bool isConfirmed)
+        public override void HandleStylusEnterLeave(RawStylusInput rawStylusInput, bool isEnter, bool isConfirmed)
         {
             //Trace.WriteLine("HandleStylusEnterLeave");
             // See if we need to abort a stroke due to entering or leaving within a stroke.
@@ -1160,7 +1160,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// Unhoot the visual target.
         /// This method is called from the application Dispatcher
         /// </summary>
-        public virtual void DestroyRealTimeVisuals()
+        public override void DestroyRealTimeVisuals()
         {
             //Trace.WriteLine("DestroyRealTimeVisuals");
             // Only need to handle if already created visuals.

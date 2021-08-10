@@ -106,7 +106,7 @@ namespace System.Windows.Input.StylusPlugIns
                 get { return _isReset; }
                 set { _isReset = value; }
             }
-            public StrokeNodeIterator StrokeNodeIterator
+            internal StrokeNodeIterator StrokeNodeIterator
             { 
                 get { return _strokeNodeIterator; }
                 set 
@@ -1239,7 +1239,7 @@ namespace System.Windows.Input.StylusPlugIns
         public StrokeInfo  _renderCompleteStrokeInfo;
 
         // On internal real time ink rendering thread.
-        public DynamicRendererThreadManager _renderingThread;
+        internal DynamicRendererThreadManager _renderingThread;
 
         // For OnRenderComplete support (for DynamicRenderer Thread)
         public EventHandler _onDRThreadRenderComplete;

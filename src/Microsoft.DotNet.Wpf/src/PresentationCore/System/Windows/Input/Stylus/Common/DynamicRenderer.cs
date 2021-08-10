@@ -52,7 +52,7 @@ namespace System.Windows.Input.StylusPlugIns
             double _opacity;
             DynamicRendererHostVisual   _strokeHV;  // App thread rendering HostVisual
             public StylusPointCollection _allPoints = null;
-
+            
             public StrokeInfo(DrawingAttributes drawingAttributes, int stylusDeviceId, int startTimestamp, DynamicRendererHostVisual hostVisual)
             {
                 _stylusId = stylusDeviceId;

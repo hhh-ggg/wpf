@@ -321,17 +321,22 @@ namespace System.Windows.Input.StylusPlugIns
                     {
                         si.LastTime = rawStylusInput.Timestamp;
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+
+
+                       
+                        if(si.canRender || si.allPoints.Count >= 6)
+                        {
+                            RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                            si.canRender = true;
+                            si.allPoints.Clear();
+                        }
+
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints && si.canRender)
                         {
                             si.allPoints.Add(upCollectionPoints);
                         }
 
-                        if(si.canRender)
-                        {
-                            RenderPackets(rawStylusInput.GetStylusPoints(), si);
-                        }
-
-                        si.canRender = true;
+                        
                     }
                     
                 }

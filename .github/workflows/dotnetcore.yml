@@ -20,4 +20,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: NuGet Package
-        path: artifacts/packaging/Release/Microsoft.DotNet.Wpf.GitHub
+        path: artifacts/packaging/Debug/Microsoft.DotNet.Wpf.GitHub

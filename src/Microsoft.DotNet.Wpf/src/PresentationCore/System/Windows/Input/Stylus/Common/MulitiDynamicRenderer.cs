@@ -298,6 +298,18 @@ namespace System.Windows.Input.StylusPlugIns
 
             return true;
         }
+
+        private bool isMaxLength(StylusPoint p1, StylusPoint p2)
+        {
+
+            double dLength = ((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y));
+            if(dLength >= 100)
+            {
+                return true;
+            }
+
+            return false;
+        }
         /////////////////////////////////////////////////////////////////////
         /// <summary>
         /// [TBS]
@@ -324,16 +336,20 @@ namespace System.Windows.Input.StylusPlugIns
 
 
                        
-                        if(si.canRender || si.allPoints.Count >= 6)
+                        if(si.canRender)
                         {
                             RenderPackets(rawStylusInput.GetStylusPoints(), si);
-                            si.canRender = true;
-                            si.allPoints.Clear();
+                            
                         }
 
-                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints && si.canRender)
+                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
+                            if(si.allPoints.Count >= 6 && !si.canRender)
+                            {
+                                si.canRender = true;
+                                si.allPoints.Clear();
+                            }
                         }
 
                         

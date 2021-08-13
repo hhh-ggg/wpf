@@ -14,10 +14,10 @@ jobs:
         nuget-version: '5.x'
         
     - name: Build
-      run: .\build.cmd -pack -ci -configuration Debug -prepareMachine /p:Platform=x86 /p:BaselineAllAPICompatError=true
+      run: .\build.cmd -pack -ci -configuration Release -prepareMachine /p:Platform=x86 /p:BaselineAllAPICompatError=true
       
     - name: Upload nupkg
       uses: actions/upload-artifact@v2
       with:
         name: NuGet Package
-        path: artifacts/packaging/Debug/Microsoft.DotNet.Wpf.GitHub
+        path: artifacts/packaging/Release/Microsoft.DotNet.Wpf.GitHub

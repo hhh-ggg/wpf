@@ -262,7 +262,7 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
-                            si.allPoints.Add(upCollectionPoints);
+                            //si.allPoints.Add(upCollectionPoints);
                         }
 
                         if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
@@ -280,11 +280,24 @@ namespace System.Windows.Input.StylusPlugIns
                 }
 
                 rawStylusInput.NotifyWhenProcessed(si);
-                Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
-                RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                //Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
+                //if(si.canRender)
+                {
+                    //RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                }
+                
             }
         }
 
+        private bool isValidPoint(StylusPoint p1, StylusPoint p2)
+        {
+            if(Math.Abs(p1.X - p2.X) >= 50 || Math.Abs(p1.Y - p2.Y) >= 50)
+            {
+                return false;
+            }
+
+            return true;
+        }
         /////////////////////////////////////////////////////////////////////
         /// <summary>
         /// [TBS]
@@ -299,7 +312,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 if (si != null && (si.StylusId == rawStylusInput.StylusDeviceId))
                 {
-                    Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
+                    //Trace.WriteLine("move:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
                     // We only render packets that are in the proper order due to
                     // how our incremental rendering uses the last point to continue
                     // the path geometry from.
@@ -308,13 +321,19 @@ namespace System.Windows.Input.StylusPlugIns
                     {
                         si.LastTime = rawStylusInput.Timestamp;
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
-                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints && si.canRender)
                         {
                             si.allPoints.Add(upCollectionPoints);
                         }
 
-                        RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                        if(si.canRender)
+                        {
+                            RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                        }
+
+                        si.si.canRender = true;
                     }
+                    
                 }
             }
         }

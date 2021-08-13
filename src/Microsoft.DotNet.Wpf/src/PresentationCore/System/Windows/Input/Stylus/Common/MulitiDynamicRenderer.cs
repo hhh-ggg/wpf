@@ -331,7 +331,7 @@ namespace System.Windows.Input.StylusPlugIns
                             RenderPackets(rawStylusInput.GetStylusPoints(), si);
                         }
 
-                        ssi.canRender = true;
+                        si.canRender = true;
                     }
                     
                 }

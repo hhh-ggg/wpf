@@ -434,19 +434,26 @@ namespace System.Windows.Input.StylusPlugIns
 
                     si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
                     si.allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
-                    //StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
-                    //if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
-                    //{
-                    //    si.allPoints.Add(upCollectionPoints);
-                    //}
-                        strokeInfoListEx.Add(si);
+                    StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+                    if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                    {
+                        si.allPoints.Add(upCollectionPoints);
+                    }
+                    strokeInfoListEx.Add(si);
                 }
                 
                 rawStylusInput.NotifyWhenProcessed(si);
                 //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
         }
-        
+
+        private double pointLength(StylusPoint p1, StylusPoint p2)
+        {
+
+            double dLength = Math.Sqrt(((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y)));
+            return dLength;
+        }
+
         /////////////////////////////////////////////////////////////////////
         /// <summary>
         /// [TBS]
@@ -480,11 +487,40 @@ namespace System.Windows.Input.StylusPlugIns
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
-                            if (si.allPoints.Count >= 6 && !si.canRender)
+                            if (!si.canRender)
                             {
-                                si.canRender = true;
-                                si.allPoints.Clear();
+                                StylusPoint pStart = new StylusPoint(si.allPoints[0].X, si.allPoints[0].Y);
+                                foreach(var ps in upCollectionPoints)
+                                {
+                                    double dLength = pointLength(pStart, ps);
+                                    if(!si.canRender)
+                                    {
+                                        if (dLength >= 0 && dLength <= 10)
+                                        {
+                                            continue;
+                                        }
+                                        else if (dLength > 10 & dLength < 50)
+                                        {
+                                            si.canRender = true;
+                                        }
+                                        else
+                                        {
+                                            si.allPoints.Clear();
+                                            si.allPoints.Add(ps);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        si.allPoints.Add(ps);
+                                    }
+      
+                                }
                             }
+                        }
+
+                        if(si.canRender)
+                        {
+                            RenderPackets(si.allPoints, si);
                         }
                     }
                 }
@@ -510,25 +546,6 @@ namespace System.Windows.Input.StylusPlugIns
                 {
                     si.SeenUp = true;
                     si.LastTime = rawStylusInput.Timestamp;
-                    StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
-                    if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
-                    {
-                        si.allPoints.Add(upCollectionPoints);
-                        if (null != applicationDispatcherEx)
-                        {
-                            StylusPointCollection strokePoints = new StylusPointCollection(si.allPoints);
-                            applicationDispatcherEx.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                            {
-                                //removeSiInfo(si);
-                                stylusUpNormalProcess(strokePoints);
-                                MediaContext.From(applicationDispatcherEx).RenderMessageHandler(null);
-                                MediaContext.From(applicationDispatcherEx).CommitChannel();
-                                //removeSiInfo(si);
-                            }));
-
-                        }
-                    }
-
                     rawStylusInput.NotifyWhenProcessed(si);
                 }
             }

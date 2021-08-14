@@ -434,11 +434,11 @@ namespace System.Windows.Input.StylusPlugIns
 
                     si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
                     si.allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
-                    StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
-                    if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
-                    {
-                        si.allPoints.Add(upCollectionPoints);
-                    }
+                    //StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+                    //if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                    //{
+                    //    si.allPoints.Add(upCollectionPoints);
+                    //}
                         strokeInfoListEx.Add(si);
                 }
                 
@@ -480,15 +480,9 @@ namespace System.Windows.Input.StylusPlugIns
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
-                            if (si.allPoints.Count >= 4 && !si.canRender)
+                            if (si.allPoints.Count >= 6 && !si.canRender)
                             {
                                 si.canRender = true;
-                                for (int i = 0; i < 4; ++i)
-                                {
-                                    si.allPoints[i] = si.allPoints[3];
-                                }
-
-                                RenderPackets(rawStylusInput.GetStylusPoints(), si);
                                 si.allPoints.Clear();
                             }
                         }
@@ -516,9 +510,37 @@ namespace System.Windows.Input.StylusPlugIns
                 {
                     si.SeenUp = true;
                     si.LastTime = rawStylusInput.Timestamp;
+                    StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+                    if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                    {
+                        si.allPoints.Add(upCollectionPoints);
+                        if (null != applicationDispatcherEx)
+                        {
+                            StylusPointCollection strokePoints = new StylusPointCollection(si.allPoints);
+                            applicationDispatcherEx.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                            {
+                                //removeSiInfo(si);
+                                stylusUpNormalProcess(strokePoints);
+                                MediaContext.From(applicationDispatcherEx).RenderMessageHandler(null);
+                                MediaContext.From(applicationDispatcherEx).CommitChannel();
+                                //removeSiInfo(si);
+                            }));
+
+                        }
+                    }
+
                     rawStylusInput.NotifyWhenProcessed(si);
                 }
             }
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// [TBS]
+        /// </summary>
+        protected virtual void stylusUpNormalProcess(StylusPointCollection stylusPoints)
+        {
+
         }
 
         public virtual bool IsStylusUp(int stylusId)

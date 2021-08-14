@@ -501,7 +501,7 @@ namespace System.Windows.Input.StylusPlugIns
                                         }
                                         else if (dLength > 10 & dLength < 50)
                                         {
-                                            si.canRender = true;
+                                            break;
                                         }
                                         else
                                         {

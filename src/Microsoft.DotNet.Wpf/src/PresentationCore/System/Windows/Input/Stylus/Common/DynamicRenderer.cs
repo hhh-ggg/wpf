@@ -434,7 +434,12 @@ namespace System.Windows.Input.StylusPlugIns
 
                     si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
                     si.allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
-                    strokeInfoListEx.Add(si);
+                    StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+                    if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                    {
+                        si.allPoints.Add(upCollectionPoints);
+                    }
+                        strokeInfoListEx.Add(si);
                 }
                 
                 rawStylusInput.NotifyWhenProcessed(si);
@@ -475,12 +480,12 @@ namespace System.Windows.Input.StylusPlugIns
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
-                            if (si.allPoints.Count >= 7 && !si.canRender)
+                            if (si.allPoints.Count >= 4 && !si.canRender)
                             {
                                 si.canRender = true;
-                                for (int i = 0; i < 7; ++i)
+                                for (int i = 0; i < 4; ++i)
                                 {
-                                    si.allPoints[i] = si.allPoints[6];
+                                    si.allPoints[i] = si.allPoints[3];
                                 }
 
                                 RenderPackets(rawStylusInput.GetStylusPoints(), si);
@@ -1273,4 +1278,3 @@ namespace System.Windows.Input.StylusPlugIns
         public Queue<StrokeInfo>    renderCompleteDRThreadStrokeInfoListEx = new Queue<StrokeInfo>();
 }
 }
-

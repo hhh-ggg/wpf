@@ -507,6 +507,7 @@ namespace System.Windows.Input.StylusPlugIns
                                         {
                                             si.allPoints.Clear();
                                             si.allPoints.Add(ps);
+                                            si.canRender = true;
                                         }
                                     }
                                     else
@@ -515,12 +516,12 @@ namespace System.Windows.Input.StylusPlugIns
                                     }
       
                                 }
-                            }
-                        }
 
-                        if(si.canRender)
-                        {
-                            RenderPackets(si.allPoints, si);
+                                if (si.canRender)
+                                {
+                                    RenderPackets(si.allPoints, si);
+                                }
+                            }
                         }
                     }
                 }

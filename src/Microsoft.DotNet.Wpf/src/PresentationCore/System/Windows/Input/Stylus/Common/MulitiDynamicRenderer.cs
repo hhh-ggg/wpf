@@ -285,13 +285,13 @@ namespace System.Windows.Input.StylusPlugIns
                 {
                     //RenderPackets(rawStylusInput.GetStylusPoints(), si);
                 }
-                
+
             }
         }
 
         private bool isValidPoint(StylusPoint p1, StylusPoint p2)
         {
-            if(Math.Abs(p1.X - p2.X) >= 50 || Math.Abs(p1.Y - p2.Y) >= 50)
+            if (Math.Abs(p1.X - p2.X) >= 50 || Math.Abs(p1.Y - p2.Y) >= 50)
             {
                 return false;
             }
@@ -303,7 +303,7 @@ namespace System.Windows.Input.StylusPlugIns
         {
 
             double dLength = ((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y));
-            if(dLength >= 100)
+            if (dLength >= 100)
             {
                 return true;
             }
@@ -316,7 +316,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusMove(RawStylusInput rawStylusInput)
         {
-            
+
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
@@ -335,26 +335,26 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
 
 
-                       
-                        if(si.canRender)
+
+                        if (si.canRender)
                         {
                             RenderPackets(rawStylusInput.GetStylusPoints(), si);
-                            
+
                         }
 
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
-                            if(si.allPoints.Count >= 6 && !si.canRender)
+                            if (si.allPoints.Count >= 6 && !si.canRender)
                             {
                                 si.canRender = true;
                                 si.allPoints.Clear();
                             }
                         }
 
-                        
+
                     }
-                    
+
                 }
             }
         }
@@ -365,7 +365,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            
+
             //Trace.WriteLine("OnStylusUp" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             //Trace.WriteLine("OnStylusUp");
             // Only allow inking if someone has queried our RootVisual.
@@ -617,7 +617,7 @@ namespace System.Windows.Input.StylusPlugIns
                 return;
 
             // clean up stroke visuals (and move to transitional VisualTarget as needed)
-            //TransitionStrokeVisuals(si, !targetVerified);
+            TransitionStrokeVisuals(si, !targetVerified);
         }
 
         public override void OnInternalRenderComplete(object sender, EventArgs e)

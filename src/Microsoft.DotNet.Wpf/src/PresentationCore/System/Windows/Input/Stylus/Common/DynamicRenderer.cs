@@ -437,7 +437,7 @@ namespace System.Windows.Input.StylusPlugIns
                 }
                 
                 rawStylusInput.NotifyWhenProcessed(si);
-                RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
         }
         
@@ -461,7 +461,25 @@ namespace System.Windows.Input.StylusPlugIns
                     if (si.IsTimestampAfter(rawStylusInput.Timestamp))
                     {
                         si.LastTime = rawStylusInput.Timestamp;
-                        RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                        StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
+
+
+
+                        if (si.canRender)
+                        {
+                            RenderPackets(rawStylusInput.GetStylusPoints(), si);
+
+                        }
+
+                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                        {
+                            si.allPoints.Add(upCollectionPoints);
+                            if (si.allPoints.Count >= 6 && !si.canRender)
+                            {
+                                si.canRender = true;
+                                si.allPoints.Clear();
+                            }
+                        }
                     }
                 }
             }

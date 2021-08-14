@@ -475,9 +475,15 @@ namespace System.Windows.Input.StylusPlugIns
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
-                            if (si.allPoints.Count >= 6 && !si.canRender)
+                            if (si.allPoints.Count >= 7 && !si.canRender)
                             {
                                 si.canRender = true;
+                                foreach (int i = 0; i < 7; ++i)
+                                {
+                                    si.allPoints[i] = si.allPoints[6];
+                                }
+
+                                RenderPackets(rawStylusInput.GetStylusPoints(), si);
                                 si.allPoints.Clear();
                             }
                         }

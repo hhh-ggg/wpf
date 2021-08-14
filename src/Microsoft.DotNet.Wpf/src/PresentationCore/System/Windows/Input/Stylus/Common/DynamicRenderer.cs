@@ -424,7 +424,7 @@ namespace System.Windows.Input.StylusPlugIns
                 lock(siLockEx)
                 {
                     si = FindStrokeInfo(rawStylusInput.Timestamp);
-                    si.allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
+                   
                     // If we find we are already in the middle of stroke then bail out.
                     // Can only ink with one stylus at a time.
                     if (si != null)
@@ -433,6 +433,7 @@ namespace System.Windows.Input.StylusPlugIns
                     }
 
                     si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
+                    si.allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
                     strokeInfoListEx.Add(si);
                 }
                 

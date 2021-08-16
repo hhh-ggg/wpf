@@ -496,11 +496,11 @@ namespace System.Windows.Input.StylusPlugIns
                                     Trace.WriteLine("hjc dLength:" + dLength +" hjc pStart:" + pStart.X + " " + pStart.Y + " hjc ps:" + ps.X + " " + ps.Y);
                                     if(!si.canRender)
                                     {
-                                        if (dLength >= 0 && dLength <= 10)
+                                        if (dLength >= 0 && dLength <= 20)
                                         {
                                             continue;
                                         }
-                                        else if (dLength > 10 & dLength < 50)
+                                        else if (dLength > 20 & dLength < 50)
                                         {
                                             si.canRender = true;
                                             break;

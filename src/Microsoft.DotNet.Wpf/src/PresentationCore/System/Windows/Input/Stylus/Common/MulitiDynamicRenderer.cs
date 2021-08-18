@@ -299,6 +299,13 @@ namespace System.Windows.Input.StylusPlugIns
             return true;
         }
 
+        private double pointLengthEX(StylusPoint p1, StylusPoint p2)
+        {
+
+            double dLength = Math.Sqrt(((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y)));
+            return dLength;
+        }
+
         private bool isMaxLength(StylusPoint p1, StylusPoint p2)
         {
 
@@ -360,7 +367,7 @@ namespace System.Windows.Input.StylusPlugIns
                                 StylusPoint pStart = new StylusPoint(si.allPoints[0].X, si.allPoints[0].Y);
                                 foreach (var ps in upCollectionPoints)
                                 {
-                                    double dLength = pointLength(pStart, ps);
+                                    double dLength = pointLengthEX(pStart, ps);
                                     //Trace.WriteLine("hjc dLength:" + dLength +" hjc pStart:" + pStart.X + " " + pStart.Y + " hjc ps:" + ps.X + " " + ps.Y);
                                     if (!si.canRender)
                                     {

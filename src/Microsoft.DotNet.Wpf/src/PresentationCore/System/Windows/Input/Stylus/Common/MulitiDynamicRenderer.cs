@@ -262,7 +262,7 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
-                            //si.allPoints.Add(upCollectionPoints);
+                            si.allPoints.Add(upCollectionPoints);
                         }
 
                         if (_multiStrokeInfoDic.ContainsKey(rawStylusInput.StylusDeviceId))
@@ -342,13 +342,55 @@ namespace System.Windows.Input.StylusPlugIns
 
                         }
 
+                        //if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                        //{
+                        //    si.allPoints.Add(upCollectionPoints);
+                        //    if (si.allPoints.Count >= 6 && !si.canRender)
+                        //    {
+                        //        si.canRender = true;
+                        //        si.allPoints.Clear();
+                        //    }
+                        //}
+
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
-                            if (si.allPoints.Count >= 6 && !si.canRender)
+                            if (!si.canRender)
                             {
-                                si.canRender = true;
-                                si.allPoints.Clear();
+                                StylusPoint pStart = new StylusPoint(si.allPoints[0].X, si.allPoints[0].Y);
+                                foreach (var ps in upCollectionPoints)
+                                {
+                                    double dLength = pointLength(pStart, ps);
+                                    //Trace.WriteLine("hjc dLength:" + dLength +" hjc pStart:" + pStart.X + " " + pStart.Y + " hjc ps:" + ps.X + " " + ps.Y);
+                                    if (!si.canRender)
+                                    {
+                                        if (dLength >= 0 && dLength <= 20)
+                                        {
+                                            continue;
+                                        }
+                                        else if (dLength > 20 & dLength < 50)
+                                        {
+                                            si.canRender = true;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            si.allPoints.Clear();
+                                            si.allPoints.Add(ps);
+                                            si.canRender = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        si.allPoints.Add(ps);
+                                    }
+
+                                }
+
+                                if (si.canRender)
+                                {
+                                    RenderPackets(si.allPoints, si);
+                                }
                             }
                         }
 
@@ -384,7 +426,7 @@ namespace System.Windows.Input.StylusPlugIns
                     StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
                     if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                     {
-                        si.allPoints.Add(upCollectionPoints);
+                        //si.allPoints.Add(upCollectionPoints);
                         if (null != applicationDispatcherEx)
                         {
                             StylusPointCollection strokePoints = new StylusPointCollection(si.allPoints);

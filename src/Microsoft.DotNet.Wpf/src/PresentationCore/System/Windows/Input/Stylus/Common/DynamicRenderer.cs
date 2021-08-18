@@ -493,7 +493,7 @@ namespace System.Windows.Input.StylusPlugIns
                                 foreach(var ps in upCollectionPoints)
                                 {
                                     double dLength = pointLength(pStart, ps);
-                                    Trace.WriteLine("hjc dLength:" + dLength +" hjc pStart:" + pStart.X + " " + pStart.Y + " hjc ps:" + ps.X + " " + ps.Y);
+                                    //Trace.WriteLine("hjc dLength:" + dLength +" hjc pStart:" + pStart.X + " " + pStart.Y + " hjc ps:" + ps.X + " " + ps.Y);
                                     if(!si.canRender)
                                     {
                                         if (dLength >= 0 && dLength <= 20)

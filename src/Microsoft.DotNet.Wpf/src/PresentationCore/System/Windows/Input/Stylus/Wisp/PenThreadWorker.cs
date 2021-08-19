@@ -159,6 +159,10 @@ namespace System.Windows.Input
 
                     // Set result data and signal we are done.
                     _tabletDevicesInfo = tablets;
+                    if(0 == _tabletDevicesInfo.Length)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjctouch failed");
+                    }
                 }
                 catch (Exception e) when (PenThreadWorker.IsKnownException(e))
                 {

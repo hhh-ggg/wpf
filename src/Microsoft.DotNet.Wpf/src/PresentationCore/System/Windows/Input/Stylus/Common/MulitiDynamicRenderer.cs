@@ -366,7 +366,7 @@ namespace System.Windows.Input.StylusPlugIns
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
-                            foreach (var ps in si.upCollectionPoints)
+                            foreach (var ps in upCollectionPoints)
                             {
                                 Trace.WriteLine("hjc id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                             }

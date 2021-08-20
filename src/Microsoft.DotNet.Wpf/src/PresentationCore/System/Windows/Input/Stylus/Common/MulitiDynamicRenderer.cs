@@ -279,6 +279,10 @@ namespace System.Windows.Input.StylusPlugIns
 
                 }
 
+                foreach(var ps in si.allPoints)
+                {
+                    Trace.WriteLine("hjc id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                }
                 rawStylusInput.NotifyWhenProcessed(si);
                 //Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
                 //if(si.canRender)
@@ -362,6 +366,11 @@ namespace System.Windows.Input.StylusPlugIns
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
+                            foreach (var ps in si.upCollectionPoints)
+                            {
+                                Trace.WriteLine("hjc id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                            }
+
                             if (!si.canRender)
                             {
                                 StylusPoint pStart = new StylusPoint(si.allPoints[0].X, si.allPoints[0].Y);
@@ -378,11 +387,13 @@ namespace System.Windows.Input.StylusPlugIns
                                         else if (dLength > 20 & dLength < 50)
                                         {
                                             si.canRender = true;
+                                            Trace.WriteLine("hjc id: out: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                             break;
                                         }
                                         else
                                         {
                                             si.allPoints.Clear();
+                                            Trace.WriteLine("hjc id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                             si.allPoints.Add(ps);
                                             si.canRender = true;
                                         }

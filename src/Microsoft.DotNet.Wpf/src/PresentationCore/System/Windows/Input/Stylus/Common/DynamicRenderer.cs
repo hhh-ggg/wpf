@@ -441,7 +441,12 @@ namespace System.Windows.Input.StylusPlugIns
                     }
                     strokeInfoListEx.Add(si);
                 }
-                
+
+                foreach (var ps in si.allPoints)
+                {
+                    Trace.WriteLine("hjcs id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                }
+
                 rawStylusInput.NotifyWhenProcessed(si);
                 //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
@@ -486,6 +491,10 @@ namespace System.Windows.Input.StylusPlugIns
 
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
+                            foreach (var ps in upCollectionPoints)
+                            {
+                                Trace.WriteLine("hjcs id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                            }
                             si.allPoints.Add(upCollectionPoints);
                             if (!si.canRender)
                             {
@@ -503,11 +512,13 @@ namespace System.Windows.Input.StylusPlugIns
                                         else if (dLength > 20 & dLength < 50)
                                         {
                                             si.canRender = true;
+                                            Trace.WriteLine("hjcs id: out: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                             break;
                                         }
                                         else
                                         {
                                             si.allPoints.Clear();
+                                            Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                             si.allPoints.Add(ps);
                                             si.canRender = true;
                                         }

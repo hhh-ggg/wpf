@@ -444,6 +444,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 foreach (var ps in si.allPoints)
                 {
+                    Trace.WriteLine("hjc24 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                     Trace.WriteLine("hjcs id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                 }
 
@@ -493,6 +494,7 @@ namespace System.Windows.Input.StylusPlugIns
                         {
                             foreach (var ps in upCollectionPoints)
                             {
+                                Trace.WriteLine("hjc25 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                 Trace.WriteLine("hjcs id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                             }
                             si.allPoints.Add(upCollectionPoints);

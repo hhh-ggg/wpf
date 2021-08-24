@@ -543,7 +543,7 @@ namespace System.Windows.Input.StylusPlugIns
                                     }
                                 }
 
-                                if(timeSpan >= 25)
+                                if(timeSpan >= 35)
                                 {
                                     Trace.WriteLine("hjc id: timeSpan: " + timeSpan);
                                     si.checkValid = false;

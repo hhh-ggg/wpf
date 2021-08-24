@@ -18,6 +18,6 @@ jobs:
       
     - name: Upload nupkg
       uses: actions/upload-artifact@v2
-      with:
+      with: 
         name: NuGet Package
         path: artifacts/packaging/Release/Microsoft.DotNet.Wpf.GitHub

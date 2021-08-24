@@ -374,7 +374,7 @@ namespace System.Windows.Input.StylusPlugIns
                                     //同新增点进行比较判断
                                     foreach (var ps in upCollectionPoints)
                                     {
-                                        double dLength = pointLength(pStart, ps);
+                                        double dLength = pointLengthEX(pStart, ps);
                                         if (!si.canRender)
                                         {
                                             //相邻点的长度大于100时为无效点

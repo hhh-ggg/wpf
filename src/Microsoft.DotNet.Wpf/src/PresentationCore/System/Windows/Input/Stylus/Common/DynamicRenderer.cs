@@ -519,6 +519,8 @@ namespace System.Windows.Input.StylusPlugIns
                                             {
                                                 pStart.X = ps.X;
                                                 pStart.Y = ps.Y;
+                                                Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y);
+                                                Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                                 continue;
                                             }
                                             else
@@ -539,6 +541,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                                 if(timeSpan >= 10)
                                 {
+                                    Trace.WriteLine("hjcs id: timeSpan: " + timeSpan);
                                     si.checkValid = false;
                                     si.canRender = true;
                                 }

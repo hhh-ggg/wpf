@@ -279,10 +279,10 @@ namespace System.Windows.Input.StylusPlugIns
 
                 }
 
-                foreach(var ps in si.allPoints)
-                {
-                    Trace.WriteLine("hjc26 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
-                }
+                //foreach(var ps in si.allPoints)
+                //{
+                //    Trace.WriteLine("hjc26 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                //}
                 rawStylusInput.NotifyWhenProcessed(si);
                 //Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
                 //if(si.canRender)
@@ -353,57 +353,57 @@ namespace System.Windows.Input.StylusPlugIns
 
                         }
 
-                        //if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
-                        //{
-                        //    si.allPoints.Add(upCollectionPoints);
-                        //    if (si.allPoints.Count >= 6 && !si.canRender)
-                        //    {
-                        //        si.canRender = true;
-                        //        si.allPoints.Clear();
-                        //    }
-                        //}
-
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
-                            si.allPoints.Add(upCollectionPoints);
                             int timeSpan = si.LastTime - si.StartTime;
-                            foreach (var ps in upCollectionPoints)
-                            {
-                                Trace.WriteLine("hjc26 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
-                            }
+                            //foreach (var ps in upCollectionPoints)
+                            //{
+                            //    Trace.WriteLine("hjc25 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
+                            //}
 
+                            si.allPoints.Add(upCollectionPoints);
                             if (!si.canRender)
                             {
-                                StylusPoint pStart = new StylusPoint(si.allPoints[0].X, si.allPoints[0].Y);
-                                foreach (var ps in upCollectionPoints)
+                                //进行校验
+                                if (si.checkValid)
                                 {
-                                    double dLength = pointLengthEX(pStart, ps);
-                                    //Trace.WriteLine("hjc dLength:" + dLength +" hjc pStart:" + pStart.X + " " + pStart.Y + " hjc ps:" + ps.X + " " + ps.Y);
-                                    if (!si.canRender)
+                                    //获取si.allPoint的最后一个点
+                                    int psLength = si.allPoints.Count;
+                                    StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
+
+                                    //同新增点进行比较判断
+                                    foreach (var ps in upCollectionPoints)
                                     {
-                                        if (dLength >= 0 && dLength <= 20)
+                                        double dLength = pointLength(pStart, ps);
+                                        if (!si.canRender)
                                         {
-                                            continue;
-                                        }
-                                        else if (dLength > 20 & dLength < 50)
-                                        {
-                                            si.canRender = true;
-                                            Trace.WriteLine("hjc id: out: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
-                                            break;
+                                            //相邻点的长度大于100时为无效点
+                                            if (dLength <= 100)
+                                            {
+                                                pStart.X = ps.X;
+                                                pStart.Y = ps.Y;
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                si.allPoints.Clear();
+                                                Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                                                si.allPoints.Add(ps);
+                                                si.canRender = true;
+                                                si.checkValid = false;
+                                            }
                                         }
                                         else
                                         {
-                                            si.allPoints.Clear();
-                                            Trace.WriteLine("hjc id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                             si.allPoints.Add(ps);
-                                            si.canRender = true;
                                         }
                                     }
-                                    else
-                                    {
-                                        si.allPoints.Add(ps);
-                                    }
+                                }
 
+                                if (timeSpan >= 10)
+                                {
+                                    si.checkValid = false;
+                                    si.canRender = true;
                                 }
 
                                 if (si.canRender)

@@ -35,7 +35,7 @@ namespace System.Windows.Input.StylusPlugIns
     /// </summary>
     public class MulitiDynamicRenderer : DynamicRenderer
     {
-        /////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// [TBS] - On UIContext

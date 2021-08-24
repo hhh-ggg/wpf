@@ -358,10 +358,10 @@ namespace System.Windows.Input.StylusPlugIns
                             int timeSpan = si.LastTime - si.StartTime;
                             //foreach (var ps in upCollectionPoints)
                             //{
-                            //    Trace.WriteLine("hjc25 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
+                            //    //Trace.WriteLine("hjc25 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
                             //}
 
-                            si.allPoints.Add(upCollectionPoints);
+
                             if (!si.canRender)
                             {
                                 //进行校验
@@ -371,14 +371,20 @@ namespace System.Windows.Input.StylusPlugIns
                                     int psLength = si.allPoints.Count;
                                     StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
 
+                                    //foreach (var psTmp in upCollectionPoints)
+                                    //{
+                                    //    //Trace.WriteLine("hjcs id: checkcollection: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                                    //}
                                     //同新增点进行比较判断
                                     foreach (var ps in upCollectionPoints)
                                     {
-                                        double dLength = pointLengthEX(pStart, ps);
+                                        //Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y + " timeSpan" + timeSpan);
+                                        //Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
+                                        double dLength = pointLength(pStart, ps);
                                         if (!si.canRender)
                                         {
                                             //相邻点的长度大于100时为无效点
-                                            if (dLength <= 100)
+                                            if (dLength <= 200)
                                             {
                                                 pStart.X = ps.X;
                                                 pStart.Y = ps.Y;
@@ -387,7 +393,7 @@ namespace System.Windows.Input.StylusPlugIns
                                             else
                                             {
                                                 si.allPoints.Clear();
-                                                Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                                                //Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
                                                 si.allPoints.Add(ps);
                                                 si.canRender = true;
                                                 si.checkValid = false;
@@ -400,8 +406,9 @@ namespace System.Windows.Input.StylusPlugIns
                                     }
                                 }
 
-                                if (timeSpan >= 10)
+                                if (timeSpan >= 20)
                                 {
+                                    Trace.WriteLine("hjcs id: timeSpan: " + timeSpan);
                                     si.checkValid = false;
                                     si.canRender = true;
                                 }
@@ -411,6 +418,16 @@ namespace System.Windows.Input.StylusPlugIns
                                     RenderPackets(si.allPoints, si);
                                 }
                             }
+                            else
+                            {
+                                //foreach (var psTmp in upCollectionPoints)
+                                //{
+                                //    //Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                                //}
+
+                                si.allPoints.Add(upCollectionPoints);
+                            }
+
                         }
 
 

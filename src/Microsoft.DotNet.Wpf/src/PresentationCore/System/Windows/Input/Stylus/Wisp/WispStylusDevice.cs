@@ -1455,10 +1455,8 @@ namespace System.Windows.Input.StylusWisp
             if (inputSource != null)
             {
                 // Update our screen position from this move.
-                Trace.WriteLine("hjc21 routTouchPoint:" + _rawPosition.X + "  " + _rawPosition.Y);
                 Point pt = _stylusLogic.DeviceUnitsFromMeasureUnits(inputSource, (Point)_rawPosition);
                 _lastScreenLocation = PointUtil.ClientToScreen(pt, inputSource);
-                Trace.WriteLine("hjc22 routTouchPoint:" + _lastScreenLocation.X + "  " + _lastScreenLocation.Y);
             }
 
             // If we are not blocked from updating the location we want to use for the 

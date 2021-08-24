@@ -380,7 +380,7 @@ namespace System.Windows.Input.StylusPlugIns
                                     {
                                         //Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y + " timeSpan" + timeSpan);
                                         //Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
-                                        double dLength = pointLength(pStart, ps);
+                                        double dLength = pointLengthEX(pStart, ps);
                                         if (!si.canRender)
                                         {
                                             //相邻点的长度大于100时为无效点

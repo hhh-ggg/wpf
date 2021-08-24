@@ -511,6 +511,8 @@ namespace System.Windows.Input.StylusPlugIns
                                     //同新增点进行比较判断
                                     foreach (var ps in upCollectionPoints)
                                     {
+                                        Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y);
+                                        Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                         double dLength = pointLength(pStart, ps);
                                         if (!si.canRender)
                                         {
@@ -519,8 +521,6 @@ namespace System.Windows.Input.StylusPlugIns
                                             {
                                                 pStart.X = ps.X;
                                                 pStart.Y = ps.Y;
-                                                Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y);
-                                                Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                                                 continue;
                                             }
                                             else

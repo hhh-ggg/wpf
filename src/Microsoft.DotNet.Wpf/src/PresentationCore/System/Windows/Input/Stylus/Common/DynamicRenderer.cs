@@ -545,7 +545,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                                 if(timeSpan >= 25)
                                 {
-                                    Trace.WriteLine("hjcs id: timeSpan: " + timeSpan);
+                                    Trace.WriteLine("hjc id: timeSpan: " + timeSpan);
                                     si.checkValid = false;
                                     si.canRender = true;
                                 }

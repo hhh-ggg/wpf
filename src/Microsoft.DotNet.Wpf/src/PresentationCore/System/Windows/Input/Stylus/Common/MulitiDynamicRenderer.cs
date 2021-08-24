@@ -281,7 +281,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 foreach(var ps in si.allPoints)
                 {
-                    Trace.WriteLine("hjc id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                    Trace.WriteLine("hjc26 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                 }
                 rawStylusInput.NotifyWhenProcessed(si);
                 //Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
@@ -366,9 +366,10 @@ namespace System.Windows.Input.StylusPlugIns
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
                             si.allPoints.Add(upCollectionPoints);
+                            int timeSpan = si.LastTime - si.StartTime;
                             foreach (var ps in upCollectionPoints)
                             {
-                                Trace.WriteLine("hjc id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                                Trace.WriteLine("hjc26 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
                             }
 
                             if (!si.canRender)

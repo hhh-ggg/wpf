@@ -498,7 +498,7 @@ namespace System.Windows.Input.StylusPlugIns
                             //    Trace.WriteLine("hjc25 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
                             //}
 
-                            si.allPoints.Add(upCollectionPoints);
+                            
                             if (!si.canRender)
                             {
                                 //进行校验
@@ -555,6 +555,12 @@ namespace System.Windows.Input.StylusPlugIns
                                     RenderPackets(si.allPoints, si);
                                 }
                             }
+
+                            else
+                            {
+                                si.allPoints.Add(upCollectionPoints);
+                            }
+                            
                         }
                     }
                 }

@@ -388,6 +388,7 @@ namespace System.Windows.Input.StylusPlugIns
                                             {
                                                 pStart.X = ps.X;
                                                 pStart.Y = ps.Y;
+                                                si.allPoints.Add(ps);
                                                 continue;
                                             }
                                             else

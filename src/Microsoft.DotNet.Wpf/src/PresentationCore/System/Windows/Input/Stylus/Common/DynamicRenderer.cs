@@ -508,8 +508,12 @@ namespace System.Windows.Input.StylusPlugIns
                                     int psLength = si.allPoints.Count;
                                     StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
 
-                                    //同新增点进行比较判断
-                                    foreach (var ps in upCollectionPoints)
+                                    foreach (var psTmp in upCollectionPoints)
+                                    {
+                                        Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y);
+                                    }
+                                        //同新增点进行比较判断
+                                        foreach (var ps in upCollectionPoints)
                                     {
                                         Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y);
                                         Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);

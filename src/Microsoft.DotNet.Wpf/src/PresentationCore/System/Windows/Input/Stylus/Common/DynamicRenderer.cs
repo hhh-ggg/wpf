@@ -525,12 +525,13 @@ namespace System.Windows.Input.StylusPlugIns
                                             {
                                                 pStart.X = ps.X;
                                                 pStart.Y = ps.Y;
+                                                si.allPoints.Add(ps);
                                                 continue;
                                             }
                                             else
                                             {
                                                 si.allPoints.Clear();
-                                                //Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
+                                                Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
                                                 si.allPoints.Add(ps);
                                                 si.canRender = true;
                                                 si.checkValid = false;

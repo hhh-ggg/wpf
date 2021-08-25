@@ -175,11 +175,15 @@ namespace System.Windows.Input
                 Point p = new Point(rawPacketData[i], rawPacketData[i + 1]);
                 if (tabletToView != null)
                 {
+                    System.Diagnostics.Trace.WriteLine("hjc tabletToView x:" + p.X + " y:" + p.Y);
                     tabletToView.TryTransform(p, out p);
+                    System.Diagnostics.Trace.WriteLine("hjc tabletToView out x:" + p.X + " y:" + p.Y);
                 }
                 else
                 {
+                    System.Diagnostics.Trace.WriteLine("hjc tabletToViewMatrix x:" + p.X + " y:" + p.Y);
                     p = tabletToViewMatrix.Transform(p);
+                    System.Diagnostics.Trace.WriteLine("hjc tabletToViewMatrix out x:" + p.X + " y:" + p.Y);
                 }
 
                 int startIndex = 2;

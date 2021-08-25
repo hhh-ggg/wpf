@@ -366,7 +366,7 @@ namespace System.Windows.Input.StylusPlugIns
                             if (!si.canRender)
                             {
                                 //进行校验
-                                if (si.checkValid)
+                                
                                 {
                                     //获取si.allPoint的最后一个点
                                     int psLength = si.allPoints.Count;
@@ -382,6 +382,7 @@ namespace System.Windows.Input.StylusPlugIns
                                         //Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y + " timeSpan" + timeSpan);
                                         //Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
                                         double dLength = pointLengthEX(pStart, ps);
+                                        si.totalCount += dLength;
                                         if (!si.canRender)
                                         {
                                             //相邻点的长度大于100时为无效点
@@ -390,7 +391,15 @@ namespace System.Windows.Input.StylusPlugIns
                                                 pStart.X = ps.X;
                                                 pStart.Y = ps.Y;
                                                 si.allPoints.Add(ps);
-                                                continue;
+                                                if (si.totalCount > 20)
+                                                {
+                                                    si.canRender = true;
+                                                }
+                                                else
+                                                {
+                                                    continue;
+                                                }
+                                                    
                                             }
                                             else
                                             {
@@ -398,7 +407,6 @@ namespace System.Windows.Input.StylusPlugIns
                                                 //Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
                                                 si.allPoints.Add(ps);
                                                 si.canRender = true;
-                                                si.checkValid = false;
                                             }
                                         }
                                         else
@@ -408,16 +416,14 @@ namespace System.Windows.Input.StylusPlugIns
                                     }
                                 }
 
-                                if (timeSpan >= 35)
-                                {
-                                    Trace.WriteLine("hjcm id: timeSpan: " + timeSpan);
-                                    si.checkValid = false;
-                                    si.canRender = true;
-                                }
 
                                 if (si.canRender)
                                 {
                                     RenderPackets(si.allPoints, si);
+                                    foreach (var psTmp in upCollectionPoints)
+                                    {
+                                        Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                                    }
                                 }
                             }
                             else

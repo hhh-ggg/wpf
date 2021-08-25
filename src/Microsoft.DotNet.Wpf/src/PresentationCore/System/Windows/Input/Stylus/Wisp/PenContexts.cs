@@ -474,14 +474,7 @@ namespace System.Windows.Input
                     }
                     
                     // We are on the pen thread, just call directly.
-                    if(null == stylusDevice.CriticalActiveSource || null == stylusDevice.TabletDevice)
-                    {
-                        if(RawStylusActions.Down == inputReport.Actions)
-                        {
-                            pic.FireRawStylusInput(rawStylusInput);
-                        }
-                    }
-                    else
+
                     {
                         pic.FireRawStylusInput(rawStylusInput);
                     }

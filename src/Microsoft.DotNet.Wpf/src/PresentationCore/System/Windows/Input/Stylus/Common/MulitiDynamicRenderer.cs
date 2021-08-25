@@ -391,7 +391,7 @@ namespace System.Windows.Input.StylusPlugIns
                                                 pStart.X = ps.X;
                                                 pStart.Y = ps.Y;
                                                 si.allPoints.Add(ps);
-                                                if (si.totalCount > 20)
+                                                if (si.totalCount > 10)
                                                 {
                                                     si.canRender = true;
                                                 }

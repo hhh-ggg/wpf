@@ -459,29 +459,9 @@ namespace System.Windows.Input
                     //    The transformTabletToView matrix and plugincollection rects though can change based 
                     //    off of layout events which is why we need to lock this.
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
-                    MatrixTransform matTransTmp = new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice));
-                    if(null == stylusDevice.CriticalActiveSource)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc CriticalActiveSource: null");
-                    }
-                    else
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc CriticalActiveSource:" + stylusDevice.CriticalActiveSource.ToString());
-                    }
-
-                    if(null == stylusDevice.CriticalActiveSource)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc TabletDevice: null");
-                    }
-                    else
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc TabletDevice:" + stylusDevice.CriticalActiveSource.ToString());
-                    }
-                    
-                    System.Diagnostics.Trace.WriteLine("hjc matTransTmp:" + matTransTmp.ToString());
+                    MatrixTransform matTransTmp = new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice));                    
                     transformTabletToView.Children.Add(matTransTmp); // this gives matrix in measured units (not device)
                     transformTabletToView.Children.Add(pic.ViewToElement); // Make it relative to the element.
-                    System.Diagnostics.Trace.WriteLine("hjc ViewToElement:" + pic.ViewToElement.ToString());
                     transformTabletToView.Freeze();  // Must be frozen for multi-threaded access.
                     
                     RawStylusInput rawStylusInput = new RawStylusInput(inputReport, transformTabletToView, pic);
@@ -494,7 +474,18 @@ namespace System.Windows.Input
                     }
                     
                     // We are on the pen thread, just call directly.
-                    pic.FireRawStylusInput(rawStylusInput);
+                    if(null == stylusDevice.CriticalActiveSource || null == stylusDevice.TabletDevice)
+                    {
+                        if(RawStylusActions.Down == inputReport.Actions)
+                        {
+                            pic.FireRawStylusInput(rawStylusInput);
+                        }
+                    }
+                    else
+                    {
+                        pic.FireRawStylusInput(rawStylusInput);
+                    }
+                    
 
                     // Indicate we've used a stylus plugin
                     _stylusLogic.Statistics.FeaturesUsed |= Tracing.StylusTraceLogger.FeatureFlags.StylusPluginsUsed;

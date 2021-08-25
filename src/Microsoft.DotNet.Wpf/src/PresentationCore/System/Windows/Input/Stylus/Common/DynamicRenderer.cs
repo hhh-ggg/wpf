@@ -54,6 +54,7 @@ namespace System.Windows.Input.StylusPlugIns
             public StylusPointCollection allPoints = null;
             public bool canRender = false;
             public bool checkValid = true;
+            public double totalCount = 0; 
 
             public StrokeInfo(DrawingAttributes drawingAttributes, int stylusDeviceId, int startTimestamp, DynamicRendererHostVisual hostVisual)
             {

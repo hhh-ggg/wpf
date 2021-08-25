@@ -460,10 +460,12 @@ namespace System.Windows.Input
                     //    off of layout events which is why we need to lock this.
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
                     MatrixTransform matTransTmp = new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice));
+                    System.Diagnostics.Trace.WriteLine("hjc CriticalActiveSource:" + stylusDevice.CriticalActiveSource.ToString());
+                    System.Diagnostics.Trace.WriteLine("hjc TabletDevice:" + stylusDevice.CriticalActiveSource.ToString());
                     System.Diagnostics.Trace.WriteLine("hjc matTransTmp:" + matTransTmp.ToString());
                     transformTabletToView.Children.Add(matTransTmp); // this gives matrix in measured units (not device)
                     transformTabletToView.Children.Add(pic.ViewToElement); // Make it relative to the element.
-                    System.Diagnostics.Trace.WriteLine("hjc matTransTmp:" + pic.ViewToElement.ToString());
+                    System.Diagnostics.Trace.WriteLine("hjc ViewToElement:" + pic.ViewToElement.ToString());
                     transformTabletToView.Freeze();  // Must be frozen for multi-threaded access.
                     
                     RawStylusInput rawStylusInput = new RawStylusInput(inputReport, transformTabletToView, pic);

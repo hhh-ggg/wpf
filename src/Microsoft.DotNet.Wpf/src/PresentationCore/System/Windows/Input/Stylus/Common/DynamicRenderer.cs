@@ -450,7 +450,7 @@ namespace System.Windows.Input.StylusPlugIns
                 //}
 
                 rawStylusInput.NotifyWhenProcessed(si);
-                RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
         }
 
@@ -499,6 +499,11 @@ namespace System.Windows.Input.StylusPlugIns
                                 si.canRender = true;
                                 si.allPoints.Add(upCollectionPoints);
                                 RenderPackets(si.allPoints, si);
+
+                                foreach(var pstmp in si.allPoints)
+                                {
+                                    Trace.WriteLine("hjc pstmp x:" + pstmp.X + " " + pstmp.Y);
+                                }
                             }
                             else
                             {

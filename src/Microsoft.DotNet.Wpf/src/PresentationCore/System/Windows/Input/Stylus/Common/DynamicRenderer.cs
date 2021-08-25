@@ -484,34 +484,34 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
 
                         int psLength = si.allPoints.Count;
+                        RenderPackets(rawStylusInput.GetStylusPoints(), si);
 
-                        
-                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
-                        {
-                            if(!si.canRender)
-                            {
-                                StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
-                                if (pointLength(pStart, upCollectionPoints[0]) >= 100)
-                                {
-                                    si.allPoints.Clear();
-                                }
+                        //if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                        //{
+                        //    if(!si.canRender)
+                        //    {
+                        //        StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
+                        //        if (pointLength(pStart, upCollectionPoints[0]) >= 100)
+                        //        {
+                        //            si.allPoints.Clear();
+                        //        }
 
-                                si.canRender = true;
-                                si.allPoints.Add(upCollectionPoints);
-                                RenderPackets(si.allPoints, si);
+                        //        si.canRender = true;
+                        //        si.allPoints.Add(upCollectionPoints);
+                        //        RenderPackets(si.allPoints, si);
 
-                                foreach(var pstmp in si.allPoints)
-                                {
-                                    Trace.WriteLine("hjc pstmp x:" + pstmp.X + " " + pstmp.Y);
-                                }
-                            }
-                            else
-                            {
-                                si.allPoints.Add(upCollectionPoints);
-                                RenderPackets(rawStylusInput.GetStylusPoints(), si);
-                            }                                               
+                        //        foreach(var pstmp in si.allPoints)
+                        //        {
+                        //            Trace.WriteLine("hjc pstmp x:" + pstmp.X + " " + pstmp.Y);
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        si.allPoints.Add(upCollectionPoints);
+                        //        RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                        //    }                                               
                                 
-                        }
+                        //}
                         
                         //if (si.canRender)
                         //{

@@ -392,8 +392,9 @@ namespace System.Windows.Input
                     {
                         newPlugInCollection.FireEnterLeave(true, rawStylusInput, true);
                     }
-                    
+
                     // We are on the pen thread, just call directly.
+                    System.Diagnostics.Trace.WriteLine("hjc FireRawStylusInput");
                     newPlugInCollection.FireRawStylusInput(rawStylusInput);
 
                     // Indicate we've used a stylus plugin
@@ -474,7 +475,15 @@ namespace System.Windows.Input
                     }
                     
                     // We are on the pen thread, just call directly.
-
+                    if(null == stylusDevice.CriticalActiveSource || null == stylusDevice.TabletDevice)
+                    {
+                        if(RawStylusActions.Down == inputReport.Actions)
+                        {
+                            
+                            pic.FireRawStylusInput(rawStylusInput);
+                        }
+                    }
+                    else
                     {
                         pic.FireRawStylusInput(rawStylusInput);
                     }

@@ -243,6 +243,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
+            Trace.WriteLine("thread down id:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
             //Trace.WriteLine("OnStylusDown" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)

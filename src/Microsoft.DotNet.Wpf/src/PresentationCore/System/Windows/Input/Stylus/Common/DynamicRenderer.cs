@@ -485,7 +485,9 @@ namespace System.Windows.Input.StylusPlugIns
 
                         int psLength = si.allPoints.Count;
                         //RenderPackets(rawStylusInput.GetStylusPoints(), si);
-
+                        Trace.WriteLine("hjc 1");
+                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                        {
                             if (!si.canRender)
                             {
                                 StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
@@ -496,6 +498,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                                 si.canRender = true;
                                 si.allPoints.Add(upCollectionPoints);
+                                Trace.WriteLine("hjc 2");
                                 RenderPackets(si.allPoints, si);
 
                                 foreach (var pstmp in si.allPoints)
@@ -505,9 +508,12 @@ namespace System.Windows.Input.StylusPlugIns
                             }
                             else
                             {
+                                si.allPoints.Add(upCollectionPoints);
                                 RenderPackets(rawStylusInput.GetStylusPoints(), si);
+                                Trace.WriteLine("hjc 3");
                             }
 
+                        }
 
                         //if (si.canRender)
                         //{

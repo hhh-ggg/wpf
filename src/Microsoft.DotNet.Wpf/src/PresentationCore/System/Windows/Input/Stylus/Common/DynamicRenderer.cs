@@ -486,8 +486,6 @@ namespace System.Windows.Input.StylusPlugIns
                         int psLength = si.allPoints.Count;
                         //RenderPackets(rawStylusInput.GetStylusPoints(), si);
 
-                        if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
-                        {
                             if (!si.canRender)
                             {
                                 StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
@@ -507,11 +505,9 @@ namespace System.Windows.Input.StylusPlugIns
                             }
                             else
                             {
-                                si.allPoints.Add(upCollectionPoints);
                                 RenderPackets(rawStylusInput.GetStylusPoints(), si);
                             }
 
-                        }
 
                         //if (si.canRender)
                         //{

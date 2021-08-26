@@ -347,100 +347,139 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
 
 
-
                         if (si.canRender)
                         {
+                            //Trace.WriteLine("RenderPackets(rawStylusInput.GetStylusPoints(), si);");
                             RenderPackets(rawStylusInput.GetStylusPoints(), si);
 
                         }
 
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
-                            int timeSpan = si.LastTime - si.StartTime;
-                            //foreach (var ps in upCollectionPoints)
-                            //{
-                            //    //Trace.WriteLine("hjc25 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
-                            //}
-
-
                             if (!si.canRender)
                             {
-                                //进行校验
-                                
+                                int psLength = si.allPoints.Count;
+                                StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
+                                double dLength = pointLengthEX(pStart, upCollectionPoints[0]);
+                                if (dLength >= 20)
                                 {
-                                    //获取si.allPoint的最后一个点
-                                    int psLength = si.allPoints.Count;
-                                    StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
-
-                                    //foreach (var psTmp in upCollectionPoints)
-                                    //{
-                                    //    //Trace.WriteLine("hjcs id: checkcollection: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
-                                    //}
-                                    //同新增点进行比较判断
-                                    foreach (var ps in upCollectionPoints)
-                                    {
-                                        //Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y + " timeSpan" + timeSpan);
-                                        //Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
-                                        double dLength = pointLengthEX(pStart, ps);
-                                        si.totalCount += dLength;
-                                        if (!si.canRender)
-                                        {
-                                            //相邻点的长度大于100时为无效点
-                                            if (dLength <= 200)
-                                            {
-                                                pStart.X = ps.X;
-                                                pStart.Y = ps.Y;
-                                                si.allPoints.Add(ps);
-                                                if (si.totalCount > 10)
-                                                {
-                                                    si.canRender = true;
-                                                }
-                                                else
-                                                {
-                                                    continue;
-                                                }
-                                                    
-                                            }
-                                            else
-                                            {
-                                                //foreach (var psTmp in si.allPoints)
-                                                //{
-                                                //    Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
-                                                //}
-                                                si.allPoints.Clear();
-
-                                                si.allPoints.Add(ps);
-                                                si.canRender = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            si.allPoints.Add(ps);
-                                        }
-                                    }
+                                    si.allPoints.Clear();
+                                    si.allPoints.Add(upCollectionPoints);
+                                    si.canRender = true;
+                                    //Trace.WriteLine("si.canRender" + si.canRender);
                                 }
-
+                                else
+                                {
+                                    si.allPoints.Add(upCollectionPoints);
+                                    si.canRender = true;
+                                    //Trace.WriteLine("si.canRender else" + si.canRender);
+                                }
 
                                 if (si.canRender)
                                 {
+                                    //Trace.WriteLine("RenderPackets(si.allPoints, si);");
                                     RenderPackets(si.allPoints, si);
-                                    //foreach (var psTmp in si.allPoints)
-                                    //{
-                                    //    Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
-                                    //}
                                 }
                             }
                             else
                             {
-                                //foreach (var psTmp in upCollectionPoints)
-                                //{
-                                //    //Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
-                                //}
-
                                 si.allPoints.Add(upCollectionPoints);
                             }
-
                         }
+
+                        //if (si.canRender)
+                        //{
+                        //    RenderPackets(rawStylusInput.GetStylusPoints(), si);
+
+                        //}
+
+                        //if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
+                        //{
+                        //    int timeSpan = si.LastTime - si.StartTime;
+                        //    //foreach (var ps in upCollectionPoints)
+                        //    //{
+                        //    //    //Trace.WriteLine("hjc25 move id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSPan:" + timeSpan);
+                        //    //}
+
+
+                        //    if (!si.canRender)
+                        //    {
+                        //        //进行校验
+
+                        //        {
+                        //            //获取si.allPoint的最后一个点
+                        //            int psLength = si.allPoints.Count;
+                        //            StylusPoint pStart = new StylusPoint(si.allPoints[psLength - 1].X, si.allPoints[psLength - 1].Y);
+
+                        //            //foreach (var psTmp in upCollectionPoints)
+                        //            //{
+                        //            //    //Trace.WriteLine("hjcs id: checkcollection: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                        //            //}
+                        //            //同新增点进行比较判断
+                        //            foreach (var ps in upCollectionPoints)
+                        //            {
+                        //                //Trace.WriteLine("hjcs id: continue start: " + si.StylusId + "X: " + pStart.X + "Y: " + pStart.Y + " timeSpan" + timeSpan);
+                        //                //Trace.WriteLine("hjcs id: continue end: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
+                        //                double dLength = pointLengthEX(pStart, ps);
+                        //                si.totalCount += dLength;
+                        //                if (!si.canRender)
+                        //                {
+                        //                    //相邻点的长度大于100时为无效点
+                        //                    if (dLength <= 200)
+                        //                    {
+                        //                        pStart.X = ps.X;
+                        //                        pStart.Y = ps.Y;
+                        //                        si.allPoints.Add(ps);
+                        //                        if (si.totalCount > 10)
+                        //                        {
+                        //                            si.canRender = true;
+                        //                        }
+                        //                        else
+                        //                        {
+                        //                            continue;
+                        //                        }
+
+                        //                    }
+                        //                    else
+                        //                    {
+                        //                        //foreach (var psTmp in si.allPoints)
+                        //                        //{
+                        //                        //    Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                        //                        //}
+                        //                        si.allPoints.Clear();
+
+                        //                        si.allPoints.Add(ps);
+                        //                        si.canRender = true;
+                        //                    }
+                        //                }
+                        //                else
+                        //                {
+                        //                    si.allPoints.Add(ps);
+                        //                }
+                        //            }
+                        //        }
+
+
+                        //        if (si.canRender)
+                        //        {
+                        //            RenderPackets(si.allPoints, si);
+                        //            //foreach (var psTmp in si.allPoints)
+                        //            //{
+                        //            //    Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                        //            //}
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        //foreach (var psTmp in upCollectionPoints)
+                        //        //{
+                        //        //    //Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                        //        //}
+
+                        //        si.allPoints.Add(upCollectionPoints);
+                        //    }
+
+                        //}
 
 
                     }

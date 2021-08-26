@@ -530,7 +530,7 @@ namespace System.Windows.Input.StylusPlugIns
                                             else
                                             {
                                                 si.allPoints.Clear();
-                                                Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
+                                                //Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + " timeSpan" + timeSpan);
                                                 si.allPoints.Add(ps);
                                                 si.canRender = true;
                                                 si.checkValid = false;
@@ -545,7 +545,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                                 if (timeSpan >= 10)
                                 {
-                                    Trace.WriteLine("hjc id: timeSpan: " + timeSpan);
+                                    //Trace.WriteLine("hjc id: timeSpan: " + timeSpan);
                                     si.checkValid = false;
                                     si.canRender = true;
                                 }

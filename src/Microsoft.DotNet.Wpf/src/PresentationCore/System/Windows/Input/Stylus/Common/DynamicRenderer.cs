@@ -485,7 +485,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                         if (si.canRender)
                         {
-                            Trace.WriteLine("RenderPackets(rawStylusInput.GetStylusPoints(), si);");
+                            //Trace.WriteLine("RenderPackets(rawStylusInput.GetStylusPoints(), si);");
                             RenderPackets(rawStylusInput.GetStylusPoints(), si);
 
                         }
@@ -502,18 +502,18 @@ namespace System.Windows.Input.StylusPlugIns
                                     si.allPoints.Clear();
                                     si.allPoints.Add(upCollectionPoints);
                                     si.canRender = true;
-                                    Trace.WriteLine("si.canRender" + si.canRender);
+                                    //Trace.WriteLine("si.canRender" + si.canRender);
                                 }
                                 else
                                 {
                                     si.allPoints.Add(upCollectionPoints);
                                     si.canRender = true;
-                                    Trace.WriteLine("si.canRender else" + si.canRender);
+                                    //Trace.WriteLine("si.canRender else" + si.canRender);
                                 }
 
                                 if (si.canRender)
                                 {
-                                    Trace.WriteLine("RenderPackets(si.allPoints, si);");
+                                    //Trace.WriteLine("RenderPackets(si.allPoints, si);");
                                     RenderPackets(si.allPoints, si);
                                 }
                             }

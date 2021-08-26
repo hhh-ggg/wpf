@@ -403,10 +403,10 @@ namespace System.Windows.Input.StylusPlugIns
                                             }
                                             else
                                             {
-                                                foreach (var psTmp in si.allPoints)
-                                                {
-                                                    Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
-                                                }
+                                                //foreach (var psTmp in si.allPoints)
+                                                //{
+                                                //    Trace.WriteLine("hjcs id: clear: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                                                //}
                                                 si.allPoints.Clear();
 
                                                 si.allPoints.Add(ps);
@@ -424,10 +424,10 @@ namespace System.Windows.Input.StylusPlugIns
                                 if (si.canRender)
                                 {
                                     RenderPackets(si.allPoints, si);
-                                    foreach (var psTmp in si.allPoints)
-                                    {
-                                        Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
-                                    }
+                                    //foreach (var psTmp in si.allPoints)
+                                    //{
+                                    //    Trace.WriteLine("hjcs id: continue use: " + si.StylusId + "X: " + psTmp.X + "Y: " + psTmp.Y + " timeSpan" + timeSpan);
+                                    //}
                                 }
                             }
                             else

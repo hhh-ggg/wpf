@@ -500,10 +500,12 @@ namespace System.Windows.Input.StylusPlugIns
                                 {
                                     si.allPoints.Clear();
                                     si.allPoints.Add(upCollectionPoints);
+                                    si.canRender = true;
                                 }
                                 else
                                 {
                                     si.allPoints.Add(upCollectionPoints);
+                                    si.canRender = true;
                                 }
 
                                 if (si.canRender)

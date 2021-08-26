@@ -394,7 +394,7 @@ namespace System.Windows.Input
                     }
 
                     // We are on the pen thread, just call directly.
-                    System.Diagnostics.Trace.WriteLine("hjc FireRawStylusInput");
+                    //System.Diagnostics.Trace.WriteLine("hjc FireRawStylusInput");
                     newPlugInCollection.FireRawStylusInput(rawStylusInput);
 
                     // Indicate we've used a stylus plugin

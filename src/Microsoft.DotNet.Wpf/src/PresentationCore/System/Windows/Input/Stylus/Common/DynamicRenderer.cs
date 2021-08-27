@@ -448,7 +448,7 @@ namespace System.Windows.Input.StylusPlugIns
                 //{
                 //    //Trace.WriteLine("hjc25 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                 //}
-
+                Trace.WriteLine("hjc down");
                 rawStylusInput.NotifyWhenProcessed(si);
                 //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }

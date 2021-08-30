@@ -824,14 +824,14 @@ namespace System.Windows.Input
                 FlushCache(false);  // make sure we flush cache if not caching.
             }
 
-            System.Diagnostics.Trace.WriteLine("hjc before PenEventPenDown");
+            //System.Diagnostics.Trace.WriteLine("hjc before PenEventPenDown");
             //
             // fire it
             //
             switch (evt)
             {
                 case PenEventPenDown:
-                    System.Diagnostics.Trace.WriteLine("hjc PenEventPenDown");
+                    //System.Diagnostics.Trace.WriteLine("hjc PenEventPenDown");
                     penContext.FirePenInRange(stylusPointerId, data, timestamp);
                     penContext.FirePenDown(stylusPointerId, data, timestamp);
                     break;
@@ -1224,7 +1224,7 @@ namespace System.Windows.Input
                         }
                         else
                         {
-                            System.Diagnostics.Trace.WriteLine("hjc handles count:" + _handles.Length);
+                           // System.Diagnostics.Trace.WriteLine("hjc handles count:" + _handles.Length);
                             if (!MS.Win32.Penimc.UnsafeNativeMethods.GetPenEventMultiple(
                                 _handles.Length, _handles, _pimcResetHandle.Value,
                                 out iHandleEvt, out evt, out stylusPointerId,
@@ -1249,7 +1249,7 @@ namespace System.Windows.Input
                             // If we get an event from a GC'd PenContext then just ignore.
                             if (penContext != null)
                             {
-                                System.Diagnostics.Trace.WriteLine("hjc FireEvent");
+                               // System.Diagnostics.Trace.WriteLine("hjc FireEvent");
                                 FireEvent(penContext, evt, stylusPointerId, cPackets, cbPacket, pPackets);
                                 penContext = null;
                             }

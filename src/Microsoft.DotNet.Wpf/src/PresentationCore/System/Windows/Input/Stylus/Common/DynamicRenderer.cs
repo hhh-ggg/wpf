@@ -418,13 +418,16 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
+            Trace.WriteLine("hjc down");
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
                 StrokeInfo si;
-                
-                lock(siLockEx)
+
+                Trace.WriteLine("hjc down lock");
+                lock (siLockEx)
                 {
+                    Trace.WriteLine("hjc down find");
                     si = FindStrokeInfo(rawStylusInput.Timestamp);
                    
                     // If we find we are already in the middle of stroke then bail out.
@@ -434,6 +437,7 @@ namespace System.Windows.Input.StylusPlugIns
                         return; 
                     }
 
+                    Trace.WriteLine("hjc down add");
                     si = new StrokeInfo(DrawingAttributes, rawStylusInput.StylusDeviceId, rawStylusInput.Timestamp, GetCurrentHostVisual());
                     si.allPoints = new StylusPointCollection(rawStylusInput.GetStylusPoints().Description);
                     StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
@@ -448,8 +452,9 @@ namespace System.Windows.Input.StylusPlugIns
                 //{
                 //    //Trace.WriteLine("hjc25 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
                 //}
-                //Trace.WriteLine("hjc down");
+                
                 rawStylusInput.NotifyWhenProcessed(si);
+                Trace.WriteLine("hjc down end");
                 //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
         }

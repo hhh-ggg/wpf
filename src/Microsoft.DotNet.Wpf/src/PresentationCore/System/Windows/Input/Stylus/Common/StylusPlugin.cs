@@ -94,6 +94,7 @@ namespace System.Windows.Input.StylusPlugIns
                 switch (rawStylusInput.Report.Actions)
                 {
                     case RawStylusActions.Down:
+                        System.Diagnostics.Trace.WriteLine("hjc StylusPlugin rawStylusInput Down");
                         OnStylusDown(rawStylusInput);
                         break;
                     case RawStylusActions.Move:

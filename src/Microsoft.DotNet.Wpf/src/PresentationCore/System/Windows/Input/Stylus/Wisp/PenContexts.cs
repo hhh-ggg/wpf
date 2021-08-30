@@ -473,18 +473,20 @@ namespace System.Windows.Input
                         stylusDevice.CurrentNonVerifiedTarget = pic;
                         pic.FireEnterLeave(true, rawStylusInput, false);
                     }
-                    
+
+                    System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection");
                     // We are on the pen thread, just call directly.
                     if(null == stylusDevice.CriticalActiveSource || null == stylusDevice.TabletDevice)
                     {
                         if(RawStylusActions.Down == inputReport.Actions)
                         {
-                            
+                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput Down");
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
                     else
                     {
+                        System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput");
                         pic.FireRawStylusInput(rawStylusInput);
                     }
                     

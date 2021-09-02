@@ -418,7 +418,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
-            Trace.WriteLine("hjc down");
+            Trace.WriteLine("hjcs down");
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
@@ -617,7 +617,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            Trace.WriteLine("hjc up");
+            Trace.WriteLine("hjcs up");
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {

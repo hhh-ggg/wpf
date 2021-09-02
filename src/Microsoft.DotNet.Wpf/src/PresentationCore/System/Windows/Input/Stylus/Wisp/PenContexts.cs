@@ -478,7 +478,7 @@ namespace System.Windows.Input
                     // We are on the pen thread, just call directly.
                     if(null == stylusDevice.CriticalActiveSource || null == stylusDevice.TabletDevice)
                     {
-                        if(RawStylusActions.Down == inputReport.Actions)
+                        if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
                         {
                             System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput Down");
                             pic.FireRawStylusInput(rawStylusInput);

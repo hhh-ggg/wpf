@@ -617,6 +617,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
+            Trace.WriteLine("hjc up");
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
@@ -628,6 +629,7 @@ namespace System.Windows.Input.StylusPlugIns
                       (si.IsReset || 
                       (si.IsTimestampAfter(rawStylusInput.Timestamp) && IsStylusUp(si.StylusId))))))
                 {
+                    Trace.WriteLine("hjc SeenUp");
                     si.SeenUp = true;
                     si.LastTime = rawStylusInput.Timestamp;
                     rawStylusInput.NotifyWhenProcessed(si);

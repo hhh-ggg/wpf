@@ -831,13 +831,13 @@ namespace System.Windows.Input
             switch (evt)
             {
                 case PenEventPenDown:
-                    System.Diagnostics.Trace.WriteLine("hjc PenEventPenDown");
+                    System.Diagnostics.Trace.WriteLine("hjcf PenEventPenDown: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
                     penContext.FirePenInRange(stylusPointerId, data, timestamp);
                     penContext.FirePenDown(stylusPointerId, data, timestamp);
                     break;
 
                 case PenEventPenUp:
-                    System.Diagnostics.Trace.WriteLine("hjc PenEventPenUp");
+                    System.Diagnostics.Trace.WriteLine("hjcf PenEventPenUp: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
                     penContext.FirePenInRange(stylusPointerId, data, timestamp);
                     penContext.FirePenUp(stylusPointerId, data, timestamp);
                     break;

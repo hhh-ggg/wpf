@@ -438,16 +438,40 @@ namespace System.Windows.Input
                         break;
 
                     default:
+                        if (RawStylusActions.Down == inputReport.Actions)
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc check down return");
+                        }
                         return; // Nothing to do unless one of the above events
                 }
 
                 WispStylusDevice stylusDevice = inputReport.StylusDevice.As<WispStylusDevice>();
 
                 StylusPlugInCollection currentPic = stylusDevice.CurrentNonVerifiedTarget;
-                
+
+                if(null == currentPic)
+                {
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return1");
+                    }
+                }
+
+                if(null == pic)
+                {
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return2");
+                    }
+                }
+
                 // Fire Leave event if we need to.
                 if (currentPic != null && currentPic != pic)
                 {
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return3");
+                    }
                     // Create new RawStylusInput to send
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
                     transformTabletToView.Children.Add(new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice))); // this gives matrix in measured units (not device)
@@ -477,6 +501,10 @@ namespace System.Windows.Input
                     RawStylusInput rawStylusInput = new RawStylusInput(inputReport, transformTabletToView, pic);
                     inputReport.RawStylusInput = rawStylusInput;
 
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return4");
+                    }
                     if (pic != currentPic)
                     {
                         stylusDevice.CurrentNonVerifiedTarget = pic;

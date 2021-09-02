@@ -372,6 +372,7 @@ namespace System.Windows.Input.StylusPlugIns
                         for (int i = 0; i < this.Count; i++)
                         {
                             StylusPlugIn plugIn = base[i];
+                            System.Diagnostics.Trace.WriteLine("hjc: " + plugIn.GetType().Name);
                             // set current plugin so any callback data gets an owner.
                             args.CurrentNotifyPlugIn = plugIn;
                             plugIn.RawStylusInput(args);

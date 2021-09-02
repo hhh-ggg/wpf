@@ -419,6 +419,15 @@ namespace System.Windows.Input
             // be made until we finish routing this event.
             lock(__rtiLock)
             {
+                if (RawStylusActions.Down == inputReport.Actions)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc before InvokeStylusPluginCollection rawStylusInput down");
+                }
+                else if (RawStylusActions.Up == inputReport.Actions)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc before InvokeStylusPluginCollection rawStylusInput up");
+                }
+
                 switch (inputReport.Actions)
                 {
                     case RawStylusActions.Down:
@@ -480,13 +489,28 @@ namespace System.Windows.Input
                     {
                         if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
                         {
-                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput Down");
+                            if(RawStylusActions.Down == inputReport.Actions)
+                            {
+                                System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput down" );
+                            }
+                            else if(RawStylusActions.Up == inputReport.Actions)
+                                {
+                                System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput up" );
+                            }
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput");
+                        if (RawStylusActions.Down == inputReport.Actions)
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput down");
+                        }
+                        else if (RawStylusActions.Up == inputReport.Actions)
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput up");
+                        }
+
                         pic.FireRawStylusInput(rawStylusInput);
                     }
                     

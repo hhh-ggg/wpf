@@ -434,6 +434,7 @@ namespace System.Windows.Input.StylusPlugIns
                     // Can only ink with one stylus at a time.
                     if (si != null)
                     {
+                        Trace.WriteLine("hjc down return");
                         return; 
                     }
 

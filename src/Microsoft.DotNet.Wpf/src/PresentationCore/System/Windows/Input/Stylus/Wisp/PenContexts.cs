@@ -577,11 +577,14 @@ namespace System.Windows.Input
                 System.Diagnostics.Debug.Assert(data.Length % pointLength == 0);
                 Point ptTablet = new Point(data[data.Length - pointLength], data[data.Length - pointLength + 1]);
                 // Note: the StylusLogic data inside DeviceUnitsFromMeasurUnits is protected by __rtiLock.
+                System.Diagnostics.Trace.WriteLine("hjc93 " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 ptTablet = ptTablet * stylusDevice.TabletDevice.TabletDeviceImpl.TabletToScreen;
+                System.Diagnostics.Trace.WriteLine("hjc93 to screen " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 ptTablet.X = (int)Math.Round(ptTablet.X); // Make sure we snap to whole window pixels.
                 ptTablet.Y = (int)Math.Round(ptTablet.Y);
+                System.Diagnostics.Trace.WriteLine("hjc93 to Round " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 ptTablet = _stylusLogic.MeasureUnitsFromDeviceUnits(stylusDevice.CriticalActiveSource, ptTablet); // change to measured units now.
-
+                System.Diagnostics.Trace.WriteLine("hjc93 to Measure " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 pic = HittestPlugInCollection(ptTablet); // Use cached rectangles for UIElements.
             }
             return pic;

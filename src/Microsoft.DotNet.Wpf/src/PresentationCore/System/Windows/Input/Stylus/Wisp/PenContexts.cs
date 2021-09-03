@@ -621,6 +621,7 @@ namespace System.Windows.Input
                 }
             }
 
+            System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
             return null;
         }
 

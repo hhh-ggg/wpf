@@ -400,6 +400,7 @@ namespace System.Windows.Input.StylusWisp
 
                         report.Synchronized = true;
 
+                        System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 3 ");
                         InputReportEventArgs inputReportEventArgs = new InputReportEventArgs(StylusDevice, report);
                         inputReportEventArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
 
@@ -1721,6 +1722,7 @@ namespace System.Windows.Input.StylusWisp
 
                         InputReportEventArgs inputReportArgs = new InputReportEventArgs(StylusDevice, mouseInputReport);
                         inputReportArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
+                        System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 2 ");
                         _stylusLogic.InputManagerProcessInputEventArgs(inputReportArgs);
                     }
                 }

@@ -339,6 +339,10 @@ namespace System.Windows.Input.StylusPointer
                 if (sendRawStylusInput)
                 {
                     // We are on the pen thread, just call directly.
+                    if(rawStylusInputReport.Actions == RawStylusActions.Down)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc93 down 1");
+                    }
                     targetPIC.FireRawStylusInput(rawStylusInputReport.RawStylusInput);
                     updateEventPoints = (updateEventPoints || rawStylusInputReport.RawStylusInput.StylusPointsModified);
 
@@ -400,9 +404,14 @@ namespace System.Windows.Input.StylusPointer
 
                 if (newPlugInCollection != currentPlugInCollection)
                 {
+
                     newPlugInCollection.FireEnterLeave(true, rawStylusInput, true);
                 }
 
+                if (inputReport.Actions == RawStylusActions.Down)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc93 down 3");
+                }
                 // (Comment not applicable until RTI back in) We are on the RTI thread, just call directly.
                 newPlugInCollection.FireRawStylusInput(rawStylusInput);
 
@@ -487,6 +496,10 @@ namespace System.Windows.Input.StylusPointer
                 }
 
                 // Send the input
+                if (inputReport.Actions == RawStylusActions.Down)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc93 down 2");
+                }
                 pic.FireRawStylusInput(rawStylusInput);
 
                 // Indicate we've used a stylus plugin

@@ -3043,7 +3043,7 @@ namespace System.Windows.Input.StylusWisp
                 System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock null" + stylusDeviceId);
             }
 
-            WispStylusDevice tmpdevice = tylusDevice?.As<WispStylusDevice>();
+            WispStylusDevice tmpdevice = stylusDevice?.As<WispStylusDevice>();
             if(null == tmpdevice)
             {
                 System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock WispStylusDevice null" + stylusDeviceId);

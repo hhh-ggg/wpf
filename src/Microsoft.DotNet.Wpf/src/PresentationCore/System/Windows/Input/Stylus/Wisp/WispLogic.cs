@@ -2998,8 +2998,11 @@ namespace System.Windows.Input.StylusWisp
                     // We add a tag here so we can check for this specific exception
                     // in TabletCollection when adding new tablet devices.
                     ioe.Data.Add("System.Windows.Input.StylusLogic", "");
+                    System.Diagnostics.Trace.WriteLine("hjc93 down System.Windows.Input.StylusLogic" + stylusDevice.ToString());
                     throw (ioe);
                 }
+
+                System.Diagnostics.Trace.WriteLine("hjc93 RegisterStylusDeviceCore id:" + stylusDeviceId + " device:" + stylusDevice.ToString());
                 __stylusDeviceMap[stylusDeviceId] = stylusDevice;
             }
         }
@@ -3031,8 +3034,10 @@ namespace System.Windows.Input.StylusWisp
             StylusDevice stylusDevice;
             lock (__stylusDeviceLock)
             {
+                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock" + stylusDeviceId);
                 __stylusDeviceMap.TryGetValue(stylusDeviceId, out stylusDevice);
             }
+            
             return stylusDevice?.As<WispStylusDevice>();
         }
 

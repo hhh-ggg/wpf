@@ -3037,7 +3037,27 @@ namespace System.Windows.Input.StylusWisp
                 System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock" + stylusDeviceId);
                 __stylusDeviceMap.TryGetValue(stylusDeviceId, out stylusDevice);
             }
-            
+
+            if(null == stylusDevice)
+            {
+                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock null" + stylusDeviceId);
+            }
+
+            WispStylusDevice tmpdevice = tylusDevice?.As<WispStylusDevice>();
+            if(null == tmpdevice)
+            {
+                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock WispStylusDevice null" + stylusDeviceId);
+            }
+
+            if(null != tmpdevice && tmpdevice.IsValid)
+            {
+                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock WispStylusDevice valid" + stylusDeviceId);
+            }
+            else
+            {
+                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock WispStylusDevice unvalid" + stylusDeviceId);
+            }
+
             return stylusDevice?.As<WispStylusDevice>();
         }
 

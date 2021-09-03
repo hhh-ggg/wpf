@@ -302,7 +302,7 @@ namespace System.Windows.Input.StylusPlugIns
         {
             Point ptElement = pt;
             _viewToElement.TryTransform(ptElement, out ptElement);
-            System.Diagnostics.Trace.WriteLine("hjc93 _rc: " + _rc.ToString() +" pt x:" + pt.X + " pt y:" + pt.Y);
+            System.Diagnostics.Trace.WriteLine("hjc93 _rc: " + _rc.ToString() + " ptElement x:" + ptElement.X + " ptElement y:" + ptElement.Y);
             return _rc.Contains(ptElement);
         }
 

@@ -2716,6 +2716,10 @@ namespace System.Windows.Input.StylusWisp
                 {
                     // We are on the pen thread, just call directly.
                     targetPIC.FireRawStylusInput(rawStylusInputReport.RawStylusInput);
+                    if (rawStylusInputReport.Actions == RawStylusActions.Down)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc93 down 5");
+                    }
                     updateEventPoints = (updateEventPoints || rawStylusInputReport.RawStylusInput.StylusPointsModified);
 
                     // Indicate we've used a stylus plugin

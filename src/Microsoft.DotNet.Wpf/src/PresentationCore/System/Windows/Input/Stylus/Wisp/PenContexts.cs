@@ -3,552 +3,644 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics;
-using System.Collections.Specialized;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Collections;
 using System.Collections.Generic;
+
+using System.Windows.Threading;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Input.StylusWisp;
+using System.Windows.Media;
 using System.Security;
 using MS.Internal;
-using MS.Win32.Penimc;
+
+using MS.Win32;
+using MS.Utility;
+using System.Runtime.InteropServices;
+
+using System.Windows.Input.StylusPlugIns;
+using System.Windows.Interop;
 
 using SR=MS.Internal.PresentationCore.SR;
 using SRID=MS.Internal.PresentationCore.SRID;
+
+using MS.Internal.PresentationCore;                        // SecurityHelper
 
 namespace System.Windows.Input
 {
     /////////////////////////////////////////////////////////////////////////
 
-    internal sealed class PenContext
+    internal sealed class PenContexts
     {
-        internal PenContext(IPimcContext3 pimcContext, IntPtr hwnd, 
-                                PenContexts contexts, bool supportInRange, bool isIntegrated,
-                                int id, IntPtr commHandle, int tabletDeviceId, UInt32 wispContextKey)
+        /////////////////////////////////////////////////////////////////////////
+
+        internal PenContexts(WispLogic stylusLogic, PresentationSource inputSource)
         {
-            _contexts = contexts;
-            _pimcContext = new SecurityCriticalDataClass<IPimcContext3>(pimcContext);
-            _id = id;
-            _tabletDeviceId = tabletDeviceId;
-            _commHandle = new SecurityCriticalData<IntPtr>(commHandle);
-            _hwnd = new SecurityCriticalData<IntPtr>(hwnd);
-            _supportInRange = supportInRange;
-            _isIntegrated = isIntegrated;
-            WispContextKey = wispContextKey;
-            UpdateScreenMeasurementsPending = false;
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        /// <summary>
-        /// Handles clean up of internal object data.
-        /// </summary>
-        ~PenContext()
-        {
-            TryRemove(shutdownWorkerThread:false); // Make sure we remove the context from the active list.
-
-            _pimcContext = null;
-            _contexts = null;
-
-            GC.KeepAlive(this);
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal PenContexts Contexts
-        {
-            get
+            HwndSource hwndSource = inputSource as HwndSource;
+            if(hwndSource == null || IntPtr.Zero == (hwndSource).CriticalHandle)
             {
-                return _contexts;
+                throw new InvalidOperationException(SR.Get(SRID.Stylus_PenContextFailure));
             }
-        }
 
-        /////////////////////////////////////////////////////////////////////
-
-        internal IntPtr CommHandle
-        {
-            get
-            {
-                return _commHandle.Value;
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal int Id
-        {
-            get
-            {
-                return _id;
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal int TabletDeviceId
-        {
-            get
-            {
-                return _tabletDeviceId;
-            }
+            _stylusLogic  = stylusLogic;
+            _inputSource   = new SecurityCriticalData<HwndSource>(hwndSource);
         }
 
         /////////////////////////////////////////////////////////////////////////
 
-        internal StylusPointDescription StylusPointDescription
-        {
-            get
-            {
-                if (_stylusPointDescription == null)
-                {
-                    InitStylusPointDescription(); // init _stylusPointDescription.
-                }
-
-                return _stylusPointDescription;
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        private void InitStylusPointDescription()
-        {
-            int cProps;
-            int cButtons;
-            int pressureIndex = -1;
-
-            // Make sure we are never called on the application thread when we need to talk
-            // to penimc or else we can cause reentrancy!
-            Debug.Assert(!_contexts._inputSource.Value.CheckAccess());
-
-            // We should always have a valid IPimcContext3 interface pointer.
-            Debug.Assert(_pimcContext != null && _pimcContext.Value != null);
-            
-            _pimcContext.Value.GetPacketDescriptionInfo(out cProps, out cButtons); // Calls Unmanaged code - SecurityCritical with SUC.
-
-            List<StylusPointPropertyInfo> propertyInfos = new List<StylusPointPropertyInfo>(cProps + cButtons + 3);
-            for (int i = 0; i < cProps; i++)
-            {
-                Guid guid;
-                int min, max;
-                int units;
-                float res;
-                _pimcContext.Value.GetPacketPropertyInfo(i, out guid, out min, out max, out units, out res); // Calls Unmanaged code - SecurityCritical with SUC.
-
-                if (pressureIndex == -1 && guid == StylusPointPropertyIds.NormalPressure)
-                {
-                    pressureIndex = i;
-                }
-                
-                if (_statusPropertyIndex == -1 && guid == StylusPointPropertyIds.PacketStatus)
-                {
-                    _statusPropertyIndex = i;
-                }
-
-                StylusPointPropertyInfo propertyInfo = new StylusPointPropertyInfo(new StylusPointProperty(guid, false), min, max, (StylusPointPropertyUnit)units, res);
-                
-                propertyInfos.Add(propertyInfo);
-            }
-
-            Debug.Assert(_statusPropertyIndex != -1);  // We should always see this.
-            
-            // Make sure we actually created propertyInfos OK
-            if (propertyInfos != null)
-            {
-                for (int i = 0; i < cButtons; i++)
-                {
-                    Guid buttonGuid;
-                    _pimcContext.Value.GetPacketButtonInfo(i, out buttonGuid); // Calls Unmanaged code - SecurityCritical with SUC.
-
-                    StylusPointProperty buttonProperty = new StylusPointProperty(buttonGuid, true);
-                    StylusPointPropertyInfo buttonInfo = new StylusPointPropertyInfo(buttonProperty);
-                    propertyInfos.Add(buttonInfo);
-                }
-
-                //validate we can never get X, Y at index != 0, 1
-                Debug.Assert(propertyInfos[StylusPointDescription.RequiredXIndex /*0*/].Id == StylusPointPropertyIds.X, "X isn't where we expect it! Fix PenImc to ask for X at index 0");
-                Debug.Assert(propertyInfos[StylusPointDescription.RequiredYIndex /*0*/].Id == StylusPointPropertyIds.Y, "Y isn't where we expect it! Fix PenImc to ask for Y at index 1");
-                Debug.Assert(pressureIndex == -1 || pressureIndex == StylusPointDescription.RequiredPressureIndex /*2*/, 
-                    "Fix PenImc to ask for NormalPressure at index 2!");
-                if (pressureIndex == -1)
-                {
-                    //pressure wasn't found.  Add it
-                    propertyInfos.Insert(StylusPointDescription.RequiredPressureIndex /*2*/, StylusPointPropertyInfoDefaults.NormalPressure);
-                }
-                _infoX = propertyInfos[0];
-                _infoY = propertyInfos[1];
-                
-                _stylusPointDescription = new StylusPointDescription(propertyInfos, pressureIndex);
-            }
-}
-
-
         internal void Enable()
         {
-            if (_pimcContext != null && _pimcContext.Value != null)
+            if (_contexts == null)
             {
-                _penThreadPenContext = PenThreadPool.GetPenThreadForPenContext(this);
+                // create contexts
+                _contexts = _stylusLogic.WispTabletDevices.CreateContexts(_inputSource.Value.CriticalHandle, this);
+
+                foreach(PenContext context in _contexts)
+                {
+                    context.Enable();
+                }
             }
         }
 
         internal void Disable(bool shutdownWorkerThread)
         {
-            if (TryRemove(shutdownWorkerThread))
+            if (_contexts != null)
             {
-                
-                // A successful removal should suppress finalization as this is call is
-                // explicity and the finalizer only calls DisableImpl directly.
-                GC.SuppressFinalize(this);
+                foreach(PenContext context in _contexts)
+                {
+                    context.Disable(shutdownWorkerThread);
+                }
+
+                _contexts = null; // release refs on PenContext objects
             }
         }
 
-        /// <summary>
-        /// Attempts to remove this PenContext from the PenThread.  If removal succeeds this function
-        /// will also attempt to shutdown the associated PenThread if requested via <paramref name="shutdownWorkerThread"/>.
-        /// </summary>
-        /// <param name="shutdownWorkerThread">If true, will dispose the PenThread associated with this PenContext if context removal is successful.</param>
-        /// <returns>True if context removal is successful, false otherwise.</returns>
-        private bool TryRemove(bool shutdownWorkerThread)
+        internal bool IsWindowDisabled
         {
-            
-            // There was a prior assumption here that this would always be called under Dispatcher.DisableProcessing.
-            // This assumption has not been valid for some time, leading to re-entrancy.
-            if (_penThreadPenContext != null)
+            get { return _isWindowDisabled; }
+            set { _isWindowDisabled = value; }
+        }
+
+        internal Point DestroyedLocation
+        {
+            get { return _destroyedLocation; }
+            set { _destroyedLocation = value; }
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        internal void OnPenDown(PenContext penContext, int tabletDeviceId, int stylusPointerId, int[] data, int timestamp)
+        {
+            ProcessInput(RawStylusActions.Down, penContext, tabletDeviceId, stylusPointerId, data, timestamp);
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        internal void OnPenUp(PenContext penContext, int tabletDeviceId, int stylusPointerId, int[] data, int timestamp)
+        {
+            ProcessInput(RawStylusActions.Up, penContext, tabletDeviceId, stylusPointerId, data, timestamp);
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        internal void OnPackets(PenContext penContext, int tabletDeviceId, int stylusPointerId, int[] data, int timestamp)
+        {
+            ProcessInput(RawStylusActions.Move, penContext, tabletDeviceId, stylusPointerId, data, timestamp);
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        internal void OnInAirPackets(PenContext penContext, int tabletDeviceId, int stylusPointerId, int[] data, int timestamp)
+        {
+            ProcessInput(RawStylusActions.InAirMove, penContext, tabletDeviceId, stylusPointerId, data, timestamp);
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        internal void OnPenInRange(PenContext penContext, int tabletDeviceId, int stylusPointerId, int[] data, int timestamp)
+        {
+            ProcessInput(RawStylusActions.InRange, penContext, tabletDeviceId, stylusPointerId, data, timestamp);
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        internal void OnPenOutOfRange(PenContext penContext, int tabletDeviceId, int stylusPointerId, int timestamp)
+        {
+            ProcessInput(RawStylusActions.OutOfRange, penContext, tabletDeviceId, stylusPointerId, new int[]{}, timestamp);
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+
+        internal void OnSystemEvent(PenContext penContext, 
+                                           int tabletDeviceId, 
+                                           int stylusPointerId, 
+                                           int timestamp, 
+                                           SystemGesture id, 
+                                           int gestureX,
+                                           int gestureY,
+                                           int buttonState)
+        {
+            _stylusLogic.ProcessSystemEvent(penContext, 
+                                             tabletDeviceId,
+                                             stylusPointerId, 
+                                             timestamp,
+                                             id, 
+                                             gestureX, 
+                                             gestureY,
+                                             buttonState, 
+                                             _inputSource.Value);
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        void ProcessInput(
+            RawStylusActions actions,
+            PenContext penContext,
+            int tabletDeviceId, 
+            int stylusPointerId,
+            int[] data, int timestamp)
+        {
+            // (all events but SystemEvent go thru here)
+            _stylusLogic.ProcessInput(
+                                        actions,
+                                        penContext,
+                                        tabletDeviceId,
+                                        stylusPointerId,
+                                        data, 
+                                        timestamp,
+                                        _inputSource.Value);
+        }
+
+        /////////////////////////////////////////////////////////////////////////
+
+        internal PenContext GetTabletDeviceIDPenContext(int tabletDeviceId)
+        {
+            if (_contexts != null)
             {
-                if (_penThreadPenContext.RemovePenContext(this))
+                for (int i = 0; i < _contexts.Length; i++)
                 {
-                    // Check if we need to shut down our pen thread.
-                    if (shutdownWorkerThread)
-                    {
-                        
-                        // A re-entrant call might find us with a null penThreadContext so we 
-                        // need to guard the call to Dispose against a null even though we already 
-                        // have a check above.
-                        _penThreadPenContext?.Dispose();
-                    }
-
-                    _penThreadPenContext = null; // Can't free this ref until we can remove this context or else we won't see the stylus OutOfRange.
-
-                    return true;
+                    PenContext context = _contexts[i];
+                    if (context.TabletDeviceId == tabletDeviceId) 
+                        return context;
                 }
             }
+            return null;
+        }
 
+        /////////////////////////////////////////////////////////////////////////
+
+        internal bool ConsiderInRange(int timestamp)
+        {
+            if (_contexts != null)
+            {
+                for (int i = 0; i < _contexts.Length; i++)
+                {
+                    PenContext context = _contexts[i];
+                    
+                    // We consider it InRange if we have a queued up context event or 
+                    // the timestamp - LastInRangeTime <= 500 (seen one in the last 500ms)
+                    //  Here's some info on how this works...
+                    //      int.MaxValue - int.MinValue = -1 (subtracting any negative # from MaxValue keeps this negative)
+                    //      int.MinValue - int.MaxValue = 1 (subtracting any positive # from MinValue keeps this positive)
+                    //  So subtracting wrapping values will return proper sign depending on which was earlier.
+                    //  We do have the assumption that these values will be relative close in time.  If the
+                    //  time wraps we'll say yet but the only harm is that we may defer a mouse move event temporarily
+                    //  which won't cause any harm.
+                    if (context.QueuedInRangeCount > 0 || (Math.Abs(unchecked(timestamp - context.LastInRangeTime)) <= 500))
+                        return true;
+                }
+            }
             return false;
         }
 
+
         /////////////////////////////////////////////////////////////////////
 
-        internal bool SupportInRange
+        /// <summary>
+        /// This method adds the specified pen context index in response
+        /// to the WM_TABLET_ADDED notification
+        /// </summary>
+        internal void AddContext(uint index)
+        {
+            // We only tear down the old context when PenContexts are enabled without being
+            // dispose and we have a valid index. Otherwise, no-op here.
+            if (_contexts != null && index <= _contexts.Length && _inputSource.Value.CriticalHandle != IntPtr.Zero)
+            {
+                PenContext[] ctxs = new PenContext[_contexts.Length + 1];
+                uint preCopyCount = index;
+                uint postCopyCount = (uint)_contexts.Length - index;
+
+                Array.Copy(_contexts, 0, ctxs, 0, preCopyCount);
+                PenContext newContext = _stylusLogic.TabletDevices[(int)index].As<WispTabletDevice>().CreateContext(_inputSource.Value.CriticalHandle, this);
+                ctxs[index] = newContext;
+                Array.Copy(_contexts, index, ctxs, index+1, postCopyCount);
+                _contexts = ctxs;
+                newContext.Enable();
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// This method removes the specified pen context index in response
+        /// to the WM_TABLET_REMOVED notification
+        /// </summary>
+        internal void RemoveContext(uint index)
+        {
+            // We only tear down the old context when PenContexts are enabled without being
+            // dispose and we have a valid index. Otherwise, no-op here.
+            if (_contexts != null && index < _contexts.Length)
+            {
+                PenContext removeCtx = _contexts[index];
+
+                PenContext[] ctxs = new PenContext[_contexts.Length - 1];
+                uint preCopyCount = index;
+                uint postCopyCount = (uint)_contexts.Length - index - 1;
+
+                Array.Copy(_contexts, 0, ctxs, 0, preCopyCount);
+                Array.Copy(_contexts, index+1, ctxs, index, postCopyCount);
+
+                removeCtx.Disable(false); // shut down this context.
+
+                _contexts = ctxs;
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////////
+
+        internal object SyncRoot 
         {
             get
             {
-                return _supportInRange;
+                return __rtiLock;
             }
+        } 
+
+
+        internal void AddStylusPlugInCollection(StylusPlugInCollection pic)
+        {
+            // must be called from inside of lock(__rtiLock)
+            
+            // insert in ZOrder
+            _plugInCollectionList.Insert(FindZOrderIndex(pic), pic); 
+        }
+        
+        internal void RemoveStylusPlugInCollection(StylusPlugInCollection pic)
+        {
+            // must be called from inside of lock(__rtiLock)
+            _plugInCollectionList.Remove(pic);
         }
 
-        internal bool IsInRange(int stylusPointerId)
+        internal int FindZOrderIndex(StylusPlugInCollection spicAdding)
         {
-            // zero is a special case where we want to know if any stylus devices are in range.
-            if (stylusPointerId == 0)
-                return _stylusDevicesInRange != null && _stylusDevicesInRange.Count > 0;
-            else
-                return (_stylusDevicesInRange != null && _stylusDevicesInRange.Contains(stylusPointerId));
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal void FirePenDown (int stylusPointerId, int[] data, int timestamp)
-        {
-            timestamp = EnsureTimestampUnique(timestamp);
-            _lastInRangeTime = timestamp;
-
-            // make sure this gets initialized on the penthread!!
-            if (_stylusPointDescription == null)
+            //should be called inside of lock(__rtiLock)
+            DependencyObject spicAddingVisual = spicAdding.Element as Visual;
+            int i;
+            for (i=0; i < _plugInCollectionList.Count; i++)
             {
-                InitStylusPointDescription(); // init _stylusPointDescription.
-            }
-            
-            _contexts.OnPenDown(this, _tabletDeviceId, stylusPointerId, data, timestamp);
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal void FirePenUp (int stylusPointerId, int[] data, int timestamp)
-        {
-            timestamp = EnsureTimestampUnique(timestamp);
-            _lastInRangeTime = timestamp;
-            
-            // make sure this gets initialized on the penthread!!
-            if (_stylusPointDescription == null)
-            {
-                InitStylusPointDescription(); // init _stylusPointDescription.
-            }
-            
-            _contexts.OnPenUp(this, _tabletDeviceId, stylusPointerId, data, timestamp);
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal void FirePackets(int stylusPointerId, int[] data, int timestamp)
-        {
-            timestamp = EnsureTimestampUnique(timestamp);
-            _lastInRangeTime = timestamp;
-            
-            // make sure this gets initialized on the penthread!!
-            if (_stylusPointDescription == null)
-            {
-                InitStylusPointDescription(); // init _stylusPointDescription.
-            }
-            
-            bool fDownPackets = false;
-            if (_statusPropertyIndex != -1)
-            {
-                int status = data[_statusPropertyIndex]; // (we take status of the first packet for status of all of them)
-                fDownPackets = (status & 1/*IP_CURSOR_DOWN*/) != 0;
-            }
-
-            if (fDownPackets)
-            {
-                _contexts.OnPackets(this, _tabletDeviceId, stylusPointerId, data, timestamp);
-            }
-            else
-            {
-                _contexts.OnInAirPackets(this, _tabletDeviceId, stylusPointerId, data, timestamp);
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal void FirePenInRange(int stylusPointerId, int[] data, int timestamp)
-        {
-            // make sure this gets initialized on the penthread!!
-            if (_stylusPointDescription == null)
-            {
-                InitStylusPointDescription(); // init _stylusPointDescription.
-            }
-            
-            // Special case where we want to forward this to the application early (this is the real
-            // stylus InRange event we don't currently use).
-            if (data == null)
-            {
-                _lastInRangeTime = timestamp; // Always reset timestamp on InRange!!  Don't call EnsureTimestampUnique.
-
-                _queuedInRangeCount++;
-                _contexts.OnPenInRange(this, _tabletDeviceId, stylusPointerId, data, timestamp);
-                return;
-            }
-
-            // This should not be called if this stylus ID is 0
-            System.Diagnostics.Debug.Assert(stylusPointerId != 0);
-
-            if (!IsInRange(stylusPointerId))
-            {
-                _lastInRangeTime = timestamp; // Always reset timestamp on InRange!!  Don't call EnsureTimestampUnique.
-
-                if (_stylusDevicesInRange == null)
+                // first see if parent of node, if it is then we can just scan till we find the 
+                // first non parent and we're done
+                DependencyObject curV = _plugInCollectionList[i].Element as Visual;
+                if (VisualTreeHelper.IsAncestorOf(spicAddingVisual, curV))
                 {
-                    _stylusDevicesInRange = new List<int>(); // create it as needed.
-                }
-                _stylusDevicesInRange.Add(stylusPointerId);
-                _contexts.OnPenInRange(this, _tabletDeviceId, stylusPointerId, data, timestamp);
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////////
-
-        internal void FirePenOutOfRange(int stylusPointerId, int timestamp)
-        {
-            // We only do work here if we truly had a stylus in range.
-            if (stylusPointerId != 0)
-            {
-                if (IsInRange(stylusPointerId))
-                {
-                    timestamp = EnsureTimestampUnique(timestamp);
-                    _lastInRangeTime = timestamp;
-
-                    // make sure this gets initialized on the penthread!!
-                    if (_stylusPointDescription == null)
+                    i++;
+                    while (i < _plugInCollectionList.Count)
                     {
-                        InitStylusPointDescription(); // init _stylusPointDescription.
+                        curV = _plugInCollectionList[i].Element as Visual;
+                        if (!VisualTreeHelper.IsAncestorOf(spicAddingVisual, curV))
+                            break; // done
+                        i++;
                     }
-
-                    _stylusDevicesInRange.Remove(stylusPointerId);
-                    _contexts.OnPenOutOfRange(this, _tabletDeviceId, stylusPointerId, timestamp);
-                    if (_stylusDevicesInRange.Count == 0)
+                    return i;
+                } 
+                else
+                {
+                    // Look to see if spicAddingVisual is higher in ZOrder than i, if so then we're done
+                    DependencyObject commonParent = VisualTreeHelper.FindCommonAncestor(spicAddingVisual, curV);
+                    // If no common parent found then we must have multiple plugincollection elements 
+                    // that have been removed from the visual tree and we haven't been notified yet of
+                    // that change.  In this case just ignore this plugincollection element and go to 
+                    // the next.
+                    if (commonParent == null)
+                        continue;
+                    // If curV is the commonParent we find then we're done.  This new plugin should be
+                    // above this one.
+                    if (curV == commonParent)
+                        return i;
+                    // now find first child for each under that common visual that these fall under (not they must be different or common parent is sort of busted.
+                    while (VisualTreeHelper.GetParentInternal(spicAddingVisual) != commonParent)
+                        spicAddingVisual = VisualTreeHelper.GetParentInternal(spicAddingVisual);
+                    while (VisualTreeHelper.GetParentInternal(curV) != commonParent)
+                        curV = VisualTreeHelper.GetParentInternal(curV);
+                    // now see which is higher in zorder
+                    int count = VisualTreeHelper.GetChildrenCount(commonParent);
+                    for (int j = 0; j < count; j++)
                     {
-                        _stylusDevicesInRange = null; // not needed anymore.
+                        DependencyObject child = VisualTreeHelper.GetChild(commonParent, j);
+                        if (child == spicAddingVisual)
+                            return i;
+                        else if (child == curV)
+                            break; // look at next index in _piList.                        
                     }
                 }
             }
-            else if (_stylusDevicesInRange != null)
-            {
-                timestamp = EnsureTimestampUnique(timestamp);
-                _lastInRangeTime = timestamp;
-
-                // make sure this gets initialized on the penthread!!
-                if (_stylusPointDescription == null)
-                {
-                    InitStylusPointDescription(); // init _stylusPointDescription.
-                }
-
-                // Send event for each StylusDevice being out of range, then clear out the map.
-                for(int i=0; i < _stylusDevicesInRange.Count; i++)
-                {
-                    _contexts.OnPenOutOfRange(this, _tabletDeviceId, _stylusDevicesInRange[i], timestamp);
-                }
-                _stylusDevicesInRange = null; // nothing in range now.
-            }
+            
+            return i; // this wasn't higher so return last index.
         }
 
-        /////////////////////////////////////////////////////////////////////
-
-        internal void FireSystemGesture(int stylusPointerId, int timestamp)
+        internal StylusPlugInCollection InvokeStylusPluginCollectionForMouse(RawStylusInputReport inputReport, IInputElement directlyOver, StylusPlugInCollection currentPlugInCollection)
         {
-            timestamp = EnsureTimestampUnique(timestamp);
-            _lastInRangeTime = timestamp;
-            
-            // make sure this gets initialized on the penthread!!
-            if (_stylusPointDescription == null)
+            StylusPlugInCollection newPlugInCollection = null;
+
+            // lock to make sure only one event is processed at a time and no changes to state can
+            // be made until we finish routing this event.
+            lock(__rtiLock)
             {
-                InitStylusPointDescription(); // init _stylusPointDescription.
-            }
-            
-            int id;
-            int modifier;
-            int character;
-            int stylusMode;
-            int x, y, buttonState; // (these are not used)
-
-            MS.Win32.Penimc.UnsafeNativeMethods.GetLastSystemEventData(
-                _commHandle.Value,
-                out id, out modifier, out character,
-                out x, out y, out stylusMode, out buttonState);
-
-            _contexts.OnSystemEvent(
-                    this, _tabletDeviceId, stylusPointerId, timestamp,
-                    (SystemGesture)id, x, y, buttonState);
-        }
-
-        /////////////////////////////////////////////////////////////////////
-        //
-        // Iterates through data for every packet, checks packet status and invalidates
-        // screen measurements accordingly
-        //
-        internal void CheckForRectMappingChanged(int[] data, int numPackets)
-        {
-            const int ipRectMappingChangedFlag = 0x10;
-            if (UpdateScreenMeasurementsPending)
-            {
-                return;
-            }
-
-            Debug.Assert(numPackets != 0);
-            Debug.Assert(data != null);
-            
-            if (_stylusPointDescription == null)
-            {
-                InitStylusPointDescription(); // init _stylusPointDescription.
-            }
-
-            if (_statusPropertyIndex == -1)
-            {
-                return;
-            }
-
-            // Check each packet to see if the rects have changed.
-            int itemsPerPacket = data.Length / numPackets;
-            for (int i = 0; i < numPackets; i++)
-            {
-                int status = data[(i * itemsPerPacket) + _statusPropertyIndex];
-                if ((status & ipRectMappingChangedFlag) != 0) // Is IP_RECT_MAPPING_CHANGED (0x00000010) set?
+                //Debug.Assert(inputReport.Actions == RawStylusActions.Down || 
+                //             inputReport.Actions == RawStylusActions.Up ||
+                //             inputReport.Actions == RawStylusActions.Move);
+                
+                // Find new target plugin collection
+                if (directlyOver != null)
                 {
-                    UpdateScreenMeasurementsPending = true;
-                    break;
+                    UIElement uiElement = InputElement.GetContainingUIElement(directlyOver as DependencyObject) as UIElement;
+                    if (uiElement != null)
+                    {
+                        newPlugInCollection = FindPlugInCollection(uiElement);
+                    }
+                }                
+
+                // Fire Leave event to old pluginCollection if we need to.
+                if (currentPlugInCollection != null && currentPlugInCollection != newPlugInCollection)
+                {
+                    // NOTE: input report points for mouse are in avalon measured units and not device!
+                    RawStylusInput tempRawStylusInput = new RawStylusInput(inputReport, currentPlugInCollection.ViewToElement, currentPlugInCollection);
+                    
+                    currentPlugInCollection.FireEnterLeave(false, tempRawStylusInput, true);
+
+                    // Indicate we've used a stylus plugin
+                    _stylusLogic.Statistics.FeaturesUsed |= Tracing.StylusTraceLogger.FeatureFlags.StylusPluginsUsed;
+                }
+                if (newPlugInCollection != null)
+                {
+                    // NOTE: input report points for mouse are in avalon measured units and not device!
+                    RawStylusInput rawStylusInput = new RawStylusInput(inputReport, newPlugInCollection.ViewToElement, newPlugInCollection);
+                    inputReport.RawStylusInput = rawStylusInput;
+
+                    if (newPlugInCollection != currentPlugInCollection)
+                    {
+                        newPlugInCollection.FireEnterLeave(true, rawStylusInput, true);
+                    }
+
+                    // We are on the pen thread, just call directly.
+                    //System.Diagnostics.Trace.WriteLine("hjc FireRawStylusInput");
+                    newPlugInCollection.FireRawStylusInput(rawStylusInput);
+
+                    // Indicate we've used a stylus plugin
+                    _stylusLogic.Statistics.FeaturesUsed |= Tracing.StylusTraceLogger.FeatureFlags.StylusPluginsUsed;
+
+                    // Fire custom data events (always confirmed for mouse)
+                    foreach (RawStylusInputCustomData customData in rawStylusInput.CustomDataList)
+                    {
+                        customData.Owner.FireCustomData(customData.Data, inputReport.Actions, true);
+                    }
                 }
             }
-        }
-
-        internal bool UpdateScreenMeasurementsPending
-        {
-            get;
-            set;
+            return newPlugInCollection;
         }
         
-        /////////////////////////////////////////////////////////////////////
-        //
-        // Make sure timestamp is unique for each event.  Note that on each InRange event the
-        // timestamp _lastInRangeTime is reset to the real event time so we don't have to worry
-        // about really stale timestamps due to lack of use of a stylus device.
-        //
-        private int EnsureTimestampUnique(int timestamp)
+        internal void InvokeStylusPluginCollection(RawStylusInputReport inputReport)
         {
-            int delta = unchecked(_lastInRangeTime - timestamp);
+            // Find PenContexts object for this inputReport.
+            StylusPlugInCollection pic = null;
 
-            // Is last time more current?  If so we need to increment and return this.
-            // NOTE: This deals with wrapping from MaxInt to MinInt.
-            //  Here's some info on how this works...
-            //      int.MaxValue - int.MinValue = -1 (subtracting any negative # from MaxValue keeps this negative)
-            //      int.MinValue - int.MaxValue = 1 (subtracting any positive # from MinValue keeps this positive)
-            //  So as _lastInRangeTime approaches MaxInt if subtracting timestamp is positive then timestamp
-            //   is older and we want to use _lastInRangeTime + 1 to keep the time unique.
-            //  and if _lastInRangeTime is near MinInt then if subtracting timestamp is positive the
-            //   same condition is true in that timestamp is older.
-            if (delta >= 0)
+            // lock to make sure only one event is processed at a time and no changes to state can
+            // be made until we finish routing this event.
+            lock(__rtiLock)
             {
-                timestamp = unchecked(_lastInRangeTime + 1);
+                if (RawStylusActions.Down == inputReport.Actions)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc before InvokeStylusPluginCollection rawStylusInput down");
+                }
+                else if (RawStylusActions.Up == inputReport.Actions)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc before InvokeStylusPluginCollection rawStylusInput up");
+                }
+
+                switch (inputReport.Actions)
+                {
+                    case RawStylusActions.Down:
+                    case RawStylusActions.Move:
+                    case RawStylusActions.Up:
+                         // Figure out current target plugincollection.
+                        pic = TargetPlugInCollection(inputReport);
+                        break;
+
+                    default:
+                        if (RawStylusActions.Down == inputReport.Actions)
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc check down return");
+                        }
+                        return; // Nothing to do unless one of the above events
+                }
+
+                WispStylusDevice stylusDevice = inputReport.StylusDevice.As<WispStylusDevice>();
+
+                StylusPlugInCollection currentPic = stylusDevice.CurrentNonVerifiedTarget;
+
+                if(null == currentPic)
+                {
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return1");
+                    }
+                }
+
+                if(null == pic)
+                {
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return2");
+                    }
+                }
+
+                // Fire Leave event if we need to.
+                if (currentPic != null && currentPic != pic)
+                {
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return3");
+                    }
+                    // Create new RawStylusInput to send
+                    GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
+                    transformTabletToView.Children.Add(new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice))); // this gives matrix in measured units (not device)
+                    transformTabletToView.Children.Add(currentPic.ViewToElement); // Make it relative to the element.
+                    transformTabletToView.Freeze(); // Must be frozen for multi-threaded access.
+                    
+                    RawStylusInput tempRawStylusInput = new RawStylusInput(inputReport, transformTabletToView, currentPic);
+                    
+                    currentPic.FireEnterLeave(false, tempRawStylusInput, false);
+
+                    // Indicate we've used a stylus plugin
+                    _stylusLogic.Statistics.FeaturesUsed |= Tracing.StylusTraceLogger.FeatureFlags.StylusPluginsUsed;
+                    stylusDevice.CurrentNonVerifiedTarget = null;
+                }
+
+                if (pic != null)
+                {
+                    // NOTE: PenContext info will not change (it gets rebuilt instead so keeping ref is fine)
+                    //    The transformTabletToView matrix and plugincollection rects though can change based 
+                    //    off of layout events which is why we need to lock this.
+                    GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
+                    MatrixTransform matTransTmp = new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice));                    
+                    transformTabletToView.Children.Add(matTransTmp); // this gives matrix in measured units (not device)
+                    transformTabletToView.Children.Add(pic.ViewToElement); // Make it relative to the element.
+                    transformTabletToView.Freeze();  // Must be frozen for multi-threaded access.
+                    
+                    RawStylusInput rawStylusInput = new RawStylusInput(inputReport, transformTabletToView, pic);
+                    inputReport.RawStylusInput = rawStylusInput;
+
+                    if (RawStylusActions.Down == inputReport.Actions)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc check down return4");
+                    }
+                    if (pic != currentPic)
+                    {
+                        stylusDevice.CurrentNonVerifiedTarget = pic;
+                        pic.FireEnterLeave(true, rawStylusInput, false);
+                    }
+
+                    System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection");
+                    // We are on the pen thread, just call directly.
+                    if(null == stylusDevice.CriticalActiveSource || null == stylusDevice.TabletDevice)
+                    {
+                        if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
+                        {
+                            if(RawStylusActions.Down == inputReport.Actions)
+                            {
+                                System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput down" );
+                            }
+                            else if(RawStylusActions.Up == inputReport.Actions)
+                                {
+                                System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput up" );
+                            }
+                            pic.FireRawStylusInput(rawStylusInput);
+                        }
+                    }
+                    else
+                    {
+                        if (RawStylusActions.Down == inputReport.Actions)
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput down");
+                        }
+                        else if (RawStylusActions.Up == inputReport.Actions)
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput up");
+                        }
+
+                        pic.FireRawStylusInput(rawStylusInput);
+                    }
+                    
+
+                    // Indicate we've used a stylus plugin
+                    _stylusLogic.Statistics.FeaturesUsed |= Tracing.StylusTraceLogger.FeatureFlags.StylusPluginsUsed;
+                }
+            } // lock(__rtiLock)
+        }
+        
+        internal StylusPlugInCollection TargetPlugInCollection(RawStylusInputReport inputReport)
+        {
+            // Caller must make call to this routine inside of lock(__rtiLock)!
+            StylusPlugInCollection pic = null;
+
+            // We should only be called when not on the application thread!
+            System.Diagnostics.Debug.Assert(!inputReport.StylusDevice.CheckAccess());
+
+            WispStylusDevice stylusDevice = inputReport.StylusDevice.As<WispStylusDevice>();
+
+            // We're on the pen thread so can't touch visual tree.  Use capturedPlugIn (if capture on) or cached rects.
+            bool elementHasCapture = false;
+            pic = stylusDevice.GetCapturedPlugInCollection(ref elementHasCapture);
+            int pointLength = inputReport.PenContext.StylusPointDescription.GetInputArrayLengthPerPoint();
+            // Make sure that the captured Plugin Collection is still in the list.  CaptureChanges are
+            // deferred so there is a window where the stylus device is not updated yet.  This protects us
+            // from using a bogus plugin collecton for an element that is in an invalid state.
+            if (elementHasCapture && !_plugInCollectionList.Contains(pic))
+            {
+                elementHasCapture = false;  // force true hittesting to be done!
             }
             
-            return timestamp;
-        }
-        
-        // This keeps track of the last time we saw an InRange/OutOfRange event on the pen thread.
-        internal int LastInRangeTime
-        {
-            get { return _lastInRangeTime; }
+            if (!elementHasCapture && inputReport.Data != null && inputReport.Data.Length >= pointLength)
+            {
+                int[] data = inputReport.Data;
+                System.Diagnostics.Debug.Assert(data.Length % pointLength == 0);
+                Point ptTablet = new Point(data[data.Length - pointLength], data[data.Length - pointLength + 1]);
+                // Note: the StylusLogic data inside DeviceUnitsFromMeasurUnits is protected by __rtiLock.
+                ptTablet = ptTablet * stylusDevice.TabletDevice.TabletDeviceImpl.TabletToScreen;
+                ptTablet.X = (int)Math.Round(ptTablet.X); // Make sure we snap to whole window pixels.
+                ptTablet.Y = (int)Math.Round(ptTablet.Y);
+                ptTablet = _stylusLogic.MeasureUnitsFromDeviceUnits(stylusDevice.CriticalActiveSource, ptTablet); // change to measured units now.
+
+                pic = HittestPlugInCollection(ptTablet); // Use cached rectangles for UIElements.
+            }
+            return pic;
         }
 
-        // This returns the count of queued special InRange reports that we use to know if we are
-        // potentially going inrange.
-        internal int QueuedInRangeCount
+        /////////////////////////////////////////////////////////////////////
+        // NOTE: this should only be called inside of app Dispatcher
+        internal StylusPlugInCollection FindPlugInCollection(UIElement element)
         {
-            get { return _queuedInRangeCount; }
+            // Since we are only called on app Dispatcher this cannot change out from under us.
+            // System.Diagnostics.Debug.Assert(_stylusLogic.Dispatcher.CheckAccess());
+
+            foreach (StylusPlugInCollection plugInCollection in _plugInCollectionList)
+            {
+                // If same element or element is child of the plugincollection element than say we hit it.
+                if (plugInCollection.Element == element || 
+                     (plugInCollection.Element as Visual).IsAncestorOf(element as Visual))
+                {
+                    return plugInCollection;
+                }
+            }
+
+            return null;
         }
 
-        // The application uses this to decrement the queued InRange count when it arrives on the app thread.
-        internal void DecrementQueuedInRangeCount()
+        /////////////////////////////////////////////////////////////////////
+        // NOTE: this is called on pen thread (outside of apps Dispatcher)
+        StylusPlugInCollection HittestPlugInCollection(Point pt)
         {
-            _queuedInRangeCount--;
+            // Caller must make call to this routine inside of lock(__rtiLock)!
+
+            System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection count:" + _plugInCollectionList.Count);
+            foreach (StylusPlugInCollection plugInCollection in _plugInCollectionList)
+            {
+                if (plugInCollection.IsHit(pt))
+                {
+                    return plugInCollection;
+                }
+            }
+
+            System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
+            return null;
         }
 
-        /// <summary>
-        /// The GIT key for a WISP context COM object.
-        /// </summary>
-        internal UInt32 WispContextKey { get; private set; }
+        internal HwndSource InputSource { get { return _inputSource.Value; } }
 
         /////////////////////////////////////////////////////////////////////
 
-        internal SecurityCriticalDataClass<IPimcContext3> _pimcContext;
-        
-        SecurityCriticalData<IntPtr> _hwnd;
-        
-        SecurityCriticalData<IntPtr> _commHandle;
-        
-        PenContexts             _contexts;
-        
-        PenThread               _penThreadPenContext;
-        int                     _id;
-        int                     _tabletDeviceId;
-        StylusPointPropertyInfo _infoX;
-        StylusPointPropertyInfo _infoY;
-        bool                    _supportInRange;
-        List<int>               _stylusDevicesInRange;
-        bool                    _isIntegrated;
+        internal SecurityCriticalData<HwndSource> _inputSource;
 
-        StylusPointDescription  _stylusPointDescription;
-        int                     _statusPropertyIndex = -1;
+        WispLogic                      _stylusLogic;
 
-        int                     _lastInRangeTime;
-        int                     _queuedInRangeCount;
+        object                       __rtiLock = new object();
+        List<StylusPlugInCollection> _plugInCollectionList = new List<StylusPlugInCollection>();
+
+        PenContext[]        _contexts;
+        
+        bool                _isWindowDisabled;
+        Point               _destroyedLocation = new Point(0,0);
     }
 }
+

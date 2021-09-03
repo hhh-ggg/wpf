@@ -367,7 +367,7 @@ namespace System.Windows.Input.StylusWisp
                 // build InputReportEventArgs
                 InputReportEventArgs input = new InputReportEventArgs(null, rawStylusInputReport);
                 input.RoutedEvent = InputManager.PreviewInputReportEvent;
-
+                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 11");
                 // Set flag to prevent reentrancy due to wisptis mouse event getting triggered
                 // while processing this stylus event.
                 _processingQueuedEvent = true;
@@ -453,6 +453,7 @@ namespace System.Windows.Input.StylusWisp
                     mouseArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
                     _deferredMouseMove = null; // Clear this out before sending.
                     // This will cause _lastMoveFromStylus to be set to false.
+                    System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 11");
                     _inputManager.Value.ProcessInput(mouseArgs);
                 }
             }
@@ -578,6 +579,7 @@ namespace System.Windows.Input.StylusWisp
                                             InputReportEventArgs args = new InputReportEventArgs(CurrentStylusDevice.StylusDevice, cancelCaptureInputReport);
                                             args.RoutedEvent = InputManager.PreviewInputReportEvent;
                                             e.Cancel();
+                                            System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 10");
                                             _inputManager.Value.ProcessInput(args);
                                         }
                                     }
@@ -623,6 +625,7 @@ namespace System.Windows.Input.StylusWisp
 
                                                 InputReportEventArgs args = new InputReportEventArgs(activateStylusDevice.StylusDevice, activateInputReport);
                                                 args.RoutedEvent = InputManager.PreviewInputReportEvent;
+                                                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 9");
                                                 _inputManager.Value.ProcessInput(args);
                                             }
 
@@ -1301,6 +1304,7 @@ namespace System.Windows.Input.StylusWisp
 
                     InputReportEventArgs actionsArgs = new InputReportEventArgs(stylusDevice.StylusDevice, newMouseInputReport);
                     actionsArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
+                    System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 8");
                     _inputManager.Value.ProcessInput(actionsArgs);
                 }
             }
@@ -1769,6 +1773,7 @@ namespace System.Windows.Input.StylusWisp
 
                                 InputReportEventArgs inputReportArgs = new InputReportEventArgs(stylusDevice.StylusDevice, mouseInputReport);
                                 inputReportArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
+                                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 7");
                                 _inputManager.Value.ProcessInput(inputReportArgs);
                             }
                         }
@@ -2562,6 +2567,7 @@ namespace System.Windows.Input.StylusWisp
 
             InputReportEventArgs input = new InputReportEventArgs(stylusDevice, inputReport);
             input.RoutedEvent = InputManager.PreviewInputReportEvent;
+            System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 6");
             _inputManager.Value.ProcessInput(input);
         }
 
@@ -2794,6 +2800,7 @@ namespace System.Windows.Input.StylusWisp
             input.RoutedEvent = InputManager.PreviewInputReportEvent;
             // Process this directly instead of doing a push. We want this event to get
             // to the user before the StylusUp and MouseUp event.
+            System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 5");
             InputManagerProcessInputEventArgs(input);
         }
 
@@ -2840,7 +2847,7 @@ namespace System.Windows.Input.StylusWisp
                 {
                     mouseInputReport._isSynchronize = true;
                 }
-
+                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 4");
                 InputReportEventArgs inputReportArgs = new InputReportEventArgs(stylusDevice.StylusDevice, mouseInputReport);
                 inputReportArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
 

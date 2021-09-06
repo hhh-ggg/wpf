@@ -453,7 +453,7 @@ namespace System.Windows.Input.StylusWisp
                     mouseArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
                     _deferredMouseMove = null; // Clear this out before sending.
                     // This will cause _lastMoveFromStylus to be set to false.
-                    System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 11");
+                    System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 12");
                     _inputManager.Value.ProcessInput(mouseArgs);
                 }
             }

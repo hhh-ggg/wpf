@@ -2661,27 +2661,10 @@ namespace System.Windows.Input.StylusWisp
                 }
 
                 WispStylusDevice stylusDevice = rawStylusInputReport.StylusDevice.As<WispStylusDevice>();
-                if(rawStylusInputReport.Actions == RawStylusActions.Up)
-                {
-                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 1");
-                }
                 // See if we need to build up an RSI to send to the plugincollection (due to a mistarget).
                 bool sendRawStylusInput = false;
-                if (rawStylusInputReport.Actions == RawStylusActions.Up && null == targetPIC)
-                {
-                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 2");
-                }
-
-                if (rawStylusInputReport.Actions == RawStylusActions.Up && null == rawStylusInputReport.RawStylusInput)
-                {
-                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 3");
-                }
                 if (targetPIC != null && rawStylusInputReport.RawStylusInput == null)
                 {
-                    if (rawStylusInputReport.Actions == RawStylusActions.Up)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 4");
-                    }
                     // NOTE: PenContext info will not change (it gets rebuilt instead so keeping ref is fine)
                     //    The transformTabletToView matrix and plugincollection rects though can change based
                     //    off of layout events which is why we need to lock this.
@@ -2730,10 +2713,6 @@ namespace System.Windows.Input.StylusWisp
                 // Now fire RawStylusInput if needed to the right plugincollection.
                 if (sendRawStylusInput)
                 {
-                    if (rawStylusInputReport.Actions == RawStylusActions.Up)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 5");
-                    }
                     // We are on the pen thread, just call directly.
                     targetPIC.FireRawStylusInput(rawStylusInputReport.RawStylusInput);
                     updateEventPoints = (updateEventPoints || rawStylusInputReport.RawStylusInput.StylusPointsModified);
@@ -2856,7 +2835,6 @@ namespace System.Windows.Input.StylusWisp
                 {
                     mouseInputReport._isSynchronize = true;
                 }
-                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 4");
                 InputReportEventArgs inputReportArgs = new InputReportEventArgs(stylusDevice.StylusDevice, mouseInputReport);
                 inputReportArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
 

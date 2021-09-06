@@ -164,7 +164,7 @@ namespace System.Windows.Input.StylusWisp
             StylusDeviceBase stylusDevice = inputReport?.StylusDevice?.StylusDeviceImpl;
 
 
-            
+            System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent1");
             // Due to changes both in WISP and in the underlying PenIMC code, it is possible that
             // the stylus device here could be null.  If this is the case, the lookups will fail
             // with an exception.
@@ -172,7 +172,7 @@ namespace System.Windows.Input.StylusWisp
             {
                 return;
             }
-
+            System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent2");
             // DevDiv:652804
             // Previously the pen thread would blindly shove any move from Wisp onto the stylus
             // queue.  This is a problem if the main thread stalls but the pen thread does not.
@@ -235,6 +235,7 @@ namespace System.Windows.Input.StylusWisp
                     if (lastMoveReport != null
                         && lastMoveReport.IsQueued)
                     {
+                        System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent3");
                         return;
                     }
                 }
@@ -242,6 +243,7 @@ namespace System.Windows.Input.StylusWisp
                 // If we get this far, we are queuing a coalesced move if it exists
                 if (coalescedMove != null)
                 {
+                    System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent4");
                     QueueStylusEvent(coalescedMove);
 
                     // Set last move and cleanup coalescing tracking
@@ -254,10 +256,12 @@ namespace System.Windows.Input.StylusWisp
                 // operations
                 if (inputReport.Actions != RawStylusActions.Move)
                 {
+                    System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent5");
                     QueueStylusEvent(inputReport);
 
                     // Once we see a non-move, we should get no more input for this particular chain
                     // so we can remove the stored prior moves (if they exist).
+                   
                     _lastMovesQueued.Remove(stylusDevice);
                 }
             }
@@ -316,6 +320,7 @@ namespace System.Windows.Input.StylusWisp
 
         internal object InputManagerProcessInput(object oInput)
         {
+            System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent6");
             RawStylusInputReport rawStylusInputReport = null;
 
             WispTabletDevice tabletDevice = null;
@@ -342,6 +347,7 @@ namespace System.Windows.Input.StylusWisp
                 && rawStylusInputReport.StylusDevice != null
                 && rawStylusInputReport.StylusDevice.IsValid)
             {
+                System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent7");
                 rawStylusInputReport.IsQueued = false;
 
 

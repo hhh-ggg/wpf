@@ -280,7 +280,6 @@ namespace System.Windows.Interop
                     // have been handled, we don't want to generate any gestures.
                     _currentStylusDevice.UpdateInteractions(rsir);
 
-                    System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 1 ");
                     InputReportEventArgs irea = new InputReportEventArgs(_currentStylusDevice.StylusDevice, rsir)
                     {
                        

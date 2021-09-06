@@ -418,7 +418,6 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
-            Trace.WriteLine("hjcs down：" + System.Threading.Thread.CurrentThread.ManagedThreadId);
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
@@ -432,7 +431,6 @@ namespace System.Windows.Input.StylusPlugIns
                     // Can only ink with one stylus at a time.
                     if (si != null)
                     {
-                        Trace.WriteLine("hjc down return");
                         return; 
                     }
 
@@ -614,7 +612,6 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            Trace.WriteLine("hjcs up:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
@@ -626,7 +623,6 @@ namespace System.Windows.Input.StylusPlugIns
                       (si.IsReset || 
                       (si.IsTimestampAfter(rawStylusInput.Timestamp) && IsStylusUp(si.StylusId))))))
                 {
-                    Trace.WriteLine("hjc SeenUp");
                     si.SeenUp = true;
                     si.LastTime = rawStylusInput.Timestamp;
                     rawStylusInput.NotifyWhenProcessed(si);

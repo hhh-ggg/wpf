@@ -986,18 +986,13 @@ namespace System.Windows.Input.StylusWisp
         {
             if (e.StagingItem.Input.RoutedEvent == InputManager.PreviewInputReportEvent)
             {
-                System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 1");
                 InputReportEventArgs inputReportEventArgs = e.StagingItem.Input as InputReportEventArgs;
 
                 if (!inputReportEventArgs.Handled && inputReportEventArgs.Report.Type == InputType.Stylus)
                 {
-                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 2");
                     RawStylusInputReport rawStylusInputReport = (RawStylusInputReport)inputReportEventArgs.Report;
                     WispStylusDevice stylusDevice = rawStylusInputReport.StylusDevice?.As<WispStylusDevice>();
-                    if(rawStylusInputReport.Actions == RawStylusActions.Up)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget up");
-                    }
+
                     // StylusDevice could have been disposed internally here.
                     if (stylusDevice?.IsValid ?? false)
                     {
@@ -1050,7 +1045,7 @@ namespace System.Windows.Input.StylusWisp
                         _inputManager.Value.MostRecentInputDevice = stylusDevice.StylusDevice;
 
                         // Verify that we sent the real time stylus events to the proper plugincollection.
-                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 3");
+                        
                         VerifyStylusPlugInCollectionTarget(rawStylusInputReport);
                     }
                 }
@@ -2666,11 +2661,27 @@ namespace System.Windows.Input.StylusWisp
                 }
 
                 WispStylusDevice stylusDevice = rawStylusInputReport.StylusDevice.As<WispStylusDevice>();
-
+                if(rawStylusInputReport.Actions == RawStylusActions.Up)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 1");
+                }
                 // See if we need to build up an RSI to send to the plugincollection (due to a mistarget).
                 bool sendRawStylusInput = false;
+                if (rawStylusInputReport.Actions == RawStylusActions.Up && null == targetPIC)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 2");
+                }
+
+                if (rawStylusInputReport.Actions == RawStylusActions.Up && null == rawStylusInputReport.RawStylusInput)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 3");
+                }
                 if (targetPIC != null && rawStylusInputReport.RawStylusInput == null)
                 {
+                    if (rawStylusInputReport.Actions == RawStylusActions.Up)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 4");
+                    }
                     // NOTE: PenContext info will not change (it gets rebuilt instead so keeping ref is fine)
                     //    The transformTabletToView matrix and plugincollection rects though can change based
                     //    off of layout events which is why we need to lock this.
@@ -2719,6 +2730,10 @@ namespace System.Windows.Input.StylusWisp
                 // Now fire RawStylusInput if needed to the right plugincollection.
                 if (sendRawStylusInput)
                 {
+                    if (rawStylusInputReport.Actions == RawStylusActions.Up)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 5");
+                    }
                     // We are on the pen thread, just call directly.
                     targetPIC.FireRawStylusInput(rawStylusInputReport.RawStylusInput);
                     updateEventPoints = (updateEventPoints || rawStylusInputReport.RawStylusInput.StylusPointsModified);

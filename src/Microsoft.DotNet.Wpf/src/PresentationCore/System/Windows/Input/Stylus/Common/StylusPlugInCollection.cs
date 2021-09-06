@@ -618,7 +618,7 @@ namespace System.Windows.Input.StylusPlugIns
         private EventHandler _renderTransformChangedEventHandler;
         private SourceChangedEventHandler _sourceChangedEventHandler;
         private EventHandler _layoutChangedEventHandler;
-        
+
         #endregion
     }
 }

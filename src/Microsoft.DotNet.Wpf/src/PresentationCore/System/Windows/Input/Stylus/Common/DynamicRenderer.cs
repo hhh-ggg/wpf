@@ -614,7 +614,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusUp(RawStylusInput rawStylusInput)
         {
-            Trace.WriteLine("hjcs up");
+            Trace.WriteLine("hjcs up:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {

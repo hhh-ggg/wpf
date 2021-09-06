@@ -163,8 +163,6 @@ namespace System.Windows.Input.StylusWisp
         {
             StylusDeviceBase stylusDevice = inputReport?.StylusDevice?.StylusDeviceImpl;
 
-
-            System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent1");
             // Due to changes both in WISP and in the underlying PenIMC code, it is possible that
             // the stylus device here could be null.  If this is the case, the lookups will fail
             // with an exception.
@@ -172,7 +170,7 @@ namespace System.Windows.Input.StylusWisp
             {
                 return;
             }
-            System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent2");
+
             // DevDiv:652804
             // Previously the pen thread would blindly shove any move from Wisp onto the stylus
             // queue.  This is a problem if the main thread stalls but the pen thread does not.
@@ -235,7 +233,6 @@ namespace System.Windows.Input.StylusWisp
                     if (lastMoveReport != null
                         && lastMoveReport.IsQueued)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent3");
                         return;
                     }
                 }
@@ -243,7 +240,6 @@ namespace System.Windows.Input.StylusWisp
                 // If we get this far, we are queuing a coalesced move if it exists
                 if (coalescedMove != null)
                 {
-                    System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent4");
                     QueueStylusEvent(coalescedMove);
 
                     // Set last move and cleanup coalescing tracking
@@ -256,7 +252,6 @@ namespace System.Windows.Input.StylusWisp
                 // operations
                 if (inputReport.Actions != RawStylusActions.Move)
                 {
-                    System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent5");
                     QueueStylusEvent(inputReport);
 
                     // Once we see a non-move, we should get no more input for this particular chain
@@ -320,7 +315,6 @@ namespace System.Windows.Input.StylusWisp
 
         internal object InputManagerProcessInput(object oInput)
         {
-            System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent6");
             RawStylusInputReport rawStylusInputReport = null;
 
             WispTabletDevice tabletDevice = null;
@@ -459,7 +453,6 @@ namespace System.Windows.Input.StylusWisp
                     mouseArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
                     _deferredMouseMove = null; // Clear this out before sending.
                     // This will cause _lastMoveFromStylus to be set to false.
-                    System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 12");
                     _inputManager.Value.ProcessInput(mouseArgs);
                 }
             }
@@ -585,7 +578,6 @@ namespace System.Windows.Input.StylusWisp
                                             InputReportEventArgs args = new InputReportEventArgs(CurrentStylusDevice.StylusDevice, cancelCaptureInputReport);
                                             args.RoutedEvent = InputManager.PreviewInputReportEvent;
                                             e.Cancel();
-                                            System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 10");
                                             _inputManager.Value.ProcessInput(args);
                                         }
                                     }
@@ -631,7 +623,6 @@ namespace System.Windows.Input.StylusWisp
 
                                                 InputReportEventArgs args = new InputReportEventArgs(activateStylusDevice.StylusDevice, activateInputReport);
                                                 args.RoutedEvent = InputManager.PreviewInputReportEvent;
-                                                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 9");
                                                 _inputManager.Value.ProcessInput(args);
                                             }
 
@@ -1310,7 +1301,6 @@ namespace System.Windows.Input.StylusWisp
 
                     InputReportEventArgs actionsArgs = new InputReportEventArgs(stylusDevice.StylusDevice, newMouseInputReport);
                     actionsArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
-                    System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 8");
                     _inputManager.Value.ProcessInput(actionsArgs);
                 }
             }
@@ -1779,7 +1769,6 @@ namespace System.Windows.Input.StylusWisp
 
                                 InputReportEventArgs inputReportArgs = new InputReportEventArgs(stylusDevice.StylusDevice, mouseInputReport);
                                 inputReportArgs.RoutedEvent = InputManager.PreviewInputReportEvent;
-                                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 7");
                                 _inputManager.Value.ProcessInput(inputReportArgs);
                             }
                         }
@@ -2573,7 +2562,6 @@ namespace System.Windows.Input.StylusWisp
 
             InputReportEventArgs input = new InputReportEventArgs(stylusDevice, inputReport);
             input.RoutedEvent = InputManager.PreviewInputReportEvent;
-            System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 6");
             _inputManager.Value.ProcessInput(input);
         }
 
@@ -2728,10 +2716,6 @@ namespace System.Windows.Input.StylusWisp
                 {
                     // We are on the pen thread, just call directly.
                     targetPIC.FireRawStylusInput(rawStylusInputReport.RawStylusInput);
-                    if (rawStylusInputReport.Actions == RawStylusActions.Down)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc93 down 5");
-                    }
                     updateEventPoints = (updateEventPoints || rawStylusInputReport.RawStylusInput.StylusPointsModified);
 
                     // Indicate we've used a stylus plugin
@@ -2806,7 +2790,6 @@ namespace System.Windows.Input.StylusWisp
             input.RoutedEvent = InputManager.PreviewInputReportEvent;
             // Process this directly instead of doing a push. We want this event to get
             // to the user before the StylusUp and MouseUp event.
-            System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 5");
             InputManagerProcessInputEventArgs(input);
         }
 
@@ -3011,11 +2994,9 @@ namespace System.Windows.Input.StylusWisp
                     // We add a tag here so we can check for this specific exception
                     // in TabletCollection when adding new tablet devices.
                     ioe.Data.Add("System.Windows.Input.StylusLogic", "");
-                    System.Diagnostics.Trace.WriteLine("hjc93 down System.Windows.Input.StylusLogic" + stylusDevice.ToString());
                     throw (ioe);
                 }
 
-                System.Diagnostics.Trace.WriteLine("hjc93 RegisterStylusDeviceCore id:" + stylusDeviceId + " device:" + stylusDevice.ToString());
                 __stylusDeviceMap[stylusDeviceId] = stylusDevice;
             }
         }
@@ -3047,29 +3028,11 @@ namespace System.Windows.Input.StylusWisp
             StylusDevice stylusDevice;
             lock (__stylusDeviceLock)
             {
-                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock" + stylusDeviceId);
                 __stylusDeviceMap.TryGetValue(stylusDeviceId, out stylusDevice);
             }
 
-            if(null == stylusDevice)
-            {
-                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock null" + stylusDeviceId);
-            }
-
             WispStylusDevice tmpdevice = stylusDevice?.As<WispStylusDevice>();
-            if(null == tmpdevice)
-            {
-                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock WispStylusDevice null" + stylusDeviceId);
-            }
 
-            if(null != tmpdevice && tmpdevice.IsValid)
-            {
-                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock WispStylusDevice valid" + stylusDeviceId);
-            }
-            else
-            {
-                System.Diagnostics.Trace.WriteLine("hjc93 FindStylusDeviceWithLock WispStylusDevice unvalid" + stylusDeviceId);
-            }
 
             return stylusDevice?.As<WispStylusDevice>();
         }

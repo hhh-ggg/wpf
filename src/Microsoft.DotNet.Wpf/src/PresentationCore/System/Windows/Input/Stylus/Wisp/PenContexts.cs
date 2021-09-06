@@ -436,16 +436,6 @@ namespace System.Windows.Input
 
                 StylusPlugInCollection currentPic = stylusDevice.CurrentNonVerifiedTarget;
 
-                if(null == currentPic)
-                {
-                    System.Diagnostics.Trace.WriteLine("hjc check return1");
-                }
-
-                if(null == pic)
-                {
-                    System.Diagnostics.Trace.WriteLine("hjc check return2");
-                }
-
                 // Fire Leave event if we need to.
                 if (currentPic != null && currentPic != pic)
                 {
@@ -584,7 +574,7 @@ namespace System.Windows.Input
                     }
                 }
 
-                //System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
+                System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
                 return null;
             }
 

@@ -582,8 +582,10 @@ namespace System.Windows.Input
                 Point ptTablet = new Point(data[data.Length - pointLength], data[data.Length - pointLength + 1]);
                 // Note: the StylusLogic data inside DeviceUnitsFromMeasurUnits is protected by __rtiLock.
                 System.Diagnostics.Trace.WriteLine("hjc93 " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
+                System.Diagnostics.Trace.WriteLine("hjc93 " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 ptTablet = ptTablet * stylusDevice.TabletDevice.TabletDeviceImpl.TabletToScreen;
-                System.Diagnostics.Trace.WriteLine("hjc93 to screen " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
+                System.Diagnostics.Trace.WriteLine("hjc93 to screen " + " screen w:" + _tabletInfo.SizeInfo.ScreenSize.Width + " screen h:" + _tabletInfo.SizeInfo.ScreenSize.Height);
+                System.Diagnostics.Trace.WriteLine("hjc93 to scrren " + " screen w:" + _tabletInfo.SizeInfo.TabletSize.Width + " screen h:" + _tabletInfo.SizeInfo.TabletSize.Height);
                 ptTablet.X = (int)Math.Round(ptTablet.X); // Make sure we snap to whole window pixels.
                 ptTablet.Y = (int)Math.Round(ptTablet.Y);
                 System.Diagnostics.Trace.WriteLine("hjc93 to Round " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);

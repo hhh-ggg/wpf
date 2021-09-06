@@ -570,16 +570,24 @@ namespace System.Windows.Input
         StylusPlugInCollection HittestPlugInCollection(Point pt)
         {
             // Caller must make call to this routine inside of lock(__rtiLock)!
-            foreach (StylusPlugInCollection plugInCollection in _plugInCollectionList)
+            if(1 == _plugInCollectionList.Count)
             {
-                if (plugInCollection.IsHit(pt))
+                return _plugInCollectionList[0];
+            }
+            else
+            {
+                foreach (StylusPlugInCollection plugInCollection in _plugInCollectionList)
                 {
-                    return plugInCollection;
+                    if (plugInCollection.IsHit(pt))
+                    {
+                        return plugInCollection;
+                    }
                 }
+
+                //System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
+                return null;
             }
 
-            System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
-            return null;
         }
 
         internal HwndSource InputSource { get { return _inputSource.Value; } }

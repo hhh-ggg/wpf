@@ -994,7 +994,10 @@ namespace System.Windows.Input.StylusWisp
                     System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 2");
                     RawStylusInputReport rawStylusInputReport = (RawStylusInputReport)inputReportEventArgs.Report;
                     WispStylusDevice stylusDevice = rawStylusInputReport.StylusDevice?.As<WispStylusDevice>();
-
+                    if(rawStylusInputReport.Actions == RawStylusActions.Up)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget up");
+                    }
                     // StylusDevice could have been disposed internally here.
                     if (stylusDevice?.IsValid ?? false)
                     {

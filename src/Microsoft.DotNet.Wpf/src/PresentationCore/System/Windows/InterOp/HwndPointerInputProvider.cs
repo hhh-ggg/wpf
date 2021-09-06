@@ -471,7 +471,7 @@ namespace System.Windows.Interop
         public void NotifyDeactivate()
         {
         }
-
+        
         #endregion
     }
 }

@@ -482,8 +482,9 @@ namespace System.Windows.Input
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
-                    else
+                    else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice)
                     {
+
 
                         pic.FireRawStylusInput(rawStylusInput);
                     }

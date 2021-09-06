@@ -395,10 +395,6 @@ namespace System.Windows.Input
 
                     // We are on the pen thread, just call directly.
                     //System.Diagnostics.Trace.WriteLine("hjc FireRawStylusInput");
-                    if (inputReport.Actions == RawStylusActions.Down)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc93 down 4");
-                    }
                     newPlugInCollection.FireRawStylusInput(rawStylusInput);
 
                     // Indicate we've used a stylus plugin
@@ -423,15 +419,6 @@ namespace System.Windows.Input
             // be made until we finish routing this event.
             lock(__rtiLock)
             {
-                if (RawStylusActions.Down == inputReport.Actions)
-                {
-                    System.Diagnostics.Trace.WriteLine("hjc before InvokeStylusPluginCollection rawStylusInput down");
-                }
-                else if (RawStylusActions.Up == inputReport.Actions)
-                {
-                    System.Diagnostics.Trace.WriteLine("hjc before InvokeStylusPluginCollection rawStylusInput up");
-                }
-
                 switch (inputReport.Actions)
                 {
                     case RawStylusActions.Down:
@@ -442,10 +429,6 @@ namespace System.Windows.Input
                         break;
 
                     default:
-                        if (RawStylusActions.Down == inputReport.Actions)
-                        {
-                            System.Diagnostics.Trace.WriteLine("hjc check down return");
-                        }
                         return; // Nothing to do unless one of the above events
                 }
 
@@ -455,27 +438,17 @@ namespace System.Windows.Input
 
                 if(null == currentPic)
                 {
-                    if (RawStylusActions.Down == inputReport.Actions)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc check down return1");
-                    }
+                    System.Diagnostics.Trace.WriteLine("hjc check return1");
                 }
 
                 if(null == pic)
                 {
-                    if (RawStylusActions.Down == inputReport.Actions)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc check down return2");
-                    }
+                    System.Diagnostics.Trace.WriteLine("hjc check return2");
                 }
 
                 // Fire Leave event if we need to.
                 if (currentPic != null && currentPic != pic)
                 {
-                    if (RawStylusActions.Down == inputReport.Actions)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc check down return3");
-                    }
                     // Create new RawStylusInput to send
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
                     transformTabletToView.Children.Add(new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice))); // this gives matrix in measured units (not device)
@@ -505,43 +478,22 @@ namespace System.Windows.Input
                     RawStylusInput rawStylusInput = new RawStylusInput(inputReport, transformTabletToView, pic);
                     inputReport.RawStylusInput = rawStylusInput;
 
-                    if (RawStylusActions.Down == inputReport.Actions)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc check down return4");
-                    }
                     if (pic != currentPic)
                     {
                         stylusDevice.CurrentNonVerifiedTarget = pic;
                         pic.FireEnterLeave(true, rawStylusInput, false);
                     }
 
-                    System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection");
                     // We are on the pen thread, just call directly.
                     if(null == stylusDevice.CriticalActiveSource || null == stylusDevice.TabletDevice)
                     {
                         if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
                         {
-                            if(RawStylusActions.Down == inputReport.Actions)
-                            {
-                                System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput down" );
-                            }
-                            else if(RawStylusActions.Up == inputReport.Actions)
-                                {
-                                System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput up" );
-                            }
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
                     else
                     {
-                        if (RawStylusActions.Down == inputReport.Actions)
-                        {
-                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput down");
-                        }
-                        else if (RawStylusActions.Up == inputReport.Actions)
-                        {
-                            System.Diagnostics.Trace.WriteLine("hjc InvokeStylusPluginCollection rawStylusInput up");
-                        }
 
                         pic.FireRawStylusInput(rawStylusInput);
                     }
@@ -581,16 +533,13 @@ namespace System.Windows.Input
                 System.Diagnostics.Debug.Assert(data.Length % pointLength == 0);
                 Point ptTablet = new Point(data[data.Length - pointLength], data[data.Length - pointLength + 1]);
                 // Note: the StylusLogic data inside DeviceUnitsFromMeasurUnits is protected by __rtiLock.
-                System.Diagnostics.Trace.WriteLine("hjc93 " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
-                System.Diagnostics.Trace.WriteLine("hjc93 " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
+
                 ptTablet = ptTablet * stylusDevice.TabletDevice.TabletDeviceImpl.TabletToScreen;
-                System.Diagnostics.Trace.WriteLine("hjc93 to screen " + " screen w:" + stylusDevice.TabletDevice.TabletDeviceImpl.ScreenSize.Width + " screen h:" + stylusDevice.TabletDevice.TabletDeviceImpl.ScreenSize.Height);
-                System.Diagnostics.Trace.WriteLine("hjc93 to scrren " + " TabletSize w:" + stylusDevice.TabletDevice.TabletDeviceImpl.TabletSize.Width + " TabletSize h:" + stylusDevice.TabletDevice.TabletDeviceImpl.TabletSize.Height);
+                //System.Diagnostics.Trace.WriteLine("hjc93 to screen " + " screen w:" + stylusDevice.TabletDevice.TabletDeviceImpl.ScreenSize.Width + " screen h:" + stylusDevice.TabletDevice.TabletDeviceImpl.ScreenSize.Height);
+                //System.Diagnostics.Trace.WriteLine("hjc93 to scrren " + " TabletSize w:" + stylusDevice.TabletDevice.TabletDeviceImpl.TabletSize.Width + " TabletSize h:" + stylusDevice.TabletDevice.TabletDeviceImpl.TabletSize.Height);
                 ptTablet.X = (int)Math.Round(ptTablet.X); // Make sure we snap to whole window pixels.
                 ptTablet.Y = (int)Math.Round(ptTablet.Y);
-                System.Diagnostics.Trace.WriteLine("hjc93 to Round " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 ptTablet = _stylusLogic.MeasureUnitsFromDeviceUnits(stylusDevice.CriticalActiveSource, ptTablet); // change to measured units now.
-                System.Diagnostics.Trace.WriteLine("hjc93 to Measure " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 pic = HittestPlugInCollection(ptTablet); // Use cached rectangles for UIElements.
             }
             return pic;
@@ -621,8 +570,6 @@ namespace System.Windows.Input
         StylusPlugInCollection HittestPlugInCollection(Point pt)
         {
             // Caller must make call to this routine inside of lock(__rtiLock)!
-
-            System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection count:" + _plugInCollectionList.Count);
             foreach (StylusPlugInCollection plugInCollection in _plugInCollectionList)
             {
                 if (plugInCollection.IsHit(pt))

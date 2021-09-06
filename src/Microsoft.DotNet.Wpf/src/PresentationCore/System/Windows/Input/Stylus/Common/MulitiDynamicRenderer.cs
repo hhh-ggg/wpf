@@ -1372,6 +1372,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
         }
 
+
         /////////////////////////////////////////////////////////////////////
         Dictionary<int, List<StrokeInfo>> _multiStrokeInfoDic = new Dictionary<int, List<StrokeInfo>>();
     }

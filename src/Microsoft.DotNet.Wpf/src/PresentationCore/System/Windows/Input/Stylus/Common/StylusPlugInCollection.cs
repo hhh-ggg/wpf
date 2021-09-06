@@ -302,7 +302,6 @@ namespace System.Windows.Input.StylusPlugIns
         {
             Point ptElement = pt;
             _viewToElement.TryTransform(ptElement, out ptElement);
-            System.Diagnostics.Trace.WriteLine("hjc93 _rc: " + _rc.ToString() + " ptElement x:" + ptElement.X + " ptElement y:" + ptElement.Y);
             return _rc.Contains(ptElement);
         }
 
@@ -373,7 +372,7 @@ namespace System.Windows.Input.StylusPlugIns
                         for (int i = 0; i < this.Count; i++)
                         {
                             StylusPlugIn plugIn = base[i];
-                            System.Diagnostics.Trace.WriteLine("hjc: " + plugIn.GetType().Name);
+                            //System.Diagnostics.Trace.WriteLine("hjc: " + plugIn.GetType().Name);
                             // set current plugin so any callback data gets an owner.
                             args.CurrentNotifyPlugIn = plugIn;
                             plugIn.RawStylusInput(args);

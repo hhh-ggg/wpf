@@ -341,7 +341,6 @@ namespace System.Windows.Input.StylusWisp
                 && rawStylusInputReport.StylusDevice != null
                 && rawStylusInputReport.StylusDevice.IsValid)
             {
-                System.Diagnostics.Trace.WriteLine("hjc93 CoalesceAndQueueStylusEvent7");
                 rawStylusInputReport.IsQueued = false;
 
 
@@ -367,7 +366,7 @@ namespace System.Windows.Input.StylusWisp
                 // build InputReportEventArgs
                 InputReportEventArgs input = new InputReportEventArgs(null, rawStylusInputReport);
                 input.RoutedEvent = InputManager.PreviewInputReportEvent;
-                System.Diagnostics.Trace.WriteLine("hjc93 PreviewInputReportEvent 11");
+                
                 // Set flag to prevent reentrancy due to wisptis mouse event getting triggered
                 // while processing this stylus event.
                 _processingQueuedEvent = true;
@@ -987,10 +986,12 @@ namespace System.Windows.Input.StylusWisp
         {
             if (e.StagingItem.Input.RoutedEvent == InputManager.PreviewInputReportEvent)
             {
+                System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 1");
                 InputReportEventArgs inputReportEventArgs = e.StagingItem.Input as InputReportEventArgs;
 
                 if (!inputReportEventArgs.Handled && inputReportEventArgs.Report.Type == InputType.Stylus)
                 {
+                    System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 2");
                     RawStylusInputReport rawStylusInputReport = (RawStylusInputReport)inputReportEventArgs.Report;
                     WispStylusDevice stylusDevice = rawStylusInputReport.StylusDevice?.As<WispStylusDevice>();
 
@@ -1046,6 +1047,7 @@ namespace System.Windows.Input.StylusWisp
                         _inputManager.Value.MostRecentInputDevice = stylusDevice.StylusDevice;
 
                         // Verify that we sent the real time stylus events to the proper plugincollection.
+                        System.Diagnostics.Trace.WriteLine("hjc93 VerifyStylusPlugInCollectionTarget 3");
                         VerifyStylusPlugInCollectionTarget(rawStylusInputReport);
                     }
                 }
@@ -3736,5 +3738,5 @@ namespace System.Windows.Input.StylusWisp
         private DispatcherOperationCallback _reevaluateCaptureDelegate;
         private DispatcherOperation _reevaluateCaptureOperation;
 #endif
-    }
+    } 
 }

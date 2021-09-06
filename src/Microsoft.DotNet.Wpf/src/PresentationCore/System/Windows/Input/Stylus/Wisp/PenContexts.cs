@@ -584,8 +584,8 @@ namespace System.Windows.Input
                 System.Diagnostics.Trace.WriteLine("hjc93 " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 System.Diagnostics.Trace.WriteLine("hjc93 " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);
                 ptTablet = ptTablet * stylusDevice.TabletDevice.TabletDeviceImpl.TabletToScreen;
-                System.Diagnostics.Trace.WriteLine("hjc93 to screen " + " screen w:" + _tabletInfo.SizeInfo.ScreenSize.Width + " screen h:" + _tabletInfo.SizeInfo.ScreenSize.Height);
-                System.Diagnostics.Trace.WriteLine("hjc93 to scrren " + " screen w:" + _tabletInfo.SizeInfo.TabletSize.Width + " screen h:" + _tabletInfo.SizeInfo.TabletSize.Height);
+                System.Diagnostics.Trace.WriteLine("hjc93 to screen " + " screen w:" + stylusDevice.TabletDevice.TabletDeviceImpl.ScreenSize.Width + " screen h:" + stylusDevice.TabletDevice.TabletDeviceImpl.ScreenSize.Height);
+                System.Diagnostics.Trace.WriteLine("hjc93 to scrren " + " TabletSize w:" + stylusDevice.TabletDevice.TabletDeviceImpl.TabletSize.Width + " TabletSize h:" + stylusDevice.TabletDevice.TabletDeviceImpl.TabletSize.Height);
                 ptTablet.X = (int)Math.Round(ptTablet.X); // Make sure we snap to whole window pixels.
                 ptTablet.Y = (int)Math.Round(ptTablet.Y);
                 System.Diagnostics.Trace.WriteLine("hjc93 to Round " + " ptTablet x:" + ptTablet.X + " ptTablet y:" + ptTablet.Y);

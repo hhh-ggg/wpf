@@ -88,6 +88,15 @@ namespace System.Windows.Input.StylusPlugIns
                     // Only do this for the Mouse
                     group.Children.Add(new MatrixTransform(_report.InputSource.CompositionTarget.TransformFromDevice));
                 }
+                if (null != _tabletToElementTransform)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc97 _tabletToElementTransform:" + _tabletToElementTransform.ToString());
+                }
+
+                if (null != transform)
+                {
+                    System.Diagnostics.Trace.WriteLine("hjc97 transform:" + transform.ToString());
+                }
                 group.Children.Add(_tabletToElementTransform);
                 group.Children.Add(transform);
                 return new StylusPointCollection(_report.StylusPointDescription, _report.GetRawPacketData(), group, Matrix.Identity);

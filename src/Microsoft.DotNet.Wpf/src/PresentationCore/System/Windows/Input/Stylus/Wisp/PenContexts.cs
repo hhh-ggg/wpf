@@ -439,9 +439,11 @@ namespace System.Windows.Input
                 // Fire Leave event if we need to.
                 if (currentPic != null && currentPic != pic)
                 {
+                    System.Diagnostics.Trace.WriteLine("hjc97 another");
                     // Create new RawStylusInput to send
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
-                    transformTabletToView.Children.Add(new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice))); // this gives matrix in measured units (not device)
+                    MatrixTransform mat = new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice));
+                    transformTabletToView.Children.Add(mat); // this gives matrix in measured units (not device)
                     transformTabletToView.Children.Add(currentPic.ViewToElement); // Make it relative to the element.
                     transformTabletToView.Freeze(); // Must be frozen for multi-threaded access.
                     
@@ -460,8 +462,26 @@ namespace System.Windows.Input
                     //    The transformTabletToView matrix and plugincollection rects though can change based 
                     //    off of layout events which is why we need to lock this.
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
-                    MatrixTransform matTransTmp = new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice));                    
+                    MatrixTransform mat = _stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice);
+                    System.Diagnostics.Trace.WriteLine("hjc97 mat:" + mat.ToString());
+                    if (null != stylusDevice.CriticalActiveSource)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource:" + stylusDevice.CriticalActiveSource.ToString());
+                    }
+
+                    if(null != stylusDevice.TabletDevice)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice:" + stylusDevice.TabletDevice.ToString());
+                    }
+
+                    if (null != pic.ViewToElement)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement:" + pic.ViewToElement.ToString());
+                    }
+
+                    MatrixTransform matTransTmp = new MatrixTransform(mat);                    
                     transformTabletToView.Children.Add(matTransTmp); // this gives matrix in measured units (not device)
+                   
                     transformTabletToView.Children.Add(pic.ViewToElement); // Make it relative to the element.
                     transformTabletToView.Freeze();  // Must be frozen for multi-threaded access.
                     
@@ -484,8 +504,6 @@ namespace System.Windows.Input
                     }
                     else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice)
                     {
-
-
                         pic.FireRawStylusInput(rawStylusInput);
                     }
                     

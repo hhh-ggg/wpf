@@ -479,7 +479,7 @@ namespace System.Windows.Input
                         System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement:" + pic.ViewToElement.ToString());
                     }
 
-                    MatrixTransform matTransTmp = new MatrixTransform(mat);                    
+                    MatrixTransform matTransTmp = new MatrixTransform(matmp);                    
                     transformTabletToView.Children.Add(matTransTmp); // this gives matrix in measured units (not device)
                    
                     transformTabletToView.Children.Add(pic.ViewToElement); // Make it relative to the element.

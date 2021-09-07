@@ -516,11 +516,13 @@ namespace System.Windows.Input
                     {
                         if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
                         {
+                            System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput1");
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
                     else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice)
                     {
+                        System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
                         pic.FireRawStylusInput(rawStylusInput);
                     }
                     

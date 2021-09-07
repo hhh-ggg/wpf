@@ -439,7 +439,7 @@ namespace System.Windows.Input
                 // Fire Leave event if we need to.
                 if (currentPic != null && currentPic != pic)
                 {
-                    System.Diagnostics.Trace.WriteLine("hjc97 another");
+                    //System.Diagnostics.Trace.WriteLine("hjc97 another");
                     // Create new RawStylusInput to send
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
                     MatrixTransform mat = new MatrixTransform(_stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice));
@@ -463,33 +463,33 @@ namespace System.Windows.Input
                     //    off of layout events which is why we need to lock this.
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
                     Matrix matmp = _stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice);
-                    System.Diagnostics.Trace.WriteLine("hjc97 matmp:" + matmp.ToString());
+                    //System.Diagnostics.Trace.WriteLine("hjc97 matmp:" + matmp.ToString());
+
+                    bool isValidMatrix = true;
                     if (null != stylusDevice.CriticalActiveSource)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null");
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null");
+                        isValidMatrix = false;
                     }
 
                     if(null != stylusDevice.TabletDevice)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: not null");
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: null");
+                        isValidMatrix = false;
                     }
 
-                    if (null != pic.ViewToElement)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement:" + pic.ViewToElement.ToString());
-                    }
-                    else
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement: null");
-                    }
+                    //if (null != pic.ViewToElement)
+                    //{
+                    //    System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement:" + pic.ViewToElement.ToString());
+                    //}
+                    //else
+                    //{
+                    //    System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement: null");
+                    //}
 
                     MatrixTransform matTransTmp = new MatrixTransform(matmp);                    
                     transformTabletToView.Children.Add(matTransTmp); // this gives matrix in measured units (not device)
@@ -497,10 +497,10 @@ namespace System.Windows.Input
                     transformTabletToView.Children.Add(pic.ViewToElement); // Make it relative to the element.
                     transformTabletToView.Freeze();  // Must be frozen for multi-threaded access.
 
-                    if (null != transformTabletToView)
-                    {
-                        System.Diagnostics.Trace.WriteLine("hjc97 transformTabletToView:" + transformTabletToView.ToString());
-                    }
+                    //if (null != transformTabletToView)
+                    //{
+                    //    System.Diagnostics.Trace.WriteLine("hjc97 transformTabletToView:" + transformTabletToView.ToString());
+                    //}
 
                     RawStylusInput rawStylusInput = new RawStylusInput(inputReport, transformTabletToView, pic);
                     inputReport.RawStylusInput = rawStylusInput;
@@ -516,13 +516,13 @@ namespace System.Windows.Input
                     {
                         if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
                         {
-                            System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput1");
+                            //System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput1");
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
                     else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
+                        //System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
                         pic.FireRawStylusInput(rawStylusInput);
                     }
                     
@@ -612,7 +612,7 @@ namespace System.Windows.Input
                     }
                 }
 
-                System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
+                //System.Diagnostics.Trace.WriteLine("hjc93 HittestPlugInCollection return null");
                 return null;
             }
 

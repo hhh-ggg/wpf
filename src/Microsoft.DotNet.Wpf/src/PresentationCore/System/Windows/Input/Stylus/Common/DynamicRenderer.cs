@@ -418,6 +418,10 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
+            if(1 == this.GetDispatcher().Thread.ManagedThreadId)
+            {
+                Trace.WriteLine("hjc93 down thread id: 1");
+            }
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
@@ -440,8 +444,14 @@ namespace System.Windows.Input.StylusPlugIns
                     if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                     {
                         si.allPoints.Add(upCollectionPoints);
+                        if(upCollectionPoints.Count > 1)
+                        {
+                            Trace.WriteLine("hjc93 down count: " + upCollectionPoints.Count);
+                        }
                     }
                     strokeInfoListEx.Add(si);
+
+                    
                 }
 
                 //foreach (var ps in si.allPoints)

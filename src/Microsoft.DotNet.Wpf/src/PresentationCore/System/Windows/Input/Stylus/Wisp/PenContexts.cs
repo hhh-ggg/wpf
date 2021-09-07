@@ -520,7 +520,7 @@ namespace System.Windows.Input
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
-                    else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice)
+                    else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice && isValidMatrix)
                     {
                         //System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
                         pic.FireRawStylusInput(rawStylusInput);

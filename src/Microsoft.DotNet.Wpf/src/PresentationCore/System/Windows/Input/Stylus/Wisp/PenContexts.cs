@@ -466,17 +466,29 @@ namespace System.Windows.Input
                     System.Diagnostics.Trace.WriteLine("hjc97 matmp:" + matmp.ToString());
                     if (null != stylusDevice.CriticalActiveSource)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource:" + stylusDevice.CriticalActiveSource.ToString());
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null");
                     }
 
                     if(null != stylusDevice.TabletDevice)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice:" + stylusDevice.TabletDevice.ToString());
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: not null");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: null");
                     }
 
                     if (null != pic.ViewToElement)
                     {
                         System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement:" + pic.ViewToElement.ToString());
+                    }
+                    else
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement: null");
                     }
 
                     MatrixTransform matTransTmp = new MatrixTransform(matmp);                    

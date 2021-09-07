@@ -482,6 +482,7 @@ namespace System.Windows.Input
                         isValidMatrix = false;
                     }
 
+                    System.Diagnostics.Trace.WriteLine("hjc97 isValidMatrix:" + isValidMatrix);
                     //if (null != pic.ViewToElement)
                     //{
                     //    System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement:" + pic.ViewToElement.ToString());
@@ -516,13 +517,13 @@ namespace System.Windows.Input
                     {
                         if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
                         {
-                            //System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput1");
+                            System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput1");
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
                     else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice && isValidMatrix)
                     {
-                        //System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
+                        System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
                         pic.FireRawStylusInput(rawStylusInput);
                     }
                     

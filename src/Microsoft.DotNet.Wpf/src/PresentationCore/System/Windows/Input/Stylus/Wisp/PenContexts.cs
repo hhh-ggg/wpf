@@ -472,7 +472,7 @@ namespace System.Windows.Input
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null");
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null:" + stylusDevice.CriticalActiveSource.GetType());
                         isValidMatrix = false;
                     }
 

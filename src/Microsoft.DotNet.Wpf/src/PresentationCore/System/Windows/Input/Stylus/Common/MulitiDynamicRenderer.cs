@@ -356,7 +356,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
-                            Trace.WriteLine("hjc97 move id: " + si.StylusId + "X: " + upCollectionPoints[0].X + "Y: " + pCollectionPoints[0].Y);
+                            Trace.WriteLine("hjc97 move id: " + si.StylusId + "X: " + upCollectionPoints[0].X + "Y: " + upCollectionPoints[0].Y);
                             if (!si.canRender)
                             {
                                 int psLength = si.allPoints.Count;

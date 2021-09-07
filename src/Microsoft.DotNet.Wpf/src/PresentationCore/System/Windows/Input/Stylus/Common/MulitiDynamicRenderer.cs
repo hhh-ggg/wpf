@@ -243,7 +243,6 @@ namespace System.Windows.Input.StylusPlugIns
         /// </summary>
         protected override void OnStylusDown(RawStylusInput rawStylusInput)
         {
-            Trace.WriteLine("thread down id:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
             //Trace.WriteLine("OnStylusDown" + this.iTestByhjc + ":eanbled:" + this.Enabled + "isNewSingle:" + isNewSingle);
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
@@ -282,7 +281,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                 foreach (var ps in si.allPoints)
                 {
-                    Trace.WriteLine("hjc97 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y);
+                    Trace.WriteLine("hjc97 down id: " + si.StylusId + "X: " + ps.X + "Y: " + ps.Y + "threadid:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
                 }
                 rawStylusInput.NotifyWhenProcessed(si);
                 //Trace.WriteLine("down:" + rawStylusInput.StylusDeviceId + "x:" + si.allPoints[0].X + "y:" + si.allPoints[0].Y);
@@ -356,7 +355,7 @@ namespace System.Windows.Input.StylusPlugIns
 
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
-                            Trace.WriteLine("hjc97 move id: " + si.StylusId + "X: " + upCollectionPoints[0].X + "Y: " + upCollectionPoints[0].Y);
+                            Trace.WriteLine("hjc97 move id: " + si.StylusId + "X: " + upCollectionPoints[0].X + "Y: " + upCollectionPoints[0].Y + "threadid:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
                             if (!si.canRender)
                             {
                                 int psLength = si.allPoints.Count;

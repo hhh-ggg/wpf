@@ -468,17 +468,21 @@ namespace System.Windows.Input
                     bool isValidMatrix = true;
                     if (null != stylusDevice.CriticalActiveSource)
                     {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null");
                     }
                     else
                     {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null");
                         isValidMatrix = false;
                     }
 
                     if(null != stylusDevice.TabletDevice)
                     {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: not null");
                     }
                     else
                     {
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: null");
                         isValidMatrix = false;
                     }
 

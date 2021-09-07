@@ -468,11 +468,11 @@ namespace System.Windows.Input
                     bool isValidMatrix = true;
                     if (null != stylusDevice.CriticalActiveSource)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null");
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null" + stylusDevice.CriticalActiveSource.GetType());
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null:" + stylusDevice.CriticalActiveSource.GetType());
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null:" );
                         isValidMatrix = false;
                     }
 

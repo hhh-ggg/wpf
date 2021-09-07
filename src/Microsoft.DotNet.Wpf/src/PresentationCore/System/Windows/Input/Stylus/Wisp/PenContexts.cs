@@ -462,8 +462,8 @@ namespace System.Windows.Input
                     //    The transformTabletToView matrix and plugincollection rects though can change based 
                     //    off of layout events which is why we need to lock this.
                     GeneralTransformGroup transformTabletToView = new GeneralTransformGroup();
-                    MatrixTransform mat = _stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice);
-                    System.Diagnostics.Trace.WriteLine("hjc97 mat:" + mat.ToString());
+                    Matrix matmp = _stylusLogic.GetTabletToViewTransform(stylusDevice.CriticalActiveSource, stylusDevice.TabletDevice);
+                    System.Diagnostics.Trace.WriteLine("hjc97 matmp:" + matmp.ToString());
                     if (null != stylusDevice.CriticalActiveSource)
                     {
                         System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource:" + stylusDevice.CriticalActiveSource.ToString());
@@ -484,7 +484,12 @@ namespace System.Windows.Input
                    
                     transformTabletToView.Children.Add(pic.ViewToElement); // Make it relative to the element.
                     transformTabletToView.Freeze();  // Must be frozen for multi-threaded access.
-                    
+
+                    if (null != transformTabletToView)
+                    {
+                        System.Diagnostics.Trace.WriteLine("hjc97 transformTabletToView:" + transformTabletToView.ToString());
+                    }
+
                     RawStylusInput rawStylusInput = new RawStylusInput(inputReport, transformTabletToView, pic);
                     inputReport.RawStylusInput = rawStylusInput;
 

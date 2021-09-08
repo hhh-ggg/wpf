@@ -169,7 +169,7 @@ namespace System.Windows
             // Do not allow foreign threads access.
             // (This is a noop if this object is not assigned to a Dispatcher.)
             //
-            this.VerifyAccess();
+            //this.VerifyAccess();
 
             if (dp == null)
             {

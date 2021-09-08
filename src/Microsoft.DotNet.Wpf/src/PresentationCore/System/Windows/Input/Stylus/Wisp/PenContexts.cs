@@ -468,49 +468,53 @@ namespace System.Windows.Input
                     bool isValidMatrix = true;
                     if (null != stylusDevice.CriticalActiveSource)
                     {
-                         UIElement windowTmp = stylusDevice.CriticalActiveSource.RootVisual as UIElement;
-                        if(null != windowTmp)
+                        if(null == stylusDevice.CriticalActiveSource.RootVisual)
                         {
-                            windowTmp.Dispatcher.BeginInvoke((Action)(() =>
-                            {
-                                System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid " + windowTmp.Uid);
-                            }));
+                            isValidMatrix = false;
+                        }
+                        // UIElement windowTmp = stylusDevice.CriticalActiveSource.RootVisual as UIElement;
+                        //if(null != windowTmp)
+                        //{
+                        //    windowTmp.Dispatcher.BeginInvoke((Action)(() =>
+                        //    {
+                        //        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid " + windowTmp.Uid);
+                        //    }));
                             
-                        }
-                        else
-                        {
-                            if (null == stylusDevice.CriticalActiveSource.RootVisual)
-                            {
-                                System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: RootVisual " + null);
-                            }
-                            else
-                            {
-                                stylusDevice.CriticalActiveSource.RootVisual.Dispatcher.BeginInvoke((Action)(() =>
-                                {
-                                    System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null rootvisual " + stylusDevice.CriticalActiveSource.RootVisual.ToString());
-                                }));
-                            }
+                        //}
+                        //else
+                        //{
+                        //    if (null == stylusDevice.CriticalActiveSource.RootVisual)
+                        //    {
+                        //        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: RootVisual " + null);
+                        //    }
+                        //    else
+                        //    {
+                        //        stylusDevice.CriticalActiveSource.RootVisual.Dispatcher.BeginInvoke((Action)(() =>
+                        //        {
+                        //            System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null rootvisual " + stylusDevice.CriticalActiveSource.RootVisual.ToString());
+                        //        }));
+                        //    }
 
-                        }
+                        //}
                         
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null:" );
+                        //System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: null:" );
                         isValidMatrix = false;
                     }
 
                     if(null != stylusDevice.TabletDevice)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: not null");
+                       // System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: not null");
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: null");
+                        //System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.TabletDevice: null");
                         isValidMatrix = false;
                     }
 
-                    System.Diagnostics.Trace.WriteLine("hjc97 isValidMatrix:" + isValidMatrix);
+                   // System.Diagnostics.Trace.WriteLine("hjc97 isValidMatrix:" + isValidMatrix);
                     //if (null != pic.ViewToElement)
                     //{
                     //    System.Diagnostics.Trace.WriteLine("hjc97 pic.ViewToElement:" + pic.ViewToElement.ToString());
@@ -545,13 +549,13 @@ namespace System.Windows.Input
                     {
                         if(RawStylusActions.Down == inputReport.Actions || RawStylusActions.Up == inputReport.Actions)
                         {
-                            System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput1");
+                            //System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput1");
                             pic.FireRawStylusInput(rawStylusInput);
                         }
                     }
                     else if(null != stylusDevice.CriticalActiveSource && null != stylusDevice.TabletDevice && isValidMatrix)
                     {
-                        System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
+                        //System.Diagnostics.Trace.WriteLine("hjc97 FireRawStylusInput2");
                         pic.FireRawStylusInput(rawStylusInput);
                     }
                     

@@ -175,9 +175,9 @@ namespace System.Windows.Input
                 Point p = new Point(rawPacketData[i], rawPacketData[i + 1]);
                 if (tabletToView != null)
                 {
-                    Trace.WriteLine("hjc97 get src point: " + "X: " + p.X + "Y: " + p.Y + "threadid:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+                    //Trace.WriteLine("hjc97 get src point: " + "X: " + p.X + "Y: " + p.Y + "threadid:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
                     tabletToView.TryTransform(p, out p);
-                    Trace.WriteLine("hjc97 get dst point: " + "X: " + p.X + "Y: " + p.Y + "threadid:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+                    //Trace.WriteLine("hjc97 get dst point: " + "X: " + p.X + "Y: " + p.Y + "threadid:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
                 }
                 else
                 {

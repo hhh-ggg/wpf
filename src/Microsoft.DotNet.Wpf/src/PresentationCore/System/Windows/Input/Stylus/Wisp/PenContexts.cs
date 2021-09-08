@@ -471,11 +471,15 @@ namespace System.Windows.Input
                          UIElement windowTmp = stylusDevice.CriticalActiveSource.RootVisual as UIElement;
                         if(null != windowTmp)
                         {
-                            System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid " + windowTmp.Uid);
+                            windowTmp.Dispatcher.invoke((Action)(() =>
+                            {
+                                System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid " + windowTmp.Uid);
+                            }));
+                            
                         }
                         else
                         {
-                            System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null " + stylusDevice.CriticalActiveSource.RootVisual.ToString());
+                            System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not window ");
                         }
                         
                     }

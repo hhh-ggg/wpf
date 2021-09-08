@@ -471,7 +471,7 @@ namespace System.Windows.Input
                          UIElement windowTmp = stylusDevice.CriticalActiveSource.RootVisual as UIElement;
                         if(null != windowTmp)
                         {
-                            windowTmp.Dispatcher.invoke((Action)(() =>
+                            windowTmp.Dispatcher.Invoke((Action)(() =>
                             {
                                 System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid " + windowTmp.Uid);
                             }));

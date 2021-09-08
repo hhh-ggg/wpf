@@ -468,8 +468,8 @@ namespace System.Windows.Input
                     bool isValidMatrix = true;
                     if (null != stylusDevice.CriticalActiveSource)
                     {
-                         UIElement window = stylusDevice.CriticalActiveSource.RootVisual as window;
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid" + window.Uid);
+                         UIElement windowTmp = stylusDevice.CriticalActiveSource.RootVisual as UIElement;
+                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid" + windowTmp.Uid);
                     }
                     else
                     {

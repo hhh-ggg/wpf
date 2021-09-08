@@ -469,7 +469,15 @@ namespace System.Windows.Input
                     if (null != stylusDevice.CriticalActiveSource)
                     {
                          UIElement windowTmp = stylusDevice.CriticalActiveSource.RootVisual as UIElement;
-                        System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid" + windowTmp.Uid);
+                        if(null != windowTmp)
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null uid " + windowTmp.Uid);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null " + stylusDevice.CriticalActiveSource.RootVisual.ToString());
+                        }
+                        
                     }
                     else
                     {

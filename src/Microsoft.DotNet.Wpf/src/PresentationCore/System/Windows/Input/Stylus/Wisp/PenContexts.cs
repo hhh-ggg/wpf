@@ -479,7 +479,18 @@ namespace System.Windows.Input
                         }
                         else
                         {
-                            System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not window ");
+                            if (null == stylusDevice.CriticalActiveSource.RootVisual)
+                            {
+                                System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: RootVisual " + null);
+                            }
+                            else
+                            {
+                                stylusDevice.CriticalActiveSource.RootVisual.Dispatcher.BeginInvoke((Action)(() =>
+                                {
+                                    System.Diagnostics.Trace.WriteLine("hjc97 stylusDevice.CriticalActiveSource: not null rootvisual " + stylusDevice.CriticalActiveSource.RootVisual.ToString());
+                                }));
+                            }
+
                         }
                         
                     }

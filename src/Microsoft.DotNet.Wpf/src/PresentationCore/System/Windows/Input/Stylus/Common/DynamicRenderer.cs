@@ -421,8 +421,10 @@ namespace System.Windows.Input.StylusPlugIns
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
+            Trace.WriteLine("hjcss OnStylusDown");
+            
                 StrokeInfo si;
-
+                
                 lock (siLockEx)
                 {
                     si = FindStrokeInfo(rawStylusInput.Timestamp);
@@ -441,6 +443,7 @@ namespace System.Windows.Input.StylusPlugIns
                     {
                         si.allPoints.Add(upCollectionPoints);
                     }
+                    Trace.WriteLine("hjcss OnStylusDown:" + si.allPoints.Count);
                     strokeInfoListEx.Add(si);
 
                     
@@ -617,6 +620,7 @@ namespace System.Windows.Input.StylusPlugIns
             // Only allow inking if someone has queried our RootVisual.
             if (mainContainerVisualEx != null)
             {
+            Trace.WriteLine("hjcss OnStylusUp:");
                 StrokeInfo si = FindStrokeInfo(rawStylusInput.Timestamp);
 
                 if (si != null && 

@@ -808,8 +808,8 @@ namespace System.Windows.Input.StylusPlugIns
             }
             drawingContext.DrawGeometry(fillBrush, null, geometry);
 
-            MediaContext.From(applicationDispatcherEx).RenderMessageHandler(null);
-            MediaContext.From(applicationDispatcherEx).CommitChannel();
+            MediaContext.From(this.GetDispatcher()).RenderMessageHandler(null);
+            MediaContext.From(this.GetDispatcher()).CommitChannel();
         }
 
         /////////////////////////////////////////////////////////////////////

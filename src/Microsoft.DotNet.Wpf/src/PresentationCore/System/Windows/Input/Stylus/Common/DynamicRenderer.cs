@@ -445,12 +445,6 @@ namespace System.Windows.Input.StylusPlugIns
                     // Can only ink with one stylus at a time.
                     if (si != null)
                     {
-                        Trace.WriteLine("byl si != null, Color:" + DrawingAttributes.Color);
-                        if (si.DrawingAttributes.Color != DrawingAttributes.Color)
-                        {
-                            Trace.WriteLine("byl UpdateColor");
-                            si.UpdateColor(DrawingAttributes.Color);
-                        }
                         return; 
                     }
 
@@ -507,6 +501,12 @@ namespace System.Windows.Input.StylusPlugIns
                         si.LastTime = rawStylusInput.Timestamp;
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
 
+                        Trace.WriteLine("byl OnStylusMove, Color:" + DrawingAttributes.Color);
+                        if (si.DrawingAttributes.Color != DrawingAttributes.Color)
+                        {
+                            Trace.WriteLine("byl UpdateColor");
+                            si.UpdateColor(DrawingAttributes.Color);
+                        }
                         if (si.canRender)
                         {
                             //Trace.WriteLine("RenderPackets(rawStylusInput.GetStylusPoints(), si);");

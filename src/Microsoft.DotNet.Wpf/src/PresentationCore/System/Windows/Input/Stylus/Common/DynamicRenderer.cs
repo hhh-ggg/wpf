@@ -75,6 +75,18 @@ namespace System.Windows.Input.StylusPlugIns
                 hostVisual.AddStrokeInfoRef(this); // Add ourselves as reference.
             }
 
+            public void UpdateColor(Color color)
+            {
+                _drawingAttributes.Color = color;
+                _opacity = _drawingAttributes.IsHighlighter ? 0 : (double)color.A / (double)StrokeRenderer.SolidStrokeAlpha;
+                color.A = StrokeRenderer.SolidStrokeAlpha;
+
+                // Set the brush to be used with this new stroke too (since frozen can be shared by threads)
+                SolidColorBrush brush = new SolidColorBrush(color);
+                brush.Freeze();
+                _fillBrush = brush;
+            }
+
             // Public props to access info
             public int StylusId 
             { 
@@ -433,6 +445,12 @@ namespace System.Windows.Input.StylusPlugIns
                     // Can only ink with one stylus at a time.
                     if (si != null)
                     {
+                        Trace.WriteLine("byl si != null, Color:" + DrawingAttributes.Color);
+                        if (si.DrawingAttributes.Color != DrawingAttributes.Color)
+                        {
+                            Trace.WriteLine("byl UpdateColor");
+                            si.UpdateColor(DrawingAttributes.Color);
+                        }
                         return; 
                     }
 
@@ -907,6 +925,7 @@ namespace System.Windows.Input.StylusPlugIns
             {
                 throw new ArgumentNullException("drawingContext");
             }
+            Trace.WriteLine("byl OnDraw brush:"+ fillBrush);
             drawingContext.DrawGeometry(fillBrush, null, geometry);
         }
         

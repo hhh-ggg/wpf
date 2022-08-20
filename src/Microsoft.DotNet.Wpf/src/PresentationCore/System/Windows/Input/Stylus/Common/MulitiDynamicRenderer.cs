@@ -1207,7 +1207,7 @@ namespace System.Windows.Input.StylusPlugIns
             }
         }
 
-        private StrokeInfo FindStrokeInfo(int deviceId, int timestamp)
+        protected StrokeInfo FindStrokeInfo(int deviceId, int timestamp)
         {
             //Trace.WriteLine("FindStrokeInfo");
             lock (siLockEx)

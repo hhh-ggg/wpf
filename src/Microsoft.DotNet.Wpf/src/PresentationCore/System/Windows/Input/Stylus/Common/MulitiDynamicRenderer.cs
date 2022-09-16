@@ -807,9 +807,6 @@ namespace System.Windows.Input.StylusPlugIns
                 throw new ArgumentNullException("drawingContext");
             }
             drawingContext.DrawGeometry(fillBrush, null, geometry);
-
-            MediaContext.From(this.GetDispatcher()).RenderMessageHandler(null);
-            MediaContext.From(this.GetDispatcher()).CommitChannel();
         }
 
         /////////////////////////////////////////////////////////////////////

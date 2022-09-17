@@ -453,6 +453,7 @@ namespace System.Windows.Input.StylusPlugIns
                     StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
                     if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                     {
+                        decideStrokeColor(si, upCollectionPoints[0]);
                         si.allPoints.Add(upCollectionPoints);
                     }
                     //Trace.WriteLine("hjcss OnStylusDown:" + si.allPoints.Count);
@@ -470,6 +471,21 @@ namespace System.Windows.Input.StylusPlugIns
                 //Trace.WriteLine("hjc down end");
                 //RenderPackets(rawStylusInput.GetStylusPoints(), si);
             }
+        }
+
+        /// <summary>
+        /// 设置
+        /// </summary>
+        private void decideStrokeColor(StrokeInfo si, StylusPoint point)
+        {
+            if(!doubleColorWrittingEnabled)
+            {
+                return;
+            }
+            var touchSize = StylusUtils.GetStylusSize(point);
+            thinPenWriting = Math.Max(touchSize.Width, touchSize.Height) < StylusUtils.thinPenSizeThreashold;
+            var newStrokeColor = thinPenWriting ? thinPenColor : normalPenColor;
+            si.UpdateColor(newStrokeColor);
         }
 
         private double pointLength(StylusPoint p1, StylusPoint p2)
@@ -501,12 +517,6 @@ namespace System.Windows.Input.StylusPlugIns
                         si.LastTime = rawStylusInput.Timestamp;
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
 
-                        Trace.WriteLine("byl OnStylusMove, Color:" + DrawingAttributes.Color);
-                        if (si.DrawingAttributes.Color != DrawingAttributes.Color)
-                        {
-                            Trace.WriteLine("byl UpdateColor");
-                            si.UpdateColor(DrawingAttributes.Color);
-                        }
                         if (si.canRender)
                         {
                             //Trace.WriteLine("RenderPackets(rawStylusInput.GetStylusPoints(), si);");
@@ -1419,5 +1429,9 @@ namespace System.Windows.Input.StylusPlugIns
         public EventHandler onDRThreadRenderCompleteEx;
         public bool waitingForDRThreadRenderCompleteEx;
         public Queue<StrokeInfo>    renderCompleteDRThreadStrokeInfoListEx = new Queue<StrokeInfo>();
+        
+        Color thinPenColor;//双色笔 细笔头书写颜色
+        Color normalPenColor;//普通书写颜色，或双色笔粗笔头书写颜色
+        bool doubleColorWrittingEnabled = false;//双色笔书写开启
 }
 }

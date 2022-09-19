@@ -262,6 +262,7 @@ namespace System.Windows.Input.StylusPlugIns
                         StylusPointCollection upCollectionPoints = rawStylusInput.GetStylusPoints();
                         if (null != upCollectionPoints && 0 != upCollectionPoints.Count && null != si.allPoints)
                         {
+                            decideStrokeColor(si, upCollectionPoints[0]);
                             si.allPoints.Add(upCollectionPoints);
                         }
 

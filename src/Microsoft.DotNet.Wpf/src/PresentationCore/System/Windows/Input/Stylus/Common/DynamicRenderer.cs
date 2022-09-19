@@ -476,7 +476,7 @@ namespace System.Windows.Input.StylusPlugIns
         /// <summary>
         /// 决定笔迹颜色
         /// </summary>
-        private void decideStrokeColor(StrokeInfo si, StylusPoint point)
+        protected void decideStrokeColor(StrokeInfo si, StylusPoint point)
         {
             if(!doubleColorWrittingEnabled)
             {

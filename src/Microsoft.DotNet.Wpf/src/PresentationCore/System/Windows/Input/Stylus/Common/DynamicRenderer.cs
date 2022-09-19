@@ -1430,8 +1430,8 @@ namespace System.Windows.Input.StylusPlugIns
         public bool waitingForDRThreadRenderCompleteEx;
         public Queue<StrokeInfo>    renderCompleteDRThreadStrokeInfoListEx = new Queue<StrokeInfo>();
         
-        Color thinPenColor = Color.FromRgb(255, 109, 94);//双色笔 细笔头书写颜色
-        Color normalPenColor = Colors.White;//普通书写颜色，或双色笔粗笔头书写颜色
-        bool doubleColorWrittingEnabled = false;//双色笔书写开启
+        public Color thinPenColor = Color.FromRgb(255, 109, 94);//双色笔 细笔头书写颜色
+        public Color normalPenColor = Colors.White;//普通书写颜色，或双色笔粗笔头书写颜色
+        public bool doubleColorWrittingEnabled = false;//双色笔书写开启
 }
 }

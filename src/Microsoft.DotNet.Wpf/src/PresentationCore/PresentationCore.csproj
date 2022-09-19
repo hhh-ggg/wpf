@@ -573,6 +573,7 @@
     <Compile Include="System\Windows\Input\Command\SecureUICommand.cs" />
     <Compile Include="System\Windows\Input\Stylus\Common\DynamicRenderer.cs" />
     <Compile Include="System\Windows\Input\Stylus\Common\MulitiDynamicRenderer.cs" />
+    <Compile Include="System\Windows\Input\Stylus\Common\StylusUtils.cs" />
     <Compile Include="System\Windows\Input\Stylus\Common\DynamicRendererThreadManager.cs" />
     <Compile Include="System\Windows\Input\Stylus\Common\MultiTouchSystemGestureLogic.cs" />
     <Compile Include="System\Windows\Input\Stylus\Common\RawStylusActions.cs" />

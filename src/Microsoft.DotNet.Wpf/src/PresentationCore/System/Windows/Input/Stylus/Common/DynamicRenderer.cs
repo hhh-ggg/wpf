@@ -474,7 +474,7 @@ namespace System.Windows.Input.StylusPlugIns
         }
 
         /// <summary>
-        /// 设置
+        /// 决定笔迹颜色
         /// </summary>
         private void decideStrokeColor(StrokeInfo si, StylusPoint point)
         {
@@ -483,7 +483,7 @@ namespace System.Windows.Input.StylusPlugIns
                 return;
             }
             var touchSize = StylusUtils.GetStylusSize(point);
-            thinPenWriting = Math.Max(touchSize.Width, touchSize.Height) < StylusUtils.thinPenSizeThreashold;
+            bool thinPenWriting = Math.Max(touchSize.Width, touchSize.Height) < StylusUtils.thinPenSizeThreashold;
             var newStrokeColor = thinPenWriting ? thinPenColor : normalPenColor;
             si.UpdateColor(newStrokeColor);
         }
@@ -1430,8 +1430,8 @@ namespace System.Windows.Input.StylusPlugIns
         public bool waitingForDRThreadRenderCompleteEx;
         public Queue<StrokeInfo>    renderCompleteDRThreadStrokeInfoListEx = new Queue<StrokeInfo>();
         
-        Color thinPenColor;//双色笔 细笔头书写颜色
-        Color normalPenColor;//普通书写颜色，或双色笔粗笔头书写颜色
+        Color thinPenColor = Color.FromRgb(255, 109, 94);//双色笔 细笔头书写颜色
+        Color normalPenColor = Colors.White;//普通书写颜色，或双色笔粗笔头书写颜色
         bool doubleColorWrittingEnabled = false;//双色笔书写开启
 }
 }

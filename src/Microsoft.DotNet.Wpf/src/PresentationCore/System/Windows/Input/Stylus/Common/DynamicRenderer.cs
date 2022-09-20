@@ -485,6 +485,7 @@ namespace System.Windows.Input.StylusPlugIns
             var touchSize = StylusUtils.GetStylusSize(point);
             bool thinPenWriting = Math.Max(touchSize.Width, touchSize.Height) < StylusUtils.thinPenSizeThreashold;
             var newStrokeColor = thinPenWriting ? thinPenColor : normalPenColor;
+            newStrokeColor = Color.FromArgb(highlightPenAlpha, newStrokeColor.R, newStrokeColor.G, newStrokeColor.B); 
             si.UpdateColor(newStrokeColor);
         }
 
@@ -935,7 +936,6 @@ namespace System.Windows.Input.StylusPlugIns
             {
                 throw new ArgumentNullException("drawingContext");
             }
-            Trace.WriteLine("byl OnDraw brush:"+ fillBrush);
             drawingContext.DrawGeometry(fillBrush, null, geometry);
         }
         
@@ -1433,5 +1433,6 @@ namespace System.Windows.Input.StylusPlugIns
         public Color thinPenColor = Color.FromRgb(255, 109, 94);//双色笔 细笔头书写颜色
         public Color normalPenColor = Colors.White;//普通书写颜色，或双色笔粗笔头书写颜色
         public bool doubleColorWrittingEnabled = false;//双色笔书写开启
+        public byte highlightPenAlpha = 255;//荧光笔Alpha通道值 255为完全不透明
 }
 }

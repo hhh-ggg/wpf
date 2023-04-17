@@ -250,7 +250,6 @@ namespace System.Windows.Input.StylusPlugIns
             zeroSizedFrozenRectEx = new RectangleGeometry(new Rect(0,0,0,0));
             zeroSizedFrozenRectEx.Freeze();
         }
-
         /////////////////////////////////////////////////////////////////////
         /// <summary>
         /// Reset will stop the current strokes being dynamically rendered 

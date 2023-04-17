@@ -241,7 +241,6 @@ namespace System.Windows.Input.StylusPlugIns
         }
         
         /////////////////////////////////////////////////////////////////////
-
         /// <summary>
         /// [TBS] - On UIContext
         /// </summary>
